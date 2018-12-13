@@ -45,6 +45,8 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
     ];
+
+    $config['components']['db'] = require __DIR__ .'/db-local.php';
 }
 
 return $config;
