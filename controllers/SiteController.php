@@ -60,17 +60,11 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
-    }
+        $data = json_decode(file_get_contents(__DIR__ .'/../data/discounts.json'), true);
 
-    public function actionPreParse()
-    {
-        /** @var \app\components\parsers\FiveShop $fiveShop */
-        $fiveShop = Yii::$app->get('fiveShop');
-
-        echo '<pre>';
-        print_r($fiveShop->getData(1));
-        echo '</pre>';
+        return $this->render('index', [
+            'data' => $data,
+        ]);
     }
 
     /**
