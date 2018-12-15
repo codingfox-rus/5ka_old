@@ -28,6 +28,10 @@ $config = [
         'fiveShop' => [
             'class' => 'app\components\parsers\FiveShop',
         ],
+
+        'discountHelper' => [
+            'class' => 'app\components\DiscountHelper',
+        ],
     ],
     'params' => $params,
     /*

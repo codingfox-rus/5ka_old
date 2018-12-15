@@ -5,7 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'shop-tracker',
-    'name' => 'ShopTracker',
+    'name' => 'FollowSale',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -49,13 +49,17 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '' => 'site/index',
+                '' => 'discount/index',
                 '<action>' => 'site/<action>',
             ],
         ],
 
         'fiveShop' => [
             'class' => 'app\components\parsers\FiveShop',
+        ],
+
+        'discountHelper' => [
+            'class' => 'app\components\DiscountHelper',
         ],
     ],
     'params' => $params,

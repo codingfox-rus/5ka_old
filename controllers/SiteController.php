@@ -62,8 +62,10 @@ class SiteController extends Controller
     {
         $data = json_decode(file_get_contents(__DIR__ .'/../data/discounts.json'), true);
 
+        $results = $data['results'][0];
+
         return $this->render('index', [
-            'data' => $data,
+            'results' => $results,
         ]);
     }
 
