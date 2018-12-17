@@ -3,11 +3,13 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use app\components\parsers\FiveShop;
 
 /**
  * This is the model class for table "discount".
  *
  * @property int $id
+ * @property int $categoryId
  * @property int $itemId
  * @property string $name
  * @property string $description
@@ -21,6 +23,9 @@ use yii\behaviors\TimestampBehavior;
  * @property int $dateEnd
  * @property int $createdAt
  * @property int $updatedAt
+ *
+ * @property Category $category
+ * @property string $preview
  */
 class DiscountFiveShop extends \yii\db\ActiveRecord
 {
@@ -52,9 +57,28 @@ class DiscountFiveShop extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['itemId', 'paramId', 'dateStart', 'dateEnd', 'createdAt', 'updatedAt'], 'integer'],
-            [['description', 'imageSmall', 'imageBig'], 'string'],
-            [['specialPrice', 'regularPrice', 'discountPercent'], 'number'],
+            [[
+                'categoryId',
+                'itemId',
+                'paramId',
+                'dateStart',
+                'dateEnd',
+                'createdAt',
+                'updatedAt',
+            ], 'integer'],
+
+            [[
+                'description',
+                'imageSmall',
+                'imageBig',
+            ], 'string'],
+
+            [[
+                'specialPrice',
+                'regularPrice',
+                'discountPercent',
+            ], 'number'],
+
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -66,6 +90,7 @@ class DiscountFiveShop extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'categoryId' => 'Категория',
             'itemId' => 'ID записи',
             'name' => 'Наименование',
             'description' => 'Описание',
@@ -89,5 +114,21 @@ class DiscountFiveShop extends \yii\db\ActiveRecord
     public static function find()
     {
         return new DiscountFiveShopQuery(get_called_class());
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(Category::class, ['id' => 'categoryId']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPreview()
+    {
+        return FiveShop::SITE_URL . $this->imageSmall;
     }
 }

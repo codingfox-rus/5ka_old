@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 /**
@@ -9,10 +8,27 @@ namespace app\models;
  */
 class DiscountFiveShopQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    /**
+     * @return DiscountFiveShopQuery
+     */
+    public function noCategory() : DiscountFiveShopQuery
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere([
+            'categoryId' => null,
+        ]);
+    }
+
+    /**
+     * @return DiscountFiveShopQuery
+     */
+    public function actual() : DiscountFiveShopQuery
+    {
+        return $this->andWhere([
+            'and',
+            ['<=', 'dateStart', time()],
+            ['>=', 'dateEnd', time()],
+        ]);
+    }
 
     /**
      * {@inheritdoc}

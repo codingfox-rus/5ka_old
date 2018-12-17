@@ -10,6 +10,7 @@ use Yii;
  * @property string $name
  *
  * @property CategoryWordKey[] $wordKeys
+ * @property DiscountFiveShop[] $fiveShopDiscounts
  */
 class Category extends \yii\db\ActiveRecord
 {
@@ -48,5 +49,13 @@ class Category extends \yii\db\ActiveRecord
     public function getWordKeys()
     {
         return $this->hasMany(CategoryWordKey::class, ['categoryId' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFiveShopDiscounts()
+    {
+        return $this->hasMany(DiscountFiveShop::class, ['categoryId' => 'id']);
     }
 }

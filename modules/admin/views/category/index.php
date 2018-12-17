@@ -34,53 +34,43 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
 
             [
-                'attribute' => 'wordKeys',
-                'format' => 'html',
-                'value' => function (Category $model) {
-
-                    return implode('', array_map(function(CategoryWordKey $item){
-
-                        return Html::a($item->key, '#', [
-                            'class' => 'btn btn-success btn-xs load-form-update-key',
-                            'data-id' => $item->id,
-                        ]);
-
-                    }, json_decode($model->wordKeys)));
-                }
-            ],
-
-            [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '<div class="text-center">{update} {delete} {load-add-key-form}</div>',
+                'template' => '<div class="text-center">{view}</div>',
                 'buttons' => [
-                    'update' => function ($url) {
+                    'view' => function ($url) {
 
-                        return Html::a('<i class="fa fa-pencil-square-o"></i>', $url, [
-                            'class' => 'btn btn-primary btn-xs',
+                        return Html::a('<i class="fa fa-cog"></i>', $url, [
+                            'class' => 'btn btn-primary',
                         ]);
                     },
-                    'delete' => function ($url) {
-
-                        return Html::a('<i class="fa fa-close"></i>', $url, [
-                            'class' => 'btn btn-danger btn-xs',
-                            'data' => [
-                                'confirm' => 'Вы уверены?',
-                                'method' => 'post',
-                            ],
-                        ]);
-                    },
-                    'load-add-key-form' => function ($url) {
-
-                        return Html::a('<i class="fa fa-plus"></i>', $url, [
-                            'class' => 'btn btn-success btn-xs load-add-key-form'
-                        ]);
-                    }
                 ],
             ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
 </div>
+
+<?php
+/*
+[
+    'attribute' => 'wordKeys',
+    'format' => 'html',
+    'value' => function (Category $model) {
+
+        return implode('', array_map(function(CategoryWordKey $item){
+
+            return Html::a($item->key, '#', [
+                'class' => 'btn btn-success btn-xs load-form-update-key',
+                'data-id' => $item->id,
+            ]);
+
+        }, json_decode($model->wordKeys)));
+    }
+]
+*/
+
+
+?>
 
 <!-- Управление ключами категории -->
 <div class="modal fade" id="modalManageWordKey" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

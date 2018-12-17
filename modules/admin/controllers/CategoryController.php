@@ -2,7 +2,6 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\filters\VerbFilter;
@@ -13,7 +12,7 @@ use app\models\CategoryWordKey;
 /**
  * CategoryController implements the CRUD actions for Category model.
  */
-class CategoryController extends Controller
+class CategoryController extends MainController
 {
     /**
      * {@inheritdoc}

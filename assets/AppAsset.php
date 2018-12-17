@@ -25,7 +25,8 @@ class AppAsset extends AssetBundle
     ];
 
     public $js = [
-        'js/category.js'
+        'js/category.js',
+        'js/discount.js',
     ];
 
     public $depends = [
