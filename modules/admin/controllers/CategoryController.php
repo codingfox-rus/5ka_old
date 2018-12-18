@@ -55,8 +55,11 @@ class CategoryController extends MainController
      */
     public function actionView($id)
     {
+        $categoryWordKey = new CategoryWordKey();
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'categoryWordKey' => $categoryWordKey,
         ]);
     }
 
@@ -143,28 +146,11 @@ class CategoryController extends MainController
     }
 
     /**
-     * @param int $id
-     * @return string
-     * @throws NotFoundHttpException
-     */
-    public function actionLoadAddKeyForm(int $id)
-    {
-        $category = $this->findModel($id);
-
-        return $this->renderPartial('_partial/form-add-key', [
-            'category' => $category,
-        ]);
-    }
-
-    /**
-     * @param int $id
      * @return array
      */
-    public function actionAddKey(int $id)
+    public function actionAddKey()
     {
         $key = new CategoryWordKey();
-
-        $key->categoryId = $id;
 
         if ($key->load(Yii::$app->request->post()) && $key->save()) {
 

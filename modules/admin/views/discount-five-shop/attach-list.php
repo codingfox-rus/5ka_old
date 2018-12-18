@@ -9,7 +9,6 @@ use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 
 $this->title = 'Быстрое прикрепление категорий';
-$this->params['breadcrumbs'][] = ['label' => 'Админка', 'url' => ['/admin/main/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Скидки', 'url' => ['/admin/discount-five-shop/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

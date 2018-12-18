@@ -38,24 +38,6 @@ $(function(){
         return false;
     });
 
-    $(document).on('click', '.load-form-update-key', function(e){
-        e.preventDefault();
-
-        $.get($(this).attr('href'), function(data){
-
-            if ($.trim(data)) {
-
-                modalManageWordKey.find('.modal-title').text('Обновить ключ');
-
-                modalManageWordKey.find('.modal-body').html(data);
-
-                modalManageWordKey.modal('show');
-            }
-        });
-
-        return false;
-    });
-
     $(document).on('submit', '.form-add-key', function(){
 
         let form = $(this);

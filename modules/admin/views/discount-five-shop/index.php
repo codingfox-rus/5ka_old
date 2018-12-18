@@ -10,7 +10,6 @@ use app\models\DiscountFiveShop;
 use app\components\parsers\FiveShop;
 
 $this->title = 'Скидки в пятерочке';
-$this->params['breadcrumbs'][] = ['label' => 'Админка', 'url' => ['/admin/main/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
