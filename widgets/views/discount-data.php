@@ -1,5 +1,5 @@
 <?php
-/* @var $model app\models\interfaces\iDiscount */
+/* @var $model app\models\Discount */
 /* @var $siteUrl string */
 
 use yii\widgets\DetailView;
@@ -12,7 +12,7 @@ use yii\helpers\Html;
         [
             'attribute' => 'preview',
             'format' => 'html',
-            'value' => Html::img($model->getPreview(), ['class' => 'img-responsive'])
+            'value' => Html::img($model->preview, ['class' => 'img-responsive'])
         ],
         'name',
         'description',

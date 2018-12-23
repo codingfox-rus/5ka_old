@@ -1,9 +1,9 @@
 <?php
-namespace app\components\parsers;
+namespace app\components\markets;
 
 use Yii;
 
-class FiveShop
+class FiveShop implements \app\interfaces\iMarket
 {
     const SITE_URL = 'https://5ka.ru';
     const API_URL = '/api/special_offers/?format=json&ordering=-discount_percent';
@@ -19,5 +19,8 @@ class FiveShop
         return file_get_contents($url);
     }
 
+    public function loadData()
+    {
 
+    }
 }

@@ -50,7 +50,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '' => 'discount/index',
-                'admin' => 'admin/main/index',
+                'admin' => 'admin/discount/index',
                 '<action>' => 'site/<action>',
             ],
         ],

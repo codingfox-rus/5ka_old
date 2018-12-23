@@ -40,13 +40,8 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             [
-                'label' => 'Акции магазинов',
-                'items' => [
-                    [
-                        'label' => 'Пятерочка',
-                        'url' => ['/admin/discount-five-shop/index'],
-                    ],
-                ],
+                'label' => 'Все скидки',
+                'url' => ['/admin/discount/index'],
             ],
             [
                 'label' => 'Категории товаров',

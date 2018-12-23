@@ -1,15 +1,15 @@
 <?php
-/* @var $prev app\models\DiscountFiveShop */
-/* @var $model app\models\DiscountFiveShop */
-/* @var $next app\models\DiscountFiveShop */
+/* @var $prev app\models\Discount */
+/* @var $model app\models\Discount */
+/* @var $next app\models\Discount */
 
 use yii\helpers\Html;
-use app\components\parsers\FiveShop;
+use app\components\markets\FiveShop;
 use app\widgets\DiscountData;
 use app\widgets\DiscountCategory;
 
 $this->title = $model->name .' - Обновить параметры';
-$this->params['breadcrumbs'][] = ['label' => 'Скидки в пятерочке', 'url' => ['/admin/discount-five-shop/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Все скидки', 'url' => ['/admin/discount/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php if ($prev): ?>
 
                 <?= Html::a('<i class="fa fa-chevron-left fa-3x"></i>', [
-                    '/admin/discount-five-shop/view',
+                    '/admin/discount/view',
                     'id' => $prev->id,
                 ], [
                     'class' => 'text-primary discount-view-control'
@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php if ($next): ?>
 
                 <?= Html::a('<i class="fa fa-chevron-right fa-3x"></i>', [
-                    '/admin/discount-five-shop/view',
+                    '/admin/discount/view',
                     'id' => $next->id,
                 ], [
                     'class' => 'text-primary discount-view-control'

@@ -1,24 +1,19 @@
 <?php
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\DiscountFiveShopSearch */
+/* @var $searchModel app\models\DiscountSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
-use app\models\DiscountFiveShop;
-use app\components\parsers\FiveShop;
+use app\models\Discount;
+use app\components\markets\FiveShop;
 
 $this->title = 'Скидки в пятерочке';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="discount-index">
-
-    <?= Html::a('Прикрепить категории', ['/admin/discount-five-shop/attach-list'], [
-        'class' => 'btn btn-primary'
-    ]) ?>
-    <br><br>
 
     <?php Pjax::begin(['id' => 'discounts']) ?>
 
@@ -31,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'imageSmall',
                 'format' => 'html',
-                'value' => function (DiscountFiveShop $model) {
+                'value' => function (Discount $model) {
 
                     return Html::img(FiveShop::SITE_URL . $model->imageSmall, [
                         'class' => 'img-responsive',
@@ -39,12 +34,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
 
-            'name',
+            'productName',
 
             [
                 'attribute' => 'regularPrice',
                 'format' => 'html',
-                'value' => function (DiscountFiveShop $model) {
+                'value' => function (Discount $model) {
 
                     return '<span class="glyphicon glyphicon-ruble"></span>'. $model->regularPrice;
                 }
@@ -53,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'specialPrice',
                 'format' => 'html',
-                'value' => function (DiscountFiveShop $model) {
+                'value' => function (Discount $model) {
 
                     return '<span class="glyphicon glyphicon-ruble"></span>'. $model->specialPrice;
                 }
@@ -61,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'discountPercent',
-                'value' => function (DiscountFiveShop $model) {
+                'value' => function (Discount $model) {
 
                     return $model->discountPercent .'%';
                 }
@@ -69,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'dateStart',
-                'value' => function (DiscountFiveShop $model) {
+                'value' => function (Discount $model) {
 
                     return date('d.m.Y H:i', $model->dateStart);
                 }
@@ -77,7 +72,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'dateEnd',
-                'value' => function (DiscountFiveShop $model) {
+                'value' => function (Discount $model) {
 
                     return date('d.m.Y H:i', $model->dateEnd);
                 }

@@ -1,17 +1,12 @@
 <?php
 namespace app\models;
 
-/**
- * This is the ActiveQuery class for [[DiscountFiveShop]].
- *
- * @see DiscountFiveShop
- */
-class DiscountFiveShopQuery extends \yii\db\ActiveQuery
+class DiscountQuery extends \yii\db\ActiveQuery
 {
     /**
-     * @return DiscountFiveShopQuery
+     * @return DiscountQuery
      */
-    public function noCategory() : DiscountFiveShopQuery
+    public function noCategory() : DiscountQuery
     {
         return $this->andWhere([
             'categoryId' => null,
@@ -19,9 +14,9 @@ class DiscountFiveShopQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     * @return DiscountFiveShopQuery
+     * @return DiscountQuery
      */
-    public function actual() : DiscountFiveShopQuery
+    public function actual() : DiscountQuery
     {
         return $this->andWhere([
             'and',
@@ -31,8 +26,18 @@ class DiscountFiveShopQuery extends \yii\db\ActiveQuery
     }
 
     /**
+     * @return DiscountQuery
+     */
+    public function active()
+    {
+        return $this->andWhere([
+            'deletedAt' => null,
+        ]);
+    }
+
+    /**
      * {@inheritdoc}
-     * @return DiscountFiveShop[]|array
+     * @return Discount[]|array
      */
     public function all($db = null)
     {
@@ -41,7 +46,7 @@ class DiscountFiveShopQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return DiscountFiveShop|array|null
+     * @return Discount|array|null
      */
     public function one($db = null)
     {

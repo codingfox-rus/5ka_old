@@ -5,7 +5,7 @@ use yii\base\Widget;
 
 class DiscountData extends Widget
 {
-    /** @var \app\models\interfaces\iDiscount */
+    /** @var \app\models\interfaces\iMarket */
     public $model;
 
     /** @var string */

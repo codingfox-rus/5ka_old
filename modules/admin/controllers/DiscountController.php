@@ -2,29 +2,51 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\web\NotFoundHttpException;
+use app\models\Discount;
+use app\models\DiscountSearch;
 use app\models\Category;
-use app\models\DiscountFiveShop;
-use app\models\DiscountFiveShopSearch;
 
-class DiscountFiveShopController extends MainController
+class DiscountController extends MainController
 {
-    const ATTACH_LIST_LIMIT = 20;
+    /**
+     * @return array
+     */
+    public function behaviors() : array
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ]
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'attach-to-category' => ['POST'],
+                ],
+            ],
+        ];
+    }
 
     /**
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new DiscountFiveShopSearch();
-
+        $searchModel = new DiscountSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        $model = new DiscountFiveShop();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'model' => $model,
         ]);
     }
 
@@ -35,11 +57,11 @@ class DiscountFiveShopController extends MainController
      */
     public function actionView(int $id)
     {
-        $prev = DiscountFiveShop::findOne($id + 1);
+        $prev = Discount::findOne($id + 1);
 
         $model = $this->findModel($id);
 
-        $next = DiscountFiveShop::findOne($id - 1);
+        $next = Discount::findOne($id - 1);
 
         return $this->render('view', [
             'prev' => $prev,
@@ -54,24 +76,6 @@ class DiscountFiveShopController extends MainController
 
         return $this->renderPartial('/_partials/form-create-category', [
             'model' => $model
-        ]);
-    }
-
-    /**
-     * @return string
-     */
-    public function actionAttachList()
-    {
-        $discounts = DiscountFiveShop::find()
-            ->noCategory()
-            ->limit(self::ATTACH_LIST_LIMIT)
-            ->all();
-
-        $categories = Category::find()->all();
-
-        return $this->render('attach-list', [
-            'discounts' => $discounts,
-            'categories' => $categories,
         ]);
     }
 
@@ -110,16 +114,16 @@ class DiscountFiveShopController extends MainController
 
     /**
      * @param int $id
-     * @return DiscountFiveShop
-     * @throws \Exception
+     * @return Discount
+     * @throws NotFoundHttpException
      */
     protected function findModel(int $id)
     {
-        if (($model = DiscountFiveShop::findOne($id)) !== null) {
+        if (($model = Discount::findOne($id)) !== null) {
 
             return $model;
         }
 
-        throw new \Exception('Запись не найдена');
+        throw new NotFoundHttpException('Запись не найдена');
     }
 }

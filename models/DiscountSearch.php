@@ -3,7 +3,7 @@ namespace app\models;
 
 use yii\data\ActiveDataProvider;
 
-class DiscountFiveShopSearch extends DiscountFiveShop
+class DiscountSearch extends Discount
 {
     /**
      * @return array
@@ -12,7 +12,7 @@ class DiscountFiveShopSearch extends DiscountFiveShop
     {
         return [
             [[
-                'name',
+                'productName',
             ], 'string']
         ];
     }
@@ -23,7 +23,7 @@ class DiscountFiveShopSearch extends DiscountFiveShop
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = DiscountFiveShop::find()->orderBy('id desc');
+        $query = Discount::find()->orderBy('id desc');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -36,7 +36,7 @@ class DiscountFiveShopSearch extends DiscountFiveShop
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'name', $this->productName]);
 
         return $dataProvider;
     }

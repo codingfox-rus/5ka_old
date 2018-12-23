@@ -1,5 +1,5 @@
 <?php
-/* @var $model app\models\interfaces\iDiscount */
+/* @var $model app\models\Discount */
 /* @var $categories app\models\Category[] */
 /* @var $category app\models\Category */
 /* @var $wordKey app\models\CategoryWordKey */
@@ -12,11 +12,9 @@ use yii\widgets\Pjax;
 
 <?php Pjax::begin(['id' => 'discountCategory']) ?>
 
-<!-- todo: Сделать универсальный вариант, с привязкой скидки от любого магазина -->
-
 <!-- Добавляем категорию, если нет необходимой -->
 <?= Html::a('Добавить категорию', [
-    '/admin/discount-five-shop/load-create-category-form',
+    '/admin/discount/load-create-category-form',
     'id' => $model->id,
 ], [
     'class' => 'btn btn-success btn-block load-create-category-form',
@@ -26,7 +24,7 @@ use yii\widgets\Pjax;
 <!-- Прикрепляем скидку к определенной категории -->
 <?php $form = ActiveForm::begin([
     'action' => [
-        '/admin/discount-five-shop/attach-to-category',
+        '/admin/discount/attach-to-category',
         'id' => $model->id
     ],
     'options' => [
@@ -52,7 +50,7 @@ use yii\widgets\Pjax;
 
 <hr>
 
-<?php if ($category = $model->getCategory()->one()): ?>
+<?php if ($model->category): ?>
 
     <!-- Добавление недостающего ключа -->
     <?php $form = ActiveForm::begin([
