@@ -82,6 +82,30 @@ class CategoryController extends MainController
     }
 
     /**
+     * @return array
+     */
+    public function actionCreateFromDiscountView() : array
+    {
+        $model = new Category();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            $res = ['status' => 'success'];
+
+        } else {
+
+            $res = [
+                'status' => 'error',
+                'errors' => print_r($model->errors, true),
+            ];
+        }
+
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        return $res;
+    }
+
+    /**
      * Updates an existing Category model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
@@ -158,7 +182,10 @@ class CategoryController extends MainController
 
         } else {
 
-            $res = ['status' => 'error'];
+            $res = [
+                'status' => 'error',
+                'errors' => print_r($key->errors, true),
+            ];
         }
 
         Yii::$app->response->format = Response::FORMAT_JSON;

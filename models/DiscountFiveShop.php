@@ -4,6 +4,7 @@ namespace app\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use app\components\parsers\FiveShop;
+use app\models\interfaces\iDiscount;
 
 /**
  * This is the model class for table "discount".
@@ -27,7 +28,7 @@ use app\components\parsers\FiveShop;
  * @property Category $category
  * @property string $preview
  */
-class DiscountFiveShop extends \yii\db\ActiveRecord
+class DiscountFiveShop extends \yii\db\ActiveRecord implements iDiscount
 {
     /**
      * @return array
@@ -94,6 +95,7 @@ class DiscountFiveShop extends \yii\db\ActiveRecord
             'itemId' => 'ID записи',
             'name' => 'Наименование',
             'description' => 'Описание',
+            'preview' => 'Превью',
             'imageSmall' => 'Картинка уменьшенная',
             'imageBig' => 'Картинка большая',
             'paramId' => 'ID параметра',
@@ -130,5 +132,23 @@ class DiscountFiveShop extends \yii\db\ActiveRecord
     public function getPreview()
     {
         return FiveShop::SITE_URL . $this->imageSmall;
+    }
+
+    public function getRegularPrice()
+    {
+        return $this->regularPrice;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSpecialPrice()
+    {
+        return $this->specialPrice;
+    }
+
+    public function getDiscountPercent()
+    {
+        return $this->discountPercent;
     }
 }

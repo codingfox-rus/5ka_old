@@ -48,7 +48,8 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getWordKeys()
     {
-        return $this->hasMany(CategoryWordKey::class, ['categoryId' => 'id']);
+        return $this->hasMany(CategoryWordKey::class, ['categoryId' => 'id'])
+            ->orderBy('id desc');
     }
 
     /**

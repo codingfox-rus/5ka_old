@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <td>
                     <?php $form = ActiveForm::begin([
                         'action' => [
-                            '/admin/discount-five-shop',
+                            '/admin/discount-five-shop/attach-to-category',
                             'id' => $discount->id,
                         ],
                         'options' => [

@@ -29,6 +29,35 @@ class DiscountFiveShopController extends MainController
     }
 
     /**
+     * @param int $id
+     * @return string
+     * @throws \Exception
+     */
+    public function actionView(int $id)
+    {
+        $prev = DiscountFiveShop::findOne($id + 1);
+
+        $model = $this->findModel($id);
+
+        $next = DiscountFiveShop::findOne($id - 1);
+
+        return $this->render('view', [
+            'prev' => $prev,
+            'model' => $model,
+            'next' => $next,
+        ]);
+    }
+
+    public function actionLoadCreateCategoryForm()
+    {
+        $model = new Category();
+
+        return $this->renderPartial('/_partials/form-create-category', [
+            'model' => $model
+        ]);
+    }
+
+    /**
      * @return string
      */
     public function actionAttachList()

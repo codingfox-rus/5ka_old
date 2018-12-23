@@ -23,7 +23,7 @@ class DiscountFiveShopSearch extends DiscountFiveShop
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = DiscountFiveShop::find();
+        $query = DiscountFiveShop::find()->orderBy('id desc');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -86,12 +86,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header' => 'Действия',
-                'template' => '<div class="text-center">{load-attach-to-category-form}</div>',
+                'template' => '<div class="text-center">{view}</div>',
                 'buttons' => [
-                    'load-attach-to-category-form' => function ($url) {
+                    'view' => function ($url) {
 
-                        return Html::a('<i class="fa fa-paperclip"></i>', $url, [
-                            'class' => 'btn btn-primary btn-xs attach-discount-to-category'
+                        return Html::a('<i class="fa fa-eye"></i>', $url, [
+                            'class' => 'btn btn-primary'
                         ]);
                     }
                 ],
@@ -100,19 +100,4 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
     <?php Pjax::end() ?>
-</div>
-
-<!-- Прикрепляем скидку к категории -->
-<div class="modal fade" id="modalAttachDiscountToCategory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Привязать скидку к категории</h4>
-            </div>
-            <div class="modal-body">
-                <!-- Ajax loading -->
-            </div>
-        </div>
-    </div>
 </div>
