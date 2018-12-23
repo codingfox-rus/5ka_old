@@ -5,11 +5,8 @@ use yii\base\Widget;
 
 class DiscountData extends Widget
 {
-    /** @var \app\models\interfaces\iMarket */
+    /** @var \app\models\Discount */
     public $model;
-
-    /** @var string */
-    public $siteUrl;
 
     /**
      * @return string
@@ -18,7 +15,6 @@ class DiscountData extends Widget
     {
         return $this->render('discount-data', [
             'model' => $this->model,
-            'siteUrl' => $this->siteUrl,
         ]);
 
     }

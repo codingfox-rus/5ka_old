@@ -30,6 +30,62 @@ use yii\behaviors\TimestampBehavior;
  */
 class Discount extends \yii\db\ActiveRecord
 {
+    const FIVE_SHOP = 'FIVE_SHOP';
+    const MAGNIT = 'MAGNIT';
+
+    /**
+     * @return array
+     */
+    public static function getMarkets()
+    {
+        return [
+            self::FIVE_SHOP => 'Пятерочка',
+            self::MAGNIT => 'Магнит',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getMarketUrls()
+    {
+        return [
+            self::FIVE_SHOP => 'https://5ka.ru',
+            self::MAGNIT => 'http://magnit-info.ru',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getMarketClasses()
+    {
+        return [
+            self::FIVE_SHOP => \app\components\markets\FiveShop::class,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDataColumns()
+    {
+        return [
+            'market',
+            'productName',
+            'description',
+            'imageSmall',
+            'imageBig',
+            'regularPrice',
+            'specialPrice',
+            'discountPercent',
+            'dateStart',
+            'dateEnd',
+            'jsonData',
+            'createdAt',
+        ];
+    }
+
     /**
      * @return array
      */
@@ -113,8 +169,13 @@ class Discount extends \yii\db\ActiveRecord
         return new DiscountQuery(get_called_class());
     }
 
-    public function getPreview()
+    /**
+     * @return string
+     */
+    public function getPreview() : string
     {
-        // todo
+        $siteUrl = self::getMarketUrls()[$this->market];
+
+        return $siteUrl . $this->imageSmall;
     }
 }

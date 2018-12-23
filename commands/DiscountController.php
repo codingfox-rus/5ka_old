@@ -3,87 +3,67 @@ namespace app\commands;
 
 use Yii;
 use yii\console\Controller;
-use app\components\parsers\FiveShop;
-use app\components\DiscountHelper;
-use app\models\DiscountFiveShop;
+use yii\db\Exception;
+use app\models\Discount;
 
 class DiscountController extends Controller
 {
-    /** @var FiveShop */
-    public $fiveShop;
-
-    /** @var DiscountHelper */
-    public $discountHelper;
-
-    public function init()
+    public function actionSaveData()
     {
-        parent::init();
+        $marketClasses = Discount::getMarketClasses();
 
-        $this->fiveShop = Yii::$app->get('fiveShop');
+        foreach ($marketClasses as $market => $class) {
 
-        $this->discountHelper = Yii::$app->get('discountHelper');
-    }
+            /** @var \app\interfaces\iMarket $handler */
+            $handler = new $class;
 
-    /**
-     * @return string
-     */
-    public function getDataPath() : string
-    {
-        return __DIR__ .'/../data/discounts.json';
-    }
+            $data = $handler->getData();
 
-    /**
-     * @return bool
-     */
-    public function actionGetData() : bool
-    {
-        $data = $this->fiveShop->getData();
+            $path = $handler->getFilePath();
 
-        $dataPath = $this->getDataPath();
+            if (file_put_contents($path, $data)) {
 
-        if (file_put_contents($dataPath, $data)) {
+                echo "Data for ${$market} successfully saved". PHP_EOL;
 
-            echo 'DiscountFiveShop data saved successfully'. PHP_EOL;
+            } else {
 
-            return true;
+                echo "Error on saving data for {$market}". PHP_EOL;
+            }
         }
-
-        echo 'Error on save discount data'. PHP_EOL;
-
-        return false;
     }
 
+    /**
+     * @throws Exception
+     */
     public function actionHandleData()
     {
-        $dataPath = $this->getDataPath();
+        $marketClasses = Discount::getMarketClasses();
 
-        $data = json_decode(file_get_contents($dataPath), true);
+        foreach ($marketClasses as $market => $class) {
 
-        if (!empty($data['results'])) {
+            /** @var \app\interfaces\iMarket $handler */
+            $handler = new $class;
 
-            $results = $data['results'];
+            $preparedData = $handler->getPreparedData();
 
-            foreach ($results as $result) {
+            $transaction = Yii::$app->db->beginTransaction();
 
-                $itemId = $result['id'];
+            try {
+                Discount::deleteAll(['market' => Discount::FIVE_SHOP]);
 
-                $model = DiscountFiveShop::find()
-                    ->where(['itemId' => $itemId])
-                    ->one();
+                Yii::$app->db->createCommand()->batchInsert(
+                    Discount::tableName(),
+                    Discount::getDataColumns(),
+                    $preparedData
+                )->execute();
 
-                if (!$model) {
+                $transaction->commit();
 
-                    $model = new DiscountFiveShop();
-                }
+            } catch (Exception $e) {
 
-                $itemData = $this->discountHelper->getItemData($result);
+                $transaction->rollBack();
 
-                $model->load(['DiscountFiveShop' => $itemData]);
-
-                if (!$model->save()) {
-
-                    Yii::error(print_r($model->errors, true));
-                }
+                Yii::error($e->getMessage());
             }
         }
     }

@@ -8,7 +8,7 @@ use app\components\markets\FiveShop;
 use app\widgets\DiscountData;
 use app\widgets\DiscountCategory;
 
-$this->title = $model->name .' - Обновить параметры';
+$this->title = $model->productName .' - Обновить параметры';
 $this->params['breadcrumbs'][] = ['label' => 'Все скидки', 'url' => ['/admin/discount/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -32,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-md-5">
             <?= DiscountData::widget([
                 'model' => $model,
-                'siteUrl' => FiveShop::SITE_URL,
             ]) ?>
         </div>
 

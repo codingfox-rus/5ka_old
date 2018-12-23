@@ -14,7 +14,7 @@ use yii\helpers\Html;
             'format' => 'html',
             'value' => Html::img($model->preview, ['class' => 'img-responsive'])
         ],
-        'name',
+        'productName',
         'description',
         'regularPrice',
         'specialPrice',

@@ -7,7 +7,7 @@ use app\models\CategoryWordKey;
 
 class DiscountCategory extends Widget
 {
-    /** @var \app\models\interfaces\iMarket */
+    /** @var \app\models\Discount */
     public $model;
 
     /** @var array */

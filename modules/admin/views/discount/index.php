@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'html',
                 'value' => function (Discount $model) {
 
-                    return Html::img(FiveShop::SITE_URL . $model->imageSmall, [
+                    return Html::img($model->preview, [
                         'class' => 'img-responsive',
                     ]);
                 }
