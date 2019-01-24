@@ -4,12 +4,13 @@
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Discount;
-use app\components\markets\FiveShop;
+use app\models\Category;
 
-$this->title = 'Скидки в пятерочке';
+$this->title = 'Скидки';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -22,6 +23,24 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'summary' => '',
         'columns' => [
+
+            [
+                'attribute' => 'market',
+                'filter' => Discount::getMarkets(),
+                'value' => function (Discount $model) {
+
+                    return Discount::getMarkets()[$model->market];
+                }
+            ],
+
+            [
+                'attribute' => 'categoryId',
+                'filter' => ArrayHelper::map(Category::find()->all(), 'id', 'name'),
+                'value' => function (Discount $model) {
+
+                    return $model->category ? $model->category->name : '-';
+                }
+            ],
 
             [
                 'attribute' => 'imageSmall',
@@ -37,44 +56,27 @@ $this->params['breadcrumbs'][] = $this->title;
             'productName',
 
             [
-                'attribute' => 'regularPrice',
+                'label' => 'Цены',
                 'format' => 'html',
-                'value' => function (Discount $model) {
+                'content' => function (Discount $model) {
 
-                    return '<span class="glyphicon glyphicon-ruble"></span>'. $model->regularPrice;
+                    $out[] = '<i class="fa fa-rub"></i>&nbsp;&nbsp;'. $model->regularPrice;
+                    $out[] = '<i class="fa fa-rub"></i>&nbsp;&nbsp;'. $model->specialPrice;
+                    $out[] = '<i class="fa fa-percent"></i>&nbsp;&nbsp;'. $model->discountPercent;
+
+                    return implode('<br>', $out);
                 }
             ],
 
             [
-                'attribute' => 'specialPrice',
+                'label' => 'Время',
                 'format' => 'html',
-                'value' => function (Discount $model) {
+                'content' => function (Discount $model) {
 
-                    return '<span class="glyphicon glyphicon-ruble"></span>'. $model->specialPrice;
-                }
-            ],
+                    $out[] = '<i class="fa fa-play"></i>&nbsp;&nbsp;'. date('H:i d.m.Y', $model->dateStart);
+                    $out[] = '<i class="fa fa-stop"></i>&nbsp;&nbsp;'. date('H:i d.m.Y', $model->dateEnd);
 
-            [
-                'attribute' => 'discountPercent',
-                'value' => function (Discount $model) {
-
-                    return $model->discountPercent .'%';
-                }
-            ],
-
-            [
-                'attribute' => 'dateStart',
-                'value' => function (Discount $model) {
-
-                    return date('d.m.Y H:i', $model->dateStart);
-                }
-            ],
-
-            [
-                'attribute' => 'dateEnd',
-                'value' => function (Discount $model) {
-
-                    return date('d.m.Y H:i', $model->dateEnd);
+                    return implode('<br>', $out);
                 }
             ],
 

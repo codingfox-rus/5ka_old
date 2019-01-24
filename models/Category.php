@@ -46,15 +46,6 @@ class Category extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getWordKeys()
-    {
-        return $this->hasMany(CategoryWordKey::class, ['categoryId' => 'id'])
-            ->orderBy('id desc');
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getDiscounts()
     {
         return $this->hasMany(Discount::class, ['categoryId' => 'id']);

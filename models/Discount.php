@@ -21,9 +21,9 @@ use yii\behaviors\TimestampBehavior;
  * @property int $dateStart
  * @property int $dateEnd
  * @property array $jsonData
+ * @property int status
  * @property int $createdAt
  * @property int $updatedAt
- * @property int $deletedAt
  *
  * @property Category $category
  * @property string $preview
@@ -62,6 +62,20 @@ class Discount extends \yii\db\ActiveRecord
     {
         return [
             self::FIVE_SHOP => \app\components\markets\FiveShop::class,
+        ];
+    }
+
+    const STATUS_ACTIVE = 1;
+    const STATUS_ARCHIVE = 2;
+
+    /**
+     * @return array
+     */
+    public static function getStatuses()
+    {
+        return [
+            self::STATUS_ACTIVE => 'Актуально',
+            self::STATUS_ARCHIVE => 'В архиве',
         ];
     }
 
@@ -114,15 +128,48 @@ class Discount extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['categoryId', 'dateStart', 'dateEnd', 'createdAt', 'updatedAt', 'deletedAt'], 'integer'],
-            [['market', 'productName', 'regularPrice', 'specialPrice'], 'required'],
-            [['description', 'condition'], 'string'],
-            [['regularPrice', 'specialPrice', 'discountPercent'], 'number'],
+            [[
+                'categoryId',
+                'dateStart',
+                'dateEnd',
+                'status',
+                'createdAt',
+                'updatedAt',
+            ], 'integer'],
+
+            ['status', 'default', 'value' => 1],
+
+            [[
+                'market',
+                'productName',
+                'regularPrice',
+                'specialPrice',
+            ], 'required'],
+
+            [[
+                'description',
+                'condition',
+            ], 'string'],
+
+            [[
+                'regularPrice',
+                'specialPrice',
+                'discountPercent',
+            ], 'number'],
+
             [['jsonData'], 'safe'],
+
             [['market'], 'string', 'max' => 32],
+
             [['productName'], 'string', 'max' => 255],
-            [['imageSmall', 'imageBig'], 'string', 'max' => 512],
+
+            [[
+                'imageSmall',
+                'imageBig',
+            ], 'string', 'max' => 512],
+
             [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categoryId' => 'id']],
+
         ];
     }
 
@@ -146,9 +193,10 @@ class Discount extends \yii\db\ActiveRecord
             'dateStart' => 'Дата начала',
             'dateEnd' => 'Дата окончания',
             'jsonData' => 'Данные в JSON',
+            'status' => 'Статус',
             'createdAt' => 'Добавлена',
             'updatedAt' => 'Обновлена',
-            'deletedAt' => 'Удалена',
+            'preview' => 'Превью',
         ];
     }
 
@@ -157,7 +205,7 @@ class Discount extends \yii\db\ActiveRecord
      */
     public function getCategory()
     {
-        return $this->hasOne(Category::className(), ['id' => 'categoryId']);
+        return $this->hasOne(Category::class, ['id' => 'categoryId']);
     }
 
     /**

@@ -98,18 +98,23 @@ class DiscountController extends MainController
 
     /**
      * @param int $id
-     * @return bool
-     * @throws \Exception
+     * @return array
+     * @throws NotFoundHttpException
      */
     public function actionAttachToCategory(int $id)
     {
         $model = $this->findModel($id);
 
-        $model->load(Yii::$app->request->post());
+        $model->categoryId = Yii::$app->request->post('categoryId');
 
-        $model->save();
+        if ($model->save()) {
+            $res = ['status' => 'success'];
+        } else {
+            $res = ['status' => 'error'];
+        }
 
-        return true;
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return $res;
     }
 
     /**

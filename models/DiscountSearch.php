@@ -12,6 +12,8 @@ class DiscountSearch extends Discount
     {
         return [
             [[
+                'market',
+                'categoryId',
                 'productName',
             ], 'string']
         ];

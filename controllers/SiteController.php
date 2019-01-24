@@ -60,7 +60,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $data = json_decode(file_get_contents(__DIR__ . '/../data/discounts.json'), true);
+        $data = json_decode(file_get_contents(__DIR__ . '/../data/discount/five-shop.json'), true);
 
         $results = $data['results'][0];
 

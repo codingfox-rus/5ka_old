@@ -40,11 +40,11 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             [
-                'label' => 'Все скидки',
+                'label' => 'Скидки',
                 'url' => ['/admin/discount/index'],
             ],
             [
-                'label' => 'Категории товаров',
+                'label' => 'Категории',
                 'url' => ['/admin/category/index']
             ],
 

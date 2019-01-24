@@ -29,13 +29,13 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php endif; ?>
         </div>
 
-        <div class="col-md-5">
+        <div class="col-md-7">
             <?= DiscountData::widget([
                 'model' => $model,
             ]) ?>
         </div>
 
-        <div class="col-md-5">
+        <div class="col-md-3">
             <?= DiscountCategory::widget([
                 'model' => $model,
             ]) ?>

@@ -42,19 +42,14 @@ $(function(){
         return false;
     });
 
-    $(document).on('submit', '.form-add-key-for-discount', function(){
+    $(document).on('change', '.category-radio', function(){
 
-        let form = $(this);
+        let form = $(this).closest('form');
 
-        $.post(form.attr('action'), form.serialize(), function(data){
+        $.post(form.attr('action'), form.serialize(), (data) => {
 
-            if (data.status === 'success') {
-
-                $.pjax.reload('#discountCategory');
-
-            } else if (data.status === 'error') {
-
-                console.log(data.errors);
+            if (data.status !== 'success') {
+                console.log('Не удалось прикрепить скидку к категории');
             }
 
         }, 'json');
@@ -62,41 +57,5 @@ $(function(){
         return false;
     });
 
-    // todo: проверить возможность использования, если что удалить
 
-    let modalAttachToCategory = $('#modalAttachDiscountToCategory');
-
-    $(document).on('click', '.attach-discount-to-category', function(e){
-        e.preventDefault();
-
-        $.get($(this).attr('href'), function(data){
-
-            if ($.trim(data)) {
-
-                modalAttachToCategory.find('.modal-body').html(data);
-
-                modalAttachToCategory.modal('show');
-            }
-        });
-
-        return false;
-    });
-
-
-    $(document).on('submit', '.form-attach-to-category', function(){
-
-        let form = $(this);
-
-        $.post(form.attr('action'), form.serialize(), function(data){
-
-            if (data) {
-
-                modalAttachToCategory.modal('hide');
-
-                $.pjax.reload('#discounts');
-            }
-        });
-
-        return false;
-    });
 });
