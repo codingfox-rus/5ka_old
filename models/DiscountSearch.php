@@ -25,7 +25,12 @@ class DiscountSearch extends Discount
      */
     public function search(array $params) : ActiveDataProvider
     {
-        $query = Discount::find()->orderBy('id desc');
+        $query = Discount::find()
+            ->where([
+                'status' => Discount::STATUS_ACTIVE
+            ])
+            ->orderBy('id desc')
+        ;
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

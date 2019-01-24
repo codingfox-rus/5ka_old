@@ -95,7 +95,8 @@ class Discount extends \yii\db\ActiveRecord
             'discountPercent',
             'dateStart',
             'dateEnd',
-            'jsonData',
+            //'jsonData',
+            'status',
             'createdAt',
         ];
     }

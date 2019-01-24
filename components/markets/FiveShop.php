@@ -81,7 +81,9 @@ class FiveShop implements \app\interfaces\iMarket
 
         $item['dateEnd'] = $result['params']['date_end'];
 
-        $item['jsonData'] = json_encode($result, JSON_UNESCAPED_UNICODE);
+        $item['status'] = Discount::STATUS_ACTIVE;
+
+        //$item['jsonData'] = json_encode($result, JSON_UNESCAPED_UNICODE);
 
         $item['createdAt'] = time();
 
