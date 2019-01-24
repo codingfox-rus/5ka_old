@@ -49,13 +49,13 @@ class DiscountController extends Controller
             ])
             ->limit(1)
             ->asArray()
-            ->all();
+            ->one();
 
         $actualData = [];
 
         foreach ($preparedData as $item) {
 
-            if ((int)$item['dateStart'] > (int)$lastRow['dateStart']) {
+            if (!$lastRow || (int)$item['dateStart'] > (int)$lastRow['dateStart']) {
 
                 $actualData[] = $item;
             }
