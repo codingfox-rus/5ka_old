@@ -28,17 +28,17 @@ use yii\helpers\Html;
                  data-rprice="<?= $discount->regularPrice ?>"
                  data-sprice="<?= $discount->specialPrice ?>"
             >
-                <div>
-                    Обычная цена: <i class="fa fa-rub"></i> <?= $discount->regularPrice ?>
+                <div title="Обычная цена">
+                    <i class="fa fa-rub"></i> <?= $discount->regularPrice ?>
                 </div>
 
-                <div class="price-stripe regular-price-stripe label-danger"></div>
+                <div title="Обычная цена" class="price-stripe regular-price-stripe label-danger"></div>
 
-                <div>
-                    Цена со скидкой: <i class="fa fa-rub"></i> <?= $discount->specialPrice ?>
+                <div title="Цена со скидкой">
+                    <i class="fa fa-rub"></i> <?= $discount->specialPrice ?>
                 </div>
 
-                <div class="price-stripe discount-price-stripe label-success" style=""></div>
+                <div title="Цена со скидкой" class="price-stripe discount-price-stripe label-success" style=""></div>
             </div>
         </div>
     </div>

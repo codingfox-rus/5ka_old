@@ -26,7 +26,7 @@ class m181223_172310_create_discount_table extends Migration
             'discountPercent' => $this->decimal(5,2),
             'dateStart' => $this->integer(),
             'dateEnd' => $this->integer(),
-            'jsonData' => $this->json(),
+            'jsonData' => $this->text(),
             'createdAt' => $this->integer(),
             'updatedAt' => $this->integer(),
             'deletedAt' => $this->integer(),
