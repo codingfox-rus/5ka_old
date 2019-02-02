@@ -1,0 +1,26 @@
+.discount-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.discount-wrapper .discount-front-widget {
+    flex-grow: 1;
+    flex: 45%;
+    height: 250px;
+    max-width: 45%;
+    margin-bottom: 20px;
+}
+
+.discount-prices {
+    padding: 30px 0;
+}
+
+.price-stripe {
+    height: 20px;
+}
+
+.regular-price-stripe {
+    margin-bottom: 30px;
+}

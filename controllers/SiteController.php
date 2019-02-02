@@ -8,6 +8,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Discount;
 
 class SiteController extends Controller
 {
@@ -60,17 +61,14 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
-    }
+        $discounts = Discount::find()
+            ->active()
+            ->limit(10)
+            ->all();
 
-    public function actionPreParse()
-    {
-        /** @var \app\components\parsers\FiveShop $fiveShop */
-        $fiveShop = Yii::$app->get('fiveShop');
-
-        echo '<pre>';
-        print_r($fiveShop->getData(1));
-        echo '</pre>';
+        return $this->render('index', [
+            'discounts' => $discounts,
+        ]);
     }
 
     /**

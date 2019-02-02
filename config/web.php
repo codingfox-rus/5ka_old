@@ -5,7 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'shop-tracker',
-    'name' => 'ShopTracker',
+    'name' => 'FollowSale',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -30,7 +30,7 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
+            // send all mails to a file by main. You have to set
             // 'useFileTransport' to false and configure a transport
             // for the mailer to send real emails.
             'useFileTransport' => true,
@@ -50,6 +50,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 '' => 'site/index',
+                'admin' => 'admin/discount/index',
                 '<action>' => 'site/<action>',
             ],
         ],
@@ -57,8 +58,17 @@ $config = [
         'fiveShop' => [
             'class' => 'app\components\parsers\FiveShop',
         ],
+
+        'discountHelper' => [
+            'class' => 'app\components\DiscountHelper',
+        ],
     ],
     'params' => $params,
+    'modules' => [
+        'admin' => [
+            'class' => 'app\modules\admin\Admin',
+        ],
+    ],
 ];
 
 if (YII_ENV_DEV) {

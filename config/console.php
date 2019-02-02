@@ -4,6 +4,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic-console',
+    'language' => 'en-EN',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
@@ -27,6 +28,10 @@ $config = [
 
         'fiveShop' => [
             'class' => 'app\components\parsers\FiveShop',
+        ],
+
+        'discountHelper' => [
+            'class' => 'app\components\DiscountHelper',
         ],
     ],
     'params' => $params,
