@@ -8,6 +8,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Discount;
 
 class SiteController extends Controller
 {
@@ -60,12 +61,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $data = json_decode(file_get_contents(__DIR__ . '/../data/discount/five-shop.json'), true);
-
-        $results = $data['results'][0];
+        $discounts = Discount::find()
+            ->active()
+            ->limit(10)
+            ->all();
 
         return $this->render('index', [
-            'results' => $results,
+            'discounts' => $discounts,
         ]);
     }
 

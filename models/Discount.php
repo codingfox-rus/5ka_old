@@ -15,6 +15,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string $condition
  * @property string $imageSmall
  * @property string $imageBig
+ * @property string $previewSmall
+ * @property string $previewBig
  * @property string $regularPrice
  * @property string $specialPrice
  * @property string $discountPercent
@@ -167,6 +169,8 @@ class Discount extends \yii\db\ActiveRecord
             [[
                 'imageSmall',
                 'imageBig',
+                'previewSmall',
+                'previewBig',
             ], 'string', 'max' => 512],
 
             [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categoryId' => 'id']],
@@ -186,8 +190,10 @@ class Discount extends \yii\db\ActiveRecord
             'productName' => 'Наименование',
             'description' => 'Описание',
             'condition' => 'Условия скидки',
-            'imageSmall' => 'Превью малое',
-            'imageBig' => 'Превью крупное',
+            'imageSmall' => 'Превью c сайта малое',
+            'imageBig' => 'Превью с сайта крупное',
+            'previewSmall' => 'Превью загруженное малое',
+            'previewBig' => 'Превью загруженное крупное',
             'regularPrice' => 'Цена',
             'specialPrice' => 'Цена со скидкой',
             'discountPercent' => 'Процент скидки',
@@ -224,6 +230,11 @@ class Discount extends \yii\db\ActiveRecord
     public function getPreview() : string
     {
         $siteUrl = self::getMarketUrls()[$this->market];
+
+        if ($this->previewSmall !== null) {
+
+            return Yii::getAlias('@web') . $this->previewSmall;
+        }
 
         return $siteUrl . $this->imageSmall;
     }

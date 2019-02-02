@@ -1,13 +1,17 @@
 <?php
 namespace app\commands;
 
+use app\components\markets\FiveShop;
 use Yii;
 use yii\console\Controller;
 use app\models\Discount;
 
 class DiscountController extends Controller
 {
-    public function actionSaveFile()
+    const PREVIEWS_PATH = '/previews/five_shop/';
+    const DOWNLOAD_LIMIT = 1000;
+
+    public function actionSaveData()
     {
         $marketClasses = Discount::getMarketClasses();
 
@@ -44,6 +48,9 @@ class DiscountController extends Controller
 
         $lastRow = Discount::find()
             ->select(['dateStart'])
+            ->where([
+                'market' => $market,
+            ])
             ->orderBy([
                 'dateStart' => SORT_DESC,
             ])
@@ -109,5 +116,42 @@ class DiscountController extends Controller
         );
 
         echo "{$res} rows updated". PHP_EOL;
+    }
+
+    public function actionDownloadImages()
+    {
+        $discounts = Discount::find()
+            ->active()
+            ->noPreviews()
+            ->limit(self::DOWNLOAD_LIMIT)
+            ->all();
+
+        foreach ($discounts as $discount) {
+
+            $previewFile = uniqid('', false) .'.jpg';
+
+            $smallUrl = FiveShop::SITE_URL . $discount->imageSmall;
+            $bigUrl = FiveShop::SITE_URL . $discount->imageBig;
+
+            $smallPath = self::PREVIEWS_PATH . 'small/'. $previewFile;
+            $bigPath = self::PREVIEWS_PATH . 'big/'. $previewFile;
+
+            if (copy($smallUrl, Yii::$app->basePath .'/web'. $smallPath)) {
+
+                $discount->previewSmall = $smallPath;
+
+                echo 'Small preview copied successfully'. PHP_EOL;
+            }
+
+            if (copy($bigUrl, Yii::$app->basePath .'/web'. $bigPath)) {
+
+                $discount->previewBig = $bigPath;
+
+                echo 'Big preview copied successfully'. PHP_EOL;
+            }
+
+            $discount->save(false);
+        }
+
     }
 }

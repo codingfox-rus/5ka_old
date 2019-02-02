@@ -49,7 +49,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                '' => 'discount/index',
+                '' => 'site/index',
                 'admin' => 'admin/discount/index',
                 '<action>' => 'site/<action>',
             ],

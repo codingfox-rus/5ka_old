@@ -6,6 +6,7 @@ use app\models\Discount;
 
 class FiveShop implements \app\interfaces\iMarket
 {
+    const SITE_URL = 'https://5ka.ru';
     const API_URL = '/api/special_offers/?format=json&ordering=-discount_percent';
 
     /**
