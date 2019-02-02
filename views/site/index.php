@@ -3,17 +3,22 @@
 /* @var $discounts app\models\Discount[] */
 
 use yii\helpers\Html;
+use app\widgets\DiscountFront;
 
 $this->title = 'Мониторинг скидок';
 ?>
 
 <div class="site-index">
 
-    <?php foreach ($discounts as $discount) { ?>
+    <div class="discount-wrapper">
 
-        <?= $discount->productName ?>
+        <?php foreach ($discounts as $discount) { ?>
 
-        <?= Html::img($discount->preview) ?>
+            <?= DiscountFront::widget([
+                'discount' => $discount,
+            ]) ?>
 
-    <?php } ?>
+        <?php } ?>
+
+    </div>
 </div>

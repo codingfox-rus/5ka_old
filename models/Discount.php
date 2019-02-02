@@ -28,7 +28,8 @@ use yii\behaviors\TimestampBehavior;
  * @property int $updatedAt
  *
  * @property Category $category
- * @property string $preview
+ * @property string $smallPreview
+ * @property string $bigPreview
  */
 class Discount extends \yii\db\ActiveRecord
 {
@@ -225,9 +226,10 @@ class Discount extends \yii\db\ActiveRecord
     }
 
     /**
+     * Малое превью
      * @return string
      */
-    public function getPreview() : string
+    public function getSmallPreview(): string
     {
         $siteUrl = self::getMarketUrls()[$this->market];
 
@@ -237,5 +239,21 @@ class Discount extends \yii\db\ActiveRecord
         }
 
         return $siteUrl . $this->imageSmall;
+    }
+
+    /**
+     * Крупное превью
+     * @return string
+     */
+    public function getBigPreview(): string
+    {
+        $siteUrl = self::getMarketUrls()[$this->market];
+
+        if ($this->previewBig !== null) {
+
+            return Yii::getAlias('@web') . $this->previewBig;
+        }
+
+        return $siteUrl . $this->imageBig;
     }
 }

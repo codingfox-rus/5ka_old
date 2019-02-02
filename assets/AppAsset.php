@@ -23,11 +23,13 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
         'css/style.css',
+        'css/discount.css',
     ];
 
     public $js = [
         'js/category.js',
         'js/discount.js',
+        'js/discount-front.js',
     ];
 
     public $depends = [
