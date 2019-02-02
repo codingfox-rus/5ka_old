@@ -9,7 +9,7 @@ use app\models\Discount;
 class DiscountController extends Controller
 {
     const PREVIEWS_PATH = '/previews/five_shop/';
-    const DOWNLOAD_LIMIT = 1000;
+    const DOWNLOAD_LIMIT = 50;
 
     public function actionSaveData()
     {

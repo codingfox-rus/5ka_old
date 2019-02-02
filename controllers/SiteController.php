@@ -63,7 +63,7 @@ class SiteController extends Controller
     {
         $discounts = Discount::find()
             ->active()
-            ->limit(10)
+            ->limit(1000)
             ->all();
 
         return $this->render('index', [
