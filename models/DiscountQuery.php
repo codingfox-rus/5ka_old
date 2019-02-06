@@ -6,9 +6,19 @@ class DiscountQuery extends \yii\db\ActiveQuery
     /**
      * @return DiscountQuery
      */
+    public function categorized(): DiscountQuery
+    {
+        return $this->active()->andWhere([
+            'not', ['categoryId' => null]
+        ]);
+    }
+
+    /**
+     * @return DiscountQuery
+     */
     public function noCategory(): DiscountQuery
     {
-        return $this->andWhere([
+        return $this->active()->andWhere([
             'categoryId' => null,
         ]);
     }

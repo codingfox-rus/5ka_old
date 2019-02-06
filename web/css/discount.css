@@ -24,3 +24,7 @@
 .regular-price-stripe {
     margin-bottom: 30px;
 }
+
+.discount-period {
+    font-weight: bold;
+}

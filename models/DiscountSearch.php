@@ -28,9 +28,7 @@ class DiscountSearch extends Discount
     public function search(array $params) : ActiveDataProvider
     {
         $query = Discount::find()
-            ->where([
-                'status' => Discount::STATUS_ACTIVE
-            ])
+            ->active()
             ->orderBy('id desc');
 
         $dataProvider = new ActiveDataProvider([
@@ -46,6 +44,11 @@ class DiscountSearch extends Discount
 
             return $dataProvider;
         }
+
+        $query->andFilterWhere([
+            'market' => $this->market,
+            'categoryId' => $this->categoryId,
+        ]);
 
         $query->andFilterWhere(['like', 'name', $this->productName]);
 

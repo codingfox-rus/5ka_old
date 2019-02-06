@@ -7,7 +7,6 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Category;
-use app\models\CategoryWordKey;
 
 $this->title = 'Категории';
 $this->params['breadcrumbs'][] = $this->title;
@@ -34,12 +33,25 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
 
             [
-                'class' => 'yii\grid\ActionColumn',
-                'template' => '<div class="text-center">{view}</div>',
+                'attribute' => 'isPublic',
+                'format' => 'html',
+                'value' => function (Category $model) {
+
+                    if ($model->isPublic) {
+                        return '<i class="fa fa-plus"></i>';
+                    }
+
+                    return '<i class="fa fa-minus"></i>';
+                }
+            ],
+
+            [
+                'class' => \yii\grid\ActionColumn::class,
+                'template' => '<div class="text-center">{update}</div>',
                 'buttons' => [
                     'view' => function ($url) {
 
-                        return Html::a('<i class="fa fa-cog"></i>', $url, [
+                        return Html::a('<i class="fa fa-pencil-square-o"></i>', $url, [
                             'class' => 'btn btn-primary',
                         ]);
                     },
@@ -49,25 +61,3 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
     <?php Pjax::end(); ?>
 </div>
-
-<?php
-/*
-[
-    'attribute' => 'wordKeys',
-    'format' => 'html',
-    'value' => function (Category $model) {
-
-        return implode('', array_map(function(CategoryWordKey $item){
-
-            return Html::a($item->key, '#', [
-                'class' => 'btn btn-success btn-xs load-form-update-key',
-                'data-id' => $item->id,
-            ]);
-
-        }, json_decode($model->wordKeys)));
-    }
-]
-*/
-
-
-?>

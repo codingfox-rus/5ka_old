@@ -48,22 +48,6 @@ class CategoryController extends MainController
     }
 
     /**
-     * Displays a single Category model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        $categoryWordKey = new CategoryWordKey();
-
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-            'categoryWordKey' => $categoryWordKey,
-        ]);
-    }
-
-    /**
      * Creates a new Category model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
@@ -73,7 +57,7 @@ class CategoryController extends MainController
         $model = new Category();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -117,7 +101,7 @@ class CategoryController extends MainController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [

@@ -8,8 +8,8 @@ use Yii;
  *
  * @property int $id
  * @property string $name
+ * @property int $isPublic
  *
- * @property CategoryWordKey[] $wordKeys
  * @property Discount[] $discounts
  */
 class Category extends \yii\db\ActiveRecord
@@ -29,6 +29,8 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 255],
+
+            [['isPublic'], 'integer'],
         ];
     }
 
@@ -40,7 +42,16 @@ class Category extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Наименование',
+            'isPublic' => 'Опубликовано',
         ];
+    }
+
+    /**
+     * @return CategoryQuery|\yii\db\ActiveQuery
+     */
+    public static function find()
+    {
+        return new CategoryQuery(static::class);
     }
 
     /**

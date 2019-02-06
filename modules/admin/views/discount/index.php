@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format' => 'html',
                 'value' => function (Discount $model) {
 
-                    return Html::img($model->preview, [
+                    return Html::img($model->smallPreview, [
                         'class' => 'img-responsive',
                     ]);
                 }

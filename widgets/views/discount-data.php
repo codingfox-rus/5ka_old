@@ -12,7 +12,7 @@ use yii\helpers\Html;
         [
             'attribute' => 'preview',
             'format' => 'html',
-            'value' => Html::img($model->preview, ['class' => 'img-responsive'])
+            'value' => Html::img($model->smallPreview, ['class' => 'img-responsive'])
         ],
         'productName',
         'description',

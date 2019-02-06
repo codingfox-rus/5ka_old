@@ -1,5 +1,7 @@
 <?php
 /* @var $this yii\web\View */
+/* @var $categories app\models\Category[] */
+/* @var $categorizedExists bool */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $pages yii\data\Pagination */
 
@@ -12,18 +14,46 @@ $this->title = 'Мониторинг скидок';
 
 <div class="site-index">
 
-    <div class="discount-wrapper">
+    <div class="row">
 
-        <?php foreach ($dataProvider->getModels() as $discount) { ?>
+        <?php if ($categorizedExists) { ?>
 
-            <?= DiscountFront::widget([
-                'discount' => $discount,
-            ]) ?>
+            <div class="col-md-3">
+                <div class="left-menu">
+
+                    <ul class="list-group">
+                        <?php foreach ($categories as $category) { ?>
+                            <li class="list-group-item">
+                                <?= Html::a($category->name, [
+                                    '/',
+                                    'categoryId' => $category->id,
+                                ], [
+                                    'class' => 'btn btn-primary btn-block',
+                                ]) ?>
+                            </li>
+                        <?php } ?>
+                    </ul>
+
+                </div>
+            </div>
 
         <?php } ?>
 
-        <?= LinkPager::widget([
-            'pagination' => $pages,
-        ]) ?>
+        <div class="<?= $categorizedExists ? 'col-md-9' : 'col-md-12' ?>">
+            <div class="discount-wrapper">
+
+                <?php foreach ($dataProvider->getModels() as $discount) { ?>
+
+                    <?= DiscountFront::widget([
+                        'discount' => $discount,
+                    ]) ?>
+
+                <?php } ?>
+
+                <?= LinkPager::widget([
+                    'pagination' => $pages,
+                ]) ?>
+            </div>
+        </div>
     </div>
 </div>

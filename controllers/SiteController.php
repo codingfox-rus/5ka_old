@@ -9,6 +9,7 @@ use yii\filters\VerbFilter;
 use yii\data\Pagination;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Category;
 use app\models\Discount;
 use app\models\DiscountSearch;
 
@@ -65,20 +66,21 @@ class SiteController extends Controller
     {
         $searchModel = new DiscountSearch();
 
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $categories = Category::find()->published()->all();
+
+        $categorizedExists = Discount::find()->categorized()->exists();
+
+        $dataProvider = $searchModel->search(['DiscountSearch' => Yii::$app->request->queryParams]);
 
         $pages = new Pagination(['totalCount' => $dataProvider->query->count()]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
+            'categories' => $categories,
+            'categorizedExists' => $categorizedExists,
             'dataProvider' => $dataProvider,
             'pages' => $pages,
         ]);
-    }
-
-    public function actionSearch()
-    {
-        
     }
 
     /**
