@@ -5,6 +5,8 @@ use yii\data\ActiveDataProvider;
 
 class DiscountSearch extends Discount
 {
+    const DISCOUNT_PER_PAGE = 20;
+
     /**
      * @return array
      */
@@ -29,11 +31,13 @@ class DiscountSearch extends Discount
             ->where([
                 'status' => Discount::STATUS_ACTIVE
             ])
-            ->orderBy('id desc')
-        ;
+            ->orderBy('id desc');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => self::DISCOUNT_PER_PAGE,
+            ],
         ]);
 
         $this->load($params);

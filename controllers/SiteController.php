@@ -6,9 +6,11 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
+use yii\data\Pagination;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Discount;
+use app\models\DiscountSearch;
 
 class SiteController extends Controller
 {
@@ -61,14 +63,22 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $discounts = Discount::find()
-            ->active()
-            ->limit(1000)
-            ->all();
+        $searchModel = new DiscountSearch();
+
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $pages = new Pagination(['totalCount' => $dataProvider->query->count()]);
 
         return $this->render('index', [
-            'discounts' => $discounts,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+            'pages' => $pages,
         ]);
+    }
+
+    public function actionSearch()
+    {
+        
     }
 
     /**

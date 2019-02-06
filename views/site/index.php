@@ -1,9 +1,11 @@
 <?php
 /* @var $this yii\web\View */
-/* @var $discounts app\models\Discount[] */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $pages yii\data\Pagination */
 
 use yii\helpers\Html;
 use app\widgets\DiscountFront;
+use yii\widgets\LinkPager;
 
 $this->title = 'Мониторинг скидок';
 ?>
@@ -12,7 +14,7 @@ $this->title = 'Мониторинг скидок';
 
     <div class="discount-wrapper">
 
-        <?php foreach ($discounts as $discount) { ?>
+        <?php foreach ($dataProvider->getModels() as $discount) { ?>
 
             <?= DiscountFront::widget([
                 'discount' => $discount,
@@ -20,5 +22,8 @@ $this->title = 'Мониторинг скидок';
 
         <?php } ?>
 
+        <?= LinkPager::widget([
+            'pagination' => $pages,
+        ]) ?>
     </div>
 </div>
