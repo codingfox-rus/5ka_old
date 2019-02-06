@@ -40,6 +40,10 @@ use yii\helpers\Html;
 
                 <div title="Цена со скидкой" class="price-stripe discount-price-stripe label-success" style=""></div>
             </div>
+
+            <div class="discount-period" title="Московское время">
+                <?= Yii::$app->formatter->asDate($discount->dateStart) ?> - <?= Yii::$app->formatter->asDate($discount->dateEnd) ?>
+            </div>
         </div>
     </div>
 </div>

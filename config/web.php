@@ -55,6 +55,13 @@ $config = [
             ],
         ],
 
+        'formatter' => [
+            'class' => \yii\i18n\Formatter::class,
+            'locale' => 'ru-RU',
+            'dateFormat' => 'dd MMMM',
+            'defaultTimeZone' => 'Europe/Moscow',
+        ],
+
         'fiveShop' => [
             'class' => 'app\components\parsers\FiveShop',
         ],
