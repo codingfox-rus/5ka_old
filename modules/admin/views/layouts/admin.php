@@ -40,8 +40,26 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             [
-                'label' => 'Скидки',
-                'url' => ['/admin/discount/index'],
+                'label' => 'Скидки в магазинах',
+                'url' => '#',
+                'items' => [
+                    [
+                        'label' => 'Пятерочка',
+                        'url' => ['/admin/discount/index'],
+                    ],
+                    [
+                        'label' => 'Магнит',
+                        'url' => ['#'],
+                    ],
+                    [
+                        'label' => 'Красное и белое',
+                        'url' => ['#'],
+                    ],
+                ],
+            ],
+            [
+                'label' => 'Магазины',
+                'url' => ['/admin/market/index'],
             ],
             [
                 'label' => 'Категории',
