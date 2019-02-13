@@ -28,6 +28,10 @@ use yii\helpers\Html;
                  data-rprice="<?= $discount->regularPrice ?>"
                  data-sprice="<?= $discount->specialPrice ?>"
             >
+                <div class="discount-product-name">
+                    <?= Html::encode($discount->productName) ?>
+                </div>
+
                 <div title="Обычная цена">
                     <i class="fa fa-rub"></i> <?= $discount->regularPrice ?>
                 </div>

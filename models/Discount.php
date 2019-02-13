@@ -33,8 +33,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class Discount extends \yii\db\ActiveRecord
 {
-    const FIVE_SHOP = 'FIVE_SHOP';
-    const MAGNIT = 'MAGNIT';
+    const FIVE_SHOP = 'five_shop';
+    const MAGNIT = 'magnit';
 
     /**
      * @return array

@@ -50,7 +50,7 @@ class DiscountSearch extends Discount
             'categoryId' => $this->categoryId,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->productName]);
+        $query->andFilterWhere(['like', 'productName', $this->productName]);
 
         return $dataProvider;
     }

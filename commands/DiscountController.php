@@ -37,8 +37,6 @@ class DiscountController extends Controller
 
     public function actionUpdateData(string $market)
     {
-        $market = trim(strtoupper($market));
-
         $handleClass = Discount::getMarketClasses()[$market];
 
         /** @var \app\interfaces\iMarket $handler */
