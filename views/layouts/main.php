@@ -27,36 +27,46 @@ AppAsset::register($this);
 <body>
 <?php $this->beginBody() ?>
 
-
-<div class="wrap">
-    <?php
-        NavBar::begin([
-            'brandLabel' => Yii::$app->name,
-            'brandUrl' => Yii::$app->homeUrl,
-            'options' => [
-                'class' => 'navbar-fixed-top',
-            ],
-        ]);
-
-        echo Nav::widget([
-            'options' => ['class' => 'navbar-nav navbar-right'],
-            'items' => [
-                ['label' => 'Все акции', 'url' => ['/site/index']],
-                //['label' => 'О проекте', 'url' => ['/site/about']],
-                //['label' => 'Обратная связь', 'url' => ['/site/contact']],
-            ],
-        ]);
-
-        NavBar::end();
-    ?>
-
+<header>
     <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="logo-wrapper">
+                    <div class="logo">
+                        <?= Html::a('FollowSale', '/', [
+                            'class' => 'logo-link'
+                        ]) ?>
+                        <span class="logo-sign">
+                            Если покупать, то со скидкой!
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <?php
+                    echo Nav::widget([
+                        'options' => ['class' => 'navbar-nav navbar-right'],
+                        'items' => [
+                            ['label' => 'Все акции', 'url' => ['/site/index']],
+                            //['label' => 'О проекте', 'url' => ['/site/about']],
+                            //['label' => 'Обратная связь', 'url' => ['/site/contact']],
+                        ],
+                    ]);
+                ?>
+            </div>
+        </div>
     </div>
+</header>
+
+<div class="container">
+    <?= Breadcrumbs::widget([
+        'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+    ]) ?>
+
+    <?= Alert::widget() ?>
+
+    <?= $content ?>
 </div>
 
 <footer class="footer">
