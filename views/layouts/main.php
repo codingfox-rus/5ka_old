@@ -48,6 +48,17 @@ AppAsset::register($this);
                             ['label' => 'Все акции', 'url' => ['/site/index']],
                             //['label' => 'О проекте', 'url' => ['/site/about']],
                             //['label' => 'Обратная связь', 'url' => ['/site/contact']],
+                            Yii::$app->user->isGuest ?
+                                ['label' => 'Войти', 'url' => ['/site/login']]
+                            :
+                                '<li>'
+                                . Html::beginForm(['/site/logout'], 'post')
+                                . Html::submitButton(
+                                    'Выйти (' . Yii::$app->user->identity->email . ')',
+                                    ['class' => 'btn btn-link logout']
+                                )
+                                . Html::endForm()
+                                . '</li>'
                         ],
                     ]);
                 ?>

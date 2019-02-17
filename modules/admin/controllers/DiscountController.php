@@ -17,16 +17,7 @@ class DiscountController extends MainController
      */
     public function behaviors() : array
     {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ]
-                ],
-            ],
+        $behaviors = [
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -34,6 +25,8 @@ class DiscountController extends MainController
                 ],
             ],
         ];
+
+        return array_merge(parent::behaviors(), $behaviors);
     }
 
     /**

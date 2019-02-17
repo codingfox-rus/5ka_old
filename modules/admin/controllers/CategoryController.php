@@ -19,7 +19,7 @@ class CategoryController extends MainController
      */
     public function behaviors()
     {
-        return [
+        $behaviors = [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -30,6 +30,8 @@ class CategoryController extends MainController
                 ],
             ],
         ];
+
+        return array_merge(parent::behaviors(), $behaviors);
     }
 
     /**

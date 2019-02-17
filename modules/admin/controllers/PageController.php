@@ -19,7 +19,7 @@ class PageController extends Controller
      */
     public function behaviors()
     {
-        return [
+        $behaviors = [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -27,6 +27,8 @@ class PageController extends Controller
                 ],
             ],
         ];
+
+        return array_merge(parent::behaviors(), $behaviors);
     }
 
     /**

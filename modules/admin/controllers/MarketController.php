@@ -18,7 +18,7 @@ class MarketController extends MainController
      */
     public function behaviors()
     {
-        return [
+        $behaviors = [
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -26,6 +26,8 @@ class MarketController extends MainController
                 ],
             ],
         ];
+
+        return array_merge(parent::behaviors(), $behaviors);
     }
 
     /**
