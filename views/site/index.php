@@ -3,35 +3,18 @@
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $pages yii\data\Pagination */
 
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
-use app\widgets\DiscountFront;
 use yii\widgets\LinkPager;
+use app\widgets\LeftMenu;
+use app\widgets\DiscountFront;
 
 $this->title = 'Мониторинг скидок';
 ?>
 
 <div class="site-index">
-
     <div class="row">
         <div class="col-md-3">
             <div class="left-menu">
-                <?= Html::beginForm('', 'get', [
-                    'class' => 'left-menu-search'
-                ]) ?>
-
-                <div class="form-group">
-                    <?= Html::textInput('productName', ArrayHelper::getValue($_GET, 'productName'), [
-                        'class' => 'form-control',
-                        'placeholder' => 'Наименование продукта',
-                    ]) ?>
-                </div>
-
-                <div class="form-group">
-                    <?= Html::submitButton('Поиск', ['class' => 'btn btn-primary btn-block']) ?>
-                </div>
-
-                <?= Html::endForm() ?>
+                <?= LeftMenu::widget() ?>
             </div>
         </div>
 

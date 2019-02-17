@@ -1,31 +1,115 @@
 <?php
-
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
-{
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
+use Yii;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+use yii\behaviors\TimestampBehavior;
 
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin19',
-            'password' => 'Hypertext1',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-    ];
+/**
+ * Class User
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string $activationCode
+ * @property int $activationRequestAt
+ * @property string $authKey
+ * @property string $accessToken
+ * @property int $status
+ * @property int $createdAt
+ * @property int $updatedAt
+ */
+class User extends ActiveRecord implements IdentityInterface
+{
+    const STATUS_ACTIVE = 10;
+    const STATUS_UNCONFIRMED = 1;
+    const STATUS_DELETED = 0;
+
+    /**
+     * @return array
+     */
+    public static function getStatuses(): array
+    {
+        return [
+            self::STATUS_ACTIVE => 'Активен',
+            self::STATUS_UNCONFIRMED => 'Не подтвержден',
+            self::STATUS_DELETED => 'Удален',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors(): array
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
+            ],
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public static function tableName(): string
+    {
+        return 'user';
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            [['email'], 'required', 'message' => 'Поле обязательно для заполнения'],
+            [['email'], 'email'],
+
+            [[
+                'name',
+                'email',
+                'password',
+                'activationCode',
+                'authKey',
+                'accessToken',
+            ], 'string', 'max' => 255],
+
+            [[
+                'activationRequestAt',
+                'status',
+                'createdAt',
+                'updatedAt',
+            ], 'integer'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'id' => 'ID',
+            'name' => 'Имя',
+            'email' => 'Email',
+            'password' => 'Пароль',
+            'status' => 'Статус',
+            'createdAt' => 'Создан',
+            'updatedAt' => 'Обновлен',
+        ];
+    }
 
     /**
      * {@inheritdoc}
      */
     public static function findIdentity($id)
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return static::findOne($id);
     }
 
     /**
@@ -33,30 +117,16 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
         return null;
     }
 
     /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
+     * @param $email
+     * @return User|null
      */
-    public static function findByUsername($username)
+    public static function findByEmail($email)
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return static::findOne(['email' => $email]);
     }
 
     /**
@@ -78,7 +148,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function validateAuthKey($authKey)
+    public function validateAuthKey($authKey): bool
     {
         return $this->authKey === $authKey;
     }
@@ -91,6 +161,6 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password === $password;
+        return Yii::$app->security->validatePassword($password, $this->password);
     }
 }
