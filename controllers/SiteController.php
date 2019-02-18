@@ -7,11 +7,11 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use yii\data\Pagination;
+use app\models\SignupForm;
 use app\models\LoginForm;
 use app\models\ContactForm;
-use app\models\Category;
-use app\models\Discount;
 use app\models\DiscountSearch;
+use app\models\User;
 
 class SiteController extends Controller
 {
@@ -78,9 +78,7 @@ class SiteController extends Controller
     }
 
     /**
-     * Login action.
-     *
-     * @return Response|string
+     * @return string|Response
      */
     public function actionLogin()
     {
@@ -89,19 +87,19 @@ class SiteController extends Controller
         }
 
         $model = new LoginForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
 
         $model->password = '';
+
         return $this->render('login', [
             'model' => $model,
         ]);
     }
 
     /**
-     * Logout action.
-     *
      * @return Response
      */
     public function actionLogout()
@@ -111,10 +109,74 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
+
+    public function actionSignup()
+    {
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new SignupForm();
+
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+
+            Yii::$app->session->setFlash('confirm');
+
+            return $this->redirect('confirm');
+        }
+
+        return $this->render('signup', [
+            'model' => $model,
+        ]);
+    }
+
     /**
-     * Displays contact page.
-     *
-     * @return Response|string
+     * @return string|Response
+     */
+    public function actionConfirm()
+    {
+        if (!Yii::$app->session->getFlash('confirm')) {
+            return $this->redirect('index');
+        }
+
+        return $this->render('confirm');
+    }
+
+    /**
+     * @param string $code
+     * @return Response
+     * @throws \Exception
+     */
+    public function actionActivation(string $code)
+    {
+        $user = User::findOne(['activationCode' => $code]);
+
+        $condition = $user && $user->activationRequestAt > time() - SignupForm::TIME_FOR_ACTIVATION;
+
+        if ($condition) {
+
+            $user->activationCode = null;
+            $user->activationRequestAt = null;
+            $user->status = User::STATUS_ACTIVE;
+
+            if ($user->save()) {
+                $message = 'Ваш аккаунт успешно активирован. Вы можете войти на сайт, используя свой логин и пароль';
+
+                Yii::$app->session->setFlash('activationSuccess', $message);
+
+                return $this->redirect('login');
+            }
+
+            throw new \Exception('Ошибка активации');
+        }
+
+        return $this->redirect('error', [
+            'message' => 'Неверный код активации',
+        ]);
+    }
+
+    /**
+     * @return string|Response
      */
     public function actionContact()
     {
@@ -130,8 +192,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays about page.
-     *
      * @return string
      */
     public function actionAbout()
