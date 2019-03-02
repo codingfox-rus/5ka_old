@@ -20,6 +20,9 @@ use yii\behaviors\TimestampBehavior;
  * @property int $status
  * @property int $createdAt
  * @property int $updatedAt
+ *
+ * @property bool $isActive
+ * @property bool $isUnconfirmed
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -162,5 +165,21 @@ class User extends ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsActive(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsUnconfirmed(): bool
+    {
+        return $this->status === self::STATUS_UNCONFIRMED;
     }
 }

@@ -22,6 +22,16 @@ class SignupForm extends Model
     }
 
     /**
+     * @return array
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'email' => 'Введите Email',
+        ];
+    }
+
+    /**
      * @return bool
      * @throws \yii\base\Exception
      */

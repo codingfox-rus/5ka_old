@@ -16,8 +16,8 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
+    /** @var User|bool  */
     private $_user = false;
-
 
     /**
      * @return array the validation rules.
@@ -59,7 +59,7 @@ class LoginForm extends Model
             $user = $this->getUser();
 
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Неверный email пользователя или пароль.');
             }
         }
     }
@@ -71,8 +71,16 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
+
+            if ($this->_user && $this->_user->isUnconfirmed) {
+
+                $this->addError('email', 'Email не подтвержден');
+                return false;
+            }
+
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         }
+
         return false;
     }
 

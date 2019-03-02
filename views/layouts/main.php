@@ -42,24 +42,31 @@ AppAsset::register($this);
 
             <div class="col-md-6">
                 <?php
+                    $navItems = [];
+                    $navItems[] = ['label' => 'Все акции', 'url' => ['/site/index']];
+                    //$navItems[] = ['label' => 'О проекте', 'url' => ['/site/about']];
+                    //$navItems[] = ['label' => 'Обратная связь', 'url' => ['/site/contact']];
+
+                    if (Yii::$app->user->isGuest) {
+
+                        $navItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
+                        $navItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
+
+                    } else {
+
+                        $navItems[] = '<li>'
+                            . Html::beginForm(['/site/logout'], 'post')
+                            . Html::submitButton(
+                                'Выйти (' . Yii::$app->user->identity->email . ')',
+                                ['class' => 'btn btn-link logout']
+                            )
+                            . Html::endForm()
+                            . '</li>';
+                    }
+
                     echo Nav::widget([
                         'options' => ['class' => 'navbar-nav navbar-right'],
-                        'items' => [
-                            ['label' => 'Все акции', 'url' => ['/site/index']],
-                            //['label' => 'О проекте', 'url' => ['/site/about']],
-                            //['label' => 'Обратная связь', 'url' => ['/site/contact']],
-                            Yii::$app->user->isGuest ?
-                                ['label' => 'Войти', 'url' => ['/site/login']]
-                            :
-                                '<li>'
-                                . Html::beginForm(['/site/logout'], 'post')
-                                . Html::submitButton(
-                                    'Выйти (' . Yii::$app->user->identity->email . ')',
-                                    ['class' => 'btn btn-link logout']
-                                )
-                                . Html::endForm()
-                                . '</li>'
-                        ],
+                        'items' => $navItems,
                     ]);
                 ?>
             </div>
