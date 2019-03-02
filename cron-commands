@@ -21,20 +21,22 @@
 # 
 # m h  dom mon dow   command
 
-#*/5 * * * * php /home/hosting_bandicoot/projects/pg-telegram-bot/htdocs/yii console/get-fresh-news
+#*/5 * * * * php /home/hosting_bandicoot/projects/pg-telegram-bot/htdocs/yii console/get-fresh-news > /dev/null 2>&1 
 
-*/5 * * * * php /home/hosting_bandicoot/projects/agregator/htdocs/yii console/update-posts
+*/5 * * * * php /home/hosting_bandicoot/projects/agregator/htdocs/yii console/update-posts > /dev/null 2>&1
 
-#0 * * * * php /home/hosting_bandicoot/projects/linkcache/yii link/check-access
+#0 * * * * php /home/hosting_bandicoot/projects/linkcache/htdocsyii link/check-access > /dev/null 2>&1
 
-#0 * * * * php /home/hosting_bandicoot/projects/linkcache/yii link/remind
+#0 * * * * php /home/hosting_bandicoot/projects/linkcache/htdocsyii link/remind > /dev/null 2>&1
 
-#*/15 * * * * php /home/hosting_bandicoot/projects/linkcache/yii mail/send
+#*/15 * * * * php /home/hosting_bandicoot/projects/linkcache/htdocs/yii mail/send > /dev/null 2>&1
 
-10 0 * * * php /home/hosting_bandicoot/projects/shoptracker/yii discount/save-data
+10 0 * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/save-data > /dev/null 2>&1
 
-20 0 * * * php /home/hosting_bandicoot/projects/shoptracker/yii discount/update-data five_shop
+20 0 * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/update-data five_shop > /dev/null 2>&1
 
-*/10 * * * * php /home/hosting_bandicoot/projects/shoptracker/yii discount/download-images
+*/10 * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/download-images > /dev/null 2>&1
 
-30 0 * * * php /home/hosting_bandicoot/projects/shoptracker/yii discount/archive-data
+*/30 * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/archive-data > /dev/null 2>&1
+
+* * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii project/send-feedback-messages > /dev/null 2>&1
