@@ -2,16 +2,18 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\data\Pagination;
+use yii\web\NotFoundHttpException;
 use app\models\SignupForm;
 use app\models\LoginForm;
 use app\models\Feedback;
 use app\models\DiscountSearch;
 use app\models\User;
+use app\models\Page;
 
 class SiteController extends Controller
 {
@@ -64,10 +66,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $this->addPageInfo(Page::INDEX);
+
         $searchModel = new DiscountSearch();
-
         $dataProvider = $searchModel->search(['DiscountSearch' => Yii::$app->request->queryParams]);
-
         $pages = new Pagination(['totalCount' => $dataProvider->query->count()]);
 
         return $this->render('index', [
@@ -176,11 +178,12 @@ class SiteController extends Controller
     }
 
     /**
-     * Обратная связь
      * @return string|Response
      */
     public function actionFeedback()
     {
+        $this->addPageInfo(Page::FEEDBACK);
+
         $model = new Feedback();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -200,6 +203,49 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
-        return $this->render('about');
+        $this->addPageInfo(Page::ABOUT);
+        $page = $this->getPage(Page::ABOUT);
+
+        if ($page) {
+            $content = $page->content;
+        } else {
+            $content = 'Проект по мониторингу скидок в продовольственных магазинах';
+        }
+
+        return $this->render('about', [
+            'content' => $content,
+        ]);
+    }
+
+    /**
+     * @param string $pageName
+     */
+    protected function addPageInfo(string $pageName)
+    {
+        $page = $this->getPage($pageName);
+
+        if ($page) {
+
+            Yii::$app->view->title = $page->title;
+
+            Yii::$app->view->registerMetaTag([
+                'name' => 'keywords',
+                'content' => $page->keywords,
+            ]);
+
+            Yii::$app->view->registerMetaTag([
+                'name' => 'description',
+                'content' => $page->description,
+            ]);
+        }
+    }
+
+    /**
+     * @param string $name
+     * @return Page|null
+     */
+    protected function getPage(string $name)
+    {
+        return Page::findOne(['name' => $name]);
     }
 }

@@ -7,7 +7,9 @@ use yii\widgets\LinkPager;
 use app\widgets\LeftMenu;
 use app\widgets\DiscountFront;
 
-$this->title = 'Мониторинг скидок';
+if (empty($this->title)) {
+    $this->title = 'Мониторинг скидок';
+}
 ?>
 
 <div class="site-index">
@@ -20,7 +22,6 @@ $this->title = 'Мониторинг скидок';
 
         <div class="col-md-9">
             <div class="discount-wrapper">
-
                 <?php foreach ($dataProvider->getModels() as $discount) { ?>
 
                     <?= DiscountFront::widget([

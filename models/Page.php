@@ -18,6 +18,12 @@ use yii\behaviors\TimestampBehavior;
  */
 class Page extends \yii\db\ActiveRecord
 {
+    const INDEX = 'index';
+    const LOGIN = 'login';
+    const SIGNUP = 'signup';
+    const FEEDBACK = 'feedback';
+    const ABOUT = 'about';
+
     /**
      * @return array
      */

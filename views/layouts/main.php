@@ -43,7 +43,7 @@ AppAsset::register($this);
             <div class="col-md-6">
                 <?php
                     $navItems = [];
-                    $navItems[] = ['label' => 'Обратная связь', 'url' => ['/site/index']];
+                    $navItems[] = ['label' => 'Обратная связь', 'url' => ['/site/feedback']];
                     $navItems[] = ['label' => 'О проекте', 'url' => ['/site/about']];
 
                     if (Yii::$app->user->isGuest) {

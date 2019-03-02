@@ -5,7 +5,9 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\captcha\Captcha;
 
-$this->title = 'Обратная связь';
+if (empty($this->title)) {
+    $this->title = 'Обратная связь';
+}
 ?>
 
 <div class="row">
