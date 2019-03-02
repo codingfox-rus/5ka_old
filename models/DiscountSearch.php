@@ -48,7 +48,10 @@ class DiscountSearch extends Discount
     {
         $query = Discount::find()
             ->active()
-            ->orderBy('id desc');
+            ->orderBy([
+                'regularPrice' => SORT_DESC,
+                'discountPercent' => SORT_DESC,
+            ]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
