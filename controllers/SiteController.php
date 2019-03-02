@@ -9,7 +9,7 @@ use yii\filters\VerbFilter;
 use yii\data\Pagination;
 use app\models\SignupForm;
 use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\Feedback;
 use app\models\DiscountSearch;
 use app\models\User;
 
@@ -22,7 +22,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout'],
                 'rules' => [
                     [
@@ -33,7 +33,7 @@ class SiteController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -176,17 +176,21 @@ class SiteController extends Controller
     }
 
     /**
+     * Обратная связь
      * @return string|Response
      */
-    public function actionContact()
+    public function actionFeedback()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
+        $model = new Feedback();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+
+            Yii::$app->session->setFlash('feedbackSubmitted');
 
             return $this->refresh();
         }
-        return $this->render('contact', [
+
+        return $this->render('feedback', [
             'model' => $model,
         ]);
     }

@@ -40,6 +40,10 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             [
+                'label' => 'Страницы',
+                'url' => ['/admin/page/index'],
+            ],
+            [
                 'label' => 'Скидки в магазинах',
                 'url' => '#',
                 'items' => [

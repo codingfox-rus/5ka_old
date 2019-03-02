@@ -43,9 +43,8 @@ AppAsset::register($this);
             <div class="col-md-6">
                 <?php
                     $navItems = [];
-                    $navItems[] = ['label' => 'Все акции', 'url' => ['/site/index']];
-                    //$navItems[] = ['label' => 'О проекте', 'url' => ['/site/about']];
-                    //$navItems[] = ['label' => 'Обратная связь', 'url' => ['/site/contact']];
+                    $navItems[] = ['label' => 'Обратная связь', 'url' => ['/site/index']];
+                    $navItems[] = ['label' => 'О проекте', 'url' => ['/site/about']];
 
                     if (Yii::$app->user->isGuest) {
 

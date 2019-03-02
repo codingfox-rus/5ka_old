@@ -1,18 +1,16 @@
 <?php
-
 namespace app\modules\admin\controllers;
 
 use Yii;
 use app\models\Page;
 use app\models\PageSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * PageController implements the CRUD actions for Page model.
  */
-class PageController extends Controller
+class PageController extends MainController
 {
     /**
      * {@inheritdoc}
