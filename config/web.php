@@ -65,7 +65,6 @@ $config = [
                 '<action>' => 'site/<action>',
             ],
         ],
-
         'formatter' => [
             'class' => \yii\i18n\Formatter::class,
             'locale' => 'ru-RU',
@@ -73,12 +72,16 @@ $config = [
             'defaultTimeZone' => 'Europe/Moscow',
         ],
 
-        'fiveShop' => [
-            'class' => 'app\components\parsers\FiveShop',
-        ],
-
         'discountHelper' => [
             'class' => 'app\components\DiscountHelper',
+        ],
+
+        // Компоненты для работы с сайтами
+        'fiveShop' => [
+            'class' => \app\components\markets\FiveShop::class,
+        ],
+        'bristol' => [
+            'class' => \app\components\markets\Bristol::class,
         ],
     ],
     'params' => $params,

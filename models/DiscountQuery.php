@@ -4,6 +4,17 @@ namespace app\models;
 class DiscountQuery extends \yii\db\ActiveQuery
 {
     /**
+     * @param string $market
+     * @return DiscountQuery
+     */
+    public function market(string $market): DiscountQuery
+    {
+        return $this->andWhere([
+            'market' => $market,
+        ]);
+    }
+
+    /**
      * @return DiscountQuery
      */
     public function categorized(): DiscountQuery

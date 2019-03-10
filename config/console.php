@@ -44,12 +44,16 @@ $config = [
         ],
         'db' => $db,
 
-        'fiveShop' => [
-            'class' => 'app\components\parsers\FiveShop',
-        ],
-
         'discountHelper' => [
             'class' => 'app\components\DiscountHelper',
+        ],
+
+        // Компоненты для работы с сайтами
+        'fiveShop' => [
+            'class' => \app\components\markets\FiveShop::class,
+        ],
+        'bristol' => [
+            'class' => \app\components\markets\Bristol::class,
         ],
     ],
     'params' => $params,
