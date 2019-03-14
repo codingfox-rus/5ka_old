@@ -18,7 +18,7 @@ class DiscountController extends Controller
     public function init()
     {
         $this->fiveShop = Yii::$app->get('fiveShop');
-        //$this->bristol = Yii::$app->get('bristol');
+        $this->bristol = Yii::$app->get('bristol');
     }
 
     /**

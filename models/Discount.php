@@ -66,10 +66,11 @@ class Discount extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public static function getMarketClasses()
+    public static function getMarketClasses(): array
     {
         return [
             self::FIVE_SHOP => \app\components\markets\FiveShop::class,
+            self::BRISTOL => \app\components\markets\Bristol::class,
         ];
     }
 

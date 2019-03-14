@@ -2,6 +2,7 @@
 namespace app\components\markets;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use app\models\Discount;
 
 class Bristol implements \app\interfaces\iMarket
@@ -38,25 +39,47 @@ class Bristol implements \app\interfaces\iMarket
     /**
      * @return array
      */
-    public function getPreparedData(): array
+    public function getPreparedData()
     {
         $filePath = $this->getFilePath();
 
         $data = json_decode(file_get_contents($filePath), true);
 
-        $preparedData = [];
+        if (isset($data['data'])) {
 
-        foreach ($data as $item) {
+            $preparedData = [];
 
-            $preparedData[] = $this->getItem($item);
+            foreach ($data['data'] as $dataItem) {
+
+                foreach ($dataItem as $item) {
+
+                    if (\is_array($item)) {
+
+                        foreach ($item as $value) {
+
+                            if (isset($value['product'])) {
+
+                                $preparedData[] = $this->getItem($value['product']);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return $preparedData;
         }
 
-        return $preparedData;
+        return null;
     }
 
-    public function getItem(array $dataChunk): array
+    /**
+     * todo
+     * @param array $cItem
+     * @return mixed
+     */
+    public function getItem(array $cItem)
     {
-
+        return $cItem;
     }
 
     public function archiveData()
