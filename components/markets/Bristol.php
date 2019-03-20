@@ -2,7 +2,6 @@
 namespace app\components\markets;
 
 use Yii;
-use yii\helpers\ArrayHelper;
 use app\models\Discount;
 
 class Bristol implements \app\interfaces\iMarket
@@ -31,15 +30,102 @@ class Bristol implements \app\interfaces\iMarket
         return file_get_contents($url);
     }
 
-    public function updateData()
+    /**
+     * @return bool
+     */
+    public function updateData(): bool
     {
+        $preparedData = $this->getPreparedData();
 
+        // Сохраняем актуальные данные
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+
+            Yii::$app->db->createCommand()
+                ->batchInsert(
+                    Discount::tableName(),
+                    Discount::getDataColumns(),
+                    $preparedData
+                )
+                ->execute();
+
+            $transaction->commit();
+
+            $totalRows = \count($preparedData);
+
+            echo "{$totalRows} added". PHP_EOL;
+
+        } catch (\Exception $e) {
+
+            $errMes = $e->getMessage();
+
+            echo $errMes. PHP_EOL;
+
+            Yii::error($errMes);
+
+            $transaction->rollBack();
+        }
+
+        return true;
     }
 
     /**
      * @return array
      */
-    public function getPreparedData()
+    public function getPreparedData(): array
+    {
+        $productArray = $this->getProductArray();
+        $notDiscountProductIds = [];
+        $discountProductIds = [];
+
+        foreach ($productArray as $product) {
+
+            if (isset($product['price_old'], $product['discount_percent'])) {
+                $discountProductIds[] = $product['id'];
+            } else {
+                $notDiscountProductIds[] = $product['id'];
+            }
+        }
+
+        // Вначале архивируем неактуальные скидки
+        Discount::updateAll([
+            'status' => Discount::STATUS_ARCHIVE,
+        ], [
+            'in', 'productId', $notDiscountProductIds
+        ]);
+
+        // Добавляем актуальные скидки
+        $actualRows = Discount::find()
+            ->select('productId')
+            ->market(Discount::BRISTOL)
+            ->active()
+            ->asArray()
+            ->all();
+
+        $actualProductIds = array_map(function($row){
+            return $row['productId'];
+        }, $actualRows);
+
+        $newProductIds = array_diff($discountProductIds, $actualProductIds);
+
+        $preparedData = [];
+
+        foreach ($productArray as $product) {
+
+            if (\in_array($product['id'], $newProductIds, true)) {
+
+                $preparedData[] = $this->getItem($product);
+            }
+        }
+
+        return $preparedData;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProductArray(): array
     {
         $filePath = $this->getFilePath();
 
@@ -47,7 +133,7 @@ class Bristol implements \app\interfaces\iMarket
 
         if (isset($data['data'])) {
 
-            $preparedData = [];
+            $productArray = [];
 
             foreach ($data['data'] as $dataItem) {
 
@@ -59,27 +145,54 @@ class Bristol implements \app\interfaces\iMarket
 
                             if (isset($value['product'])) {
 
-                                $preparedData[] = $this->getItem($value['product']);
+                                $productArray[] = $value['product'];
                             }
                         }
                     }
                 }
             }
 
-            return $preparedData;
+            return $productArray;
         }
 
-        return null;
+        return [];
     }
 
     /**
-     * todo
-     * @param array $cItem
+     * @param array $result
      * @return mixed
      */
-    public function getItem(array $cItem)
+    public function getItem(array $result)
     {
-        return $cItem;
+        $item['market'] = Discount::BRISTOL;
+
+        $item['productId'] = $result['id'];
+
+        $item['productName'] = $result['name'];
+
+        $item['url'] = $result['url'];
+
+        $item['description'] = null;
+
+        $item['imageSmall'] = null;
+
+        $item['imageBig'] = $result['picture'];
+
+        $item['regularPrice'] = $result['price_old'];
+
+        $item['specialPrice'] = $result['price'];
+
+        $item['discountPercent'] = $result['discount_percent'];
+
+        $item['dateStart'] = null;
+
+        $item['dateEnd'] = null;
+
+        $item['status'] = Discount::STATUS_ACTIVE;
+
+        $item['createdAt'] = time();
+
+        return $item;
     }
 
     public function archiveData()

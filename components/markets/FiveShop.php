@@ -34,9 +34,9 @@ class FiveShop implements \app\interfaces\iMarket
     }
 
     /**
-     *
+     * @return bool
      */
-    public function updateData()
+    public function updateData(): bool
     {
         $preparedData = $this->getPreparedData();
 
@@ -91,6 +91,8 @@ class FiveShop implements \app\interfaces\iMarket
 
             $transaction->rollBack();
         }
+
+        return true;
     }
 
     /**
