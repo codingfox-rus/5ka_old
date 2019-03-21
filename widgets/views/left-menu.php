@@ -1,4 +1,5 @@
 <?php
+/** @var $markets array */
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
@@ -6,10 +7,21 @@ use app\models\DiscountSearch;
 ?>
 
 <div class="left-menu-widget">
-
     <?= Html::beginForm('', 'get', [
         'class' => 'left-menu-search'
     ]) ?>
+
+    <div class="form-group">
+        <?php foreach ($markets as $code => $name) { ?>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="markets[]" value="<?= $code ?>"> <?= $name ?>
+                </label>
+            </div>
+
+        <?php } ?>
+    </div>
 
     <div class="form-group">
         <?= Html::textInput('productName', ArrayHelper::getValue($_GET, 'productName'), [

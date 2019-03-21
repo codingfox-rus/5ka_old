@@ -15,6 +15,17 @@ class DiscountQuery extends \yii\db\ActiveQuery
     }
 
     /**
+     * @param array $markets
+     * @return DiscountQuery
+     */
+    public function markets(array $markets): DiscountQuery
+    {
+        return $this->andWhere([
+            'in', 'market', $markets
+        ]);
+    }
+
+    /**
      * @return DiscountQuery
      */
     public function categorized(): DiscountQuery
@@ -60,12 +71,10 @@ class DiscountQuery extends \yii\db\ActiveQuery
      * Без превьюх
      * @return DiscountQuery
      */
-    public function noPreviews(): DiscountQuery
+    public function noPreview(): DiscountQuery
     {
         return $this->andWhere([
-            'or',
-            ['previewSmall' => null],
-            ['previewBig' => null]
+            'previewBig' => null,
         ]);
     }
 

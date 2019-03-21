@@ -8,6 +8,7 @@ class Bristol implements \app\interfaces\iMarket
 {
     const SITE_URL = 'https://bristol.ru';
     const API_URL = '/api/v1/menu';
+    const PREVIEWS_PATH = '/previews/bristol/';
 
     /**
      * @return string
@@ -202,6 +203,28 @@ class Bristol implements \app\interfaces\iMarket
 
     public function downloadImages()
     {
-        // TODO: Implement downloadImages() method.
+        $discounts = Discount::find()
+            ->market(Discount::BRISTOL)
+            ->active()
+            ->noPreview()
+            ->limit(self::DOWNLOAD_LIMIT)
+            ->all();
+
+        foreach ($discounts as $discount) {
+
+            $previewFile = uniqid(Discount::BRISTOL, false) . '.jpg';
+
+            $imageUrl = self::SITE_URL . $discount['imageBig'];
+
+            $imagePath = self::PREVIEWS_PATH . $previewFile;
+
+            if (copy($imageUrl, Yii::$app->basePath .'/web'. $imagePath)) {
+
+                $discount->previewBig = $imagePath;
+                $discount->save(false);
+
+                echo Discount::BRISTOL .' preview copied successfully'. PHP_EOL;
+            }
+        }
     }
 }

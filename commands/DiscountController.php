@@ -51,6 +51,7 @@ class DiscountController extends Controller
     public function actionUpdateData()
     {
         $this->fiveShop->updateData();
+        $this->bristol->updateData();
     }
 
     /**
@@ -67,5 +68,6 @@ class DiscountController extends Controller
     public function actionDownloadImages()
     {
         $this->fiveShop->downloadImages();
+        $this->bristol->downloadImages();
     }
 }

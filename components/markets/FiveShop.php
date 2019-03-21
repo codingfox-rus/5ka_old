@@ -180,13 +180,13 @@ class FiveShop implements \app\interfaces\iMarket
         $discounts = Discount::find()
             ->market(Discount::FIVE_SHOP)
             ->active()
-            ->noPreviews()
+            ->noPreview()
             ->limit(self::DOWNLOAD_LIMIT)
             ->all();
 
         foreach ($discounts as $discount) {
 
-            $previewFile = uniqid('five_shop', false) . '.jpg';
+            $previewFile = uniqid(Discount::FIVE_SHOP, false) . '.jpg';
 
             $smallUrl = self::SITE_URL . $discount->imageSmall;
             $bigUrl = self::SITE_URL . $discount->imageBig;
@@ -194,18 +194,18 @@ class FiveShop implements \app\interfaces\iMarket
             $smallPath = self::PREVIEWS_PATH . 'small/' . $previewFile;
             $bigPath = self::PREVIEWS_PATH . 'big/' . $previewFile;
 
-            if (copy($smallUrl, Yii::$app->basePath . '/web' . $smallPath)) {
+            if (copy($smallUrl, Yii::$app->basePath .'/web'. $smallPath)) {
 
                 $discount->previewSmall = $smallPath;
 
-                echo 'Small preview copied successfully' . PHP_EOL;
+                echo Discount::FIVE_SHOP .' small preview copied successfully' . PHP_EOL;
             }
 
-            if (copy($bigUrl, Yii::$app->basePath . '/web' . $bigPath)) {
+            if (copy($bigUrl, Yii::$app->basePath .'/web'. $bigPath)) {
 
                 $discount->previewBig = $bigPath;
 
-                echo 'Big preview copied successfully' . PHP_EOL;
+                echo Discount::FIVE_SHOP .' big preview copied successfully' . PHP_EOL;
             }
 
             $discount->save(false);
