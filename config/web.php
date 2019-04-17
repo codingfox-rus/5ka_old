@@ -105,7 +105,7 @@ if (YII_ENV_DEV) {
         'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 
-    $config['components']['db'] = require __DIR__ .'/db-local.php';
+   $config['components']['db'] = require __DIR__ .'/db-local.php';
 }
 
 return $config;
