@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\models\Discount;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -69,7 +70,9 @@ class SiteController extends Controller
        $this->addPageInfo(Page::INDEX);
 
         $searchModel = new DiscountSearch();
+
         $dataProvider = $searchModel->search(['DiscountSearch' => Yii::$app->request->queryParams]);
+
         $pages = new Pagination(['totalCount' => $dataProvider->query->count()]);
 
         return $this->render('index', [

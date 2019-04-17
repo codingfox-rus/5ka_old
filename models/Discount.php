@@ -10,7 +10,9 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property int $categoryId
  * @property string $market
+ * @property int $productId
  * @property string $productName
+ * @property string $url
  * @property string $description
  * @property string $condition
  * @property string $imageSmall
@@ -35,6 +37,7 @@ class Discount extends \yii\db\ActiveRecord
 {
     const FIVE_SHOP = 'five_shop';
     const MAGNIT = 'magnit';
+    const BRISTOL = 'bristol';
 
     /**
      * @return array
@@ -44,6 +47,7 @@ class Discount extends \yii\db\ActiveRecord
         return [
             self::FIVE_SHOP => 'Пятерочка',
             self::MAGNIT => 'Магнит',
+            self::BRISTOL => 'Бристоль',
         ];
     }
 
@@ -55,16 +59,18 @@ class Discount extends \yii\db\ActiveRecord
         return [
             self::FIVE_SHOP => 'https://5ka.ru',
             self::MAGNIT => 'http://magnit-info.ru',
+            self::BRISTOL => 'https://bristol.ru',
         ];
     }
 
     /**
      * @return array
      */
-    public static function getMarketClasses()
+    public static function getMarketClasses(): array
     {
         return [
             self::FIVE_SHOP => \app\components\markets\FiveShop::class,
+            self::BRISTOL => \app\components\markets\Bristol::class,
         ];
     }
 
@@ -89,7 +95,9 @@ class Discount extends \yii\db\ActiveRecord
     {
         return [
             'market',
+            'productId',
             'productName',
+            'url',
             'description',
             'imageSmall',
             'imageBig',
@@ -134,6 +142,7 @@ class Discount extends \yii\db\ActiveRecord
         return [
             [[
                 'categoryId',
+                'productId',
                 'dateStart',
                 'dateEnd',
                 'status',
@@ -165,7 +174,10 @@ class Discount extends \yii\db\ActiveRecord
 
             [['market'], 'string', 'max' => 32],
 
-            [['productName'], 'string', 'max' => 255],
+            [[
+                'productName',
+                'url',
+            ], 'string', 'max' => 255],
 
             [[
                 'imageSmall',
@@ -175,7 +187,6 @@ class Discount extends \yii\db\ActiveRecord
             ], 'string', 'max' => 512],
 
             [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categoryId' => 'id']],
-
         ];
     }
 
@@ -188,7 +199,9 @@ class Discount extends \yii\db\ActiveRecord
             'id' => 'ID',
             'categoryId' => 'Категория',
             'market' => 'Поставщик',
+            'productId' => 'ID товара',
             'productName' => 'Наименование',
+            'url' => 'Url',
             'description' => 'Описание',
             'condition' => 'Условия скидки',
             'imageSmall' => 'Превью c сайта малое',

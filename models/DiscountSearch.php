@@ -11,6 +11,9 @@ class DiscountSearch extends Discount
     const SORTING_PRICE_DESC = 'price-desc';
     const SORTING_PERCENT_DESC = 'percent-desc';
 
+    /** @var array */
+    public $markets;
+
     /**
      * @return array
      */
@@ -28,7 +31,7 @@ class DiscountSearch extends Discount
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [[
@@ -36,7 +39,11 @@ class DiscountSearch extends Discount
                 'categoryId',
                 'productName',
                 'sortingOrder',
-            ], 'string']
+            ], 'string'],
+
+            [[
+                'markets',
+            ], 'safe'],
         ];
     }
 
@@ -75,8 +82,11 @@ class DiscountSearch extends Discount
         $query->andFilterWhere(['like', 'productName', $this->productName]);
 
         if ($this->sortingOrder) {
-
             $query = $this->applySortingOrder($query);
+        }
+
+        if ($this->markets) {
+            $query->markets($this->markets);
         }
 
         return $dataProvider;
