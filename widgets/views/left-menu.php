@@ -10,7 +10,7 @@ use app\models\DiscountSearch;
     <?= Html::beginForm('', 'get', [
         'class' => 'left-menu-search'
     ]) ?>
-
+    <!--
     <div class="form-group">
         <?php foreach ($markets as $code => $name) { ?>
 
@@ -21,7 +21,7 @@ use app\models\DiscountSearch;
             </div>
 
         <?php } ?>
-    </div>
+    </div>-->
 
     <div class="form-group">
         <?= Html::textInput('productName', ArrayHelper::getValue($_GET, 'productName'), [

@@ -72,6 +72,7 @@ class SiteController extends Controller
         $searchModel = new DiscountSearch();
 
         $dataProvider = $searchModel->search(['DiscountSearch' => Yii::$app->request->queryParams]);
+        $dataProvider->query->andFilterWhere(['market' => Discount::FIVE_SHOP]);
 
         $pages = new Pagination(['totalCount' => $dataProvider->query->count()]);
 
