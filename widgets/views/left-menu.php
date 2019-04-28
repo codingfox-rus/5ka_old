@@ -4,6 +4,8 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use app\models\DiscountSearch;
+
+$sortingOrder = ArrayHelper::getValue($_GET, 'sortingOrder');
 ?>
 
 <div class="left-menu-widget">
@@ -33,7 +35,7 @@ use app\models\DiscountSearch;
     <div class="form-group">
         <?= Html::dropDownList(
             'sortingOrder',
-            $_GET['sortingOrder'],
+            $sortingOrder,
             DiscountSearch::getSortingOptions(),
             [
                 'class' => 'form-control',
