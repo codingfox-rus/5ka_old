@@ -14,11 +14,10 @@ header {
 .logo-link:hover,
 .logo-link:active
 {
-    font-style: italic;
     font-weight: bold;
     display: block;
-    font-size: 28px;
-    color: rgb(92, 184, 92);;
+    font-size: 26px;
+    color: #E30613;
     text-decoration: none;
     line-height: 32px;
 }

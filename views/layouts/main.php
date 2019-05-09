@@ -30,11 +30,11 @@ AppAsset::register($this);
             <div class="col-md-6">
                 <div class="logo-wrapper">
                     <div class="logo">
-                        <?= Html::a('FollowSale', '/', [
+                        <?= Html::a('Скидки в Пятерочке', '/', [
                             'class' => 'logo-link'
                         ]) ?>
                         <span class="logo-sign">
-                            Если покупать, то со скидкой!
+                            Мониторинг и прогнозы
                         </span>
                     </div>
                 </div>
