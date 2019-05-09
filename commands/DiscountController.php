@@ -12,13 +12,9 @@ class DiscountController extends Controller
     /** @var FiveShop */
     public $fiveShop;
 
-    /** @var Bristol */
-    public $bristol;
-
     public function init()
     {
         $this->fiveShop = Yii::$app->get('fiveShop');
-        $this->bristol = Yii::$app->get('bristol');
     }
 
     /**
@@ -51,7 +47,6 @@ class DiscountController extends Controller
     public function actionUpdateData()
     {
         $this->fiveShop->updateData();
-        $this->bristol->updateData();
     }
 
     /**
@@ -68,6 +63,5 @@ class DiscountController extends Controller
     public function actionDownloadImages()
     {
         $this->fiveShop->downloadImages();
-        $this->bristol->downloadImages();
     }
 }

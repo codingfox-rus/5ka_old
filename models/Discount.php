@@ -70,7 +70,7 @@ class Discount extends \yii\db\ActiveRecord
     {
         return [
             self::FIVE_SHOP => \app\components\markets\FiveShop::class,
-            self::BRISTOL => \app\components\markets\Bristol::class,
+            //self::BRISTOL => \app\components\markets\Bristol::class,
         ];
     }
 
@@ -260,13 +260,13 @@ class Discount extends \yii\db\ActiveRecord
      */
     public function getBigPreview(): string
     {
-        $siteUrl = self::getMarketUrls()[$this->market];
+        //$siteUrl = self::getMarketUrls()[$this->market];
 
         if ($this->previewBig !== null) {
 
             return Yii::getAlias('@web') . $this->previewBig;
         }
 
-        return $siteUrl . $this->imageBig;
+        return $this->imageBig;
     }
 }

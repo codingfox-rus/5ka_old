@@ -188,8 +188,8 @@ class FiveShop implements \app\interfaces\iMarket
 
             $previewFile = uniqid(Discount::FIVE_SHOP, false) . '.jpg';
 
-            $smallUrl = self::SITE_URL . $discount->imageSmall;
-            $bigUrl = self::SITE_URL . $discount->imageBig;
+            $smallUrl = $discount->imageSmall;
+            $bigUrl = $discount->imageBig;
 
             $smallPath = self::PREVIEWS_PATH . 'small/' . $previewFile;
             $bigPath = self::PREVIEWS_PATH . 'big/' . $previewFile;
