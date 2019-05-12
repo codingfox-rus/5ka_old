@@ -46,7 +46,7 @@ AppAsset::register($this);
                     $navItems[] = ['label' => 'Обратная связь', 'url' => ['/site/feedback']];
                     $navItems[] = ['label' => 'О проекте', 'url' => ['/site/about']];
 
-                    if (Yii::$app->user->isGuest) {
+                    /*if (Yii::$app->user->isGuest) {
 
                         $navItems[] = ['label' => 'Войти', 'url' => ['/site/login']];
                         $navItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];
@@ -61,7 +61,7 @@ AppAsset::register($this);
                             )
                             . Html::endForm()
                             . '</li>';
-                    }
+                    }*/
 
                     echo Nav::widget([
                         'options' => ['class' => 'navbar-nav navbar-right'],

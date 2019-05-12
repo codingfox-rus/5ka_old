@@ -2,16 +2,25 @@
 namespace app\components\markets;
 
 use Yii;
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+use GuzzleHttp\Exception\ConnectException;
 use app\models\Region;
 use app\models\Location;
 use app\models\Discount;
+use app\models\Product;
 
 class FiveShop implements \app\interfaces\iMarket
 {
     public const SITE_URL           = 'https://5ka.ru';
+    public const DOMAIN             = '.5ka.ru';
+
     public const REGIONS_API_URL    = '/api/regions/';
     public const DISCOUNT_API_URL   = '/api/special_offers/?format=json&ordering=-discount_percent';
     public const PREVIEWS_PATH      = '/previews/five_shop/';
+
+    public const DEFAULT_LOCATION_ID = 2223;
+    public const REQUEST_TIMEOUT = 30;
 
     /**
      * @return bool
@@ -96,7 +105,6 @@ class FiveShop implements \app\interfaces\iMarket
                 )->execute();
 
             echo "Сохранено $totalLocations локаций". PHP_EOL;
-
             return true;
         }
 
@@ -105,39 +113,38 @@ class FiveShop implements \app\interfaces\iMarket
     }
 
     /**
-     * @return string
-     */
-    public function getFilePath(): string
-    {
-        return Yii::$app->basePath . '/data/discount/five-shop.json';
-    }
-
-    /**
-     * @param int $recordsPerPage
-     * @return bool|string
-     */
-    public function getData($recordsPerPage = 1000)
-    {
-        $url = implode('', [
-            self::SITE_URL,
-            self::DISCOUNT_API_URL,
-            '&records_per_page='. $recordsPerPage,
-        ]);
-
-        return file_get_contents($url);
-    }
-
-    /**
      * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateData(): bool
     {
-        $preparedData = $this->getPreparedData();
+        $locationId = self::DEFAULT_LOCATION_ID;
 
+        $preparedData = $this->getPreparedData($locationId);
+
+        if ($preparedData === null) {
+            echo 'Не удалось получить данные'. PHP_EOL;
+            return false;
+        }
+
+        $this->updateDiscountData($preparedData['discountData'], $locationId);
+
+        $this->updateProductData($preparedData['productData']);
+
+        return true;
+    }
+
+    /**
+     * @param array $items
+     * @param int $locationId
+     */
+    protected function updateDiscountData(array $items, int $locationId): void
+    {
         $lastRow = Discount::find()
             ->select(['dateStart'])
             ->where([
                 'market' => Discount::FIVE_SHOP,
+                'locationId' => $locationId,
             ])
             ->orderBy([
                 'dateStart' => SORT_DESC,
@@ -148,7 +155,7 @@ class FiveShop implements \app\interfaces\iMarket
 
         $actualData = [];
 
-        foreach ($preparedData as $item) {
+        foreach ($items as $item) {
 
             if (!$lastRow || (int)$item['dateStart'] > (int)$lastRow['dateStart']) {
 
@@ -161,7 +168,7 @@ class FiveShop implements \app\interfaces\iMarket
 
         try {
 
-            Yii::$app->db->createCommand()
+            $totalRows = Yii::$app->db->createCommand()
                 ->batchInsert(
                     Discount::tableName(),
                     Discount::getDataColumns(),
@@ -171,81 +178,198 @@ class FiveShop implements \app\interfaces\iMarket
 
             $transaction->commit();
 
-            $totalRows = \count($actualData);
-
-            echo "{$totalRows} added". PHP_EOL;
+            echo "{$totalRows} discounts added". PHP_EOL;
 
         } catch (\Exception $e) {
 
             $errMes = $e->getMessage();
-
             echo $errMes. PHP_EOL;
-
             Yii::error($errMes);
 
             $transaction->rollBack();
         }
-
-        return true;
     }
 
     /**
-     * @return array
+     * @param array $items
      */
-    public function getPreparedData(): array
+    protected function updateProductData(array $items): void
     {
-        $filePath = $this->getFilePath();
+        $existsProductIds = array_map(function($row){
+            return $row['pId'];
+        }, Product::find()->select('pId')->asArray()->all());
 
-        $data = json_decode(file_get_contents($filePath), true);
+        $actualItems = [];
 
-        $preparedData = [];
+        foreach ($items as $item) {
+
+            $conditon = !\in_array($item['pId'], $existsProductIds, false);
+
+            if ($conditon) {
+                $actualItems[] = $item;
+            }
+        }
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+
+            $totalRows = Yii::$app->db
+                ->createCommand()
+                ->batchInsert(
+                    Product::tableName(),
+                    [
+                        'pId',
+                        'name',
+                        'imageBig',
+                        'imageSmall',
+                        'createdAt'
+                    ],
+                    $actualItems
+                )->execute();
+
+            $transaction->commit();
+
+            echo $totalRows .' products added'. PHP_EOL;
+
+        } catch (\Exception $e) {
+
+            $errMes = $e->getMessage();
+            echo $errMes. PHP_EOL;
+            Yii::error($errMes);
+
+            $transaction->rollBack();
+        }
+    }
+
+    /**
+     * @param int|null $locationId
+     * @return array|null
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPreparedData(int $locationId = null):? array
+    {
+        $data = json_decode($this->getData($locationId), true);
+
+        if ($data === null) {
+            return null;
+        }
+
+        $discountData = [];
+
+        $productData = [];
 
         if (!empty($data['results'])) {
 
            foreach ($data['results'] as $result) {
 
-               $preparedData[] = $this->getItem($result);
+               $discountData[] = $this->getDiscountItem($result, $locationId);
+
+               $productData[] = $this->getProductItem($result);
            }
         }
 
-        return $preparedData;
+        return [
+            'discountData' => $discountData,
+            'productData' => $productData,
+        ];
+    }
+
+    /**
+     * @param int|null $locationId
+     * @param int $recordsPerPage
+     * @return null|string
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getData(int $locationId = null, int $recordsPerPage = 1000):? string
+    {
+        $url = implode('', [
+            self::SITE_URL,
+            self::DISCOUNT_API_URL,
+            '&records_per_page='. $recordsPerPage,
+        ]);
+
+        $client = new Client([
+            'timeout'  => self::REQUEST_TIMEOUT,
+        ]);
+
+        $cookies = ['location_id' => $locationId];
+
+        $cookieJar = \GuzzleHttp\Cookie\CookieJar::fromArray($cookies, self::DOMAIN);
+
+        try {
+            $response = $client->request('GET', $url, [
+                RequestOptions::COOKIES => $cookieJar,
+            ]);
+
+        } catch (ConnectException $e) {
+
+            echo 'Request timeout '. $e->getMessage();
+
+        } catch (\Exception $e) {
+
+            echo $e->getMessage() . PHP_EOL;
+            Yii::error($e->getMessage());
+        }
+
+        if ($response !== null && $response->getStatusCode() === 200) {
+
+            return $response->getBody()->getContents();
+        }
+
+        return null;
     }
 
     /**
      * @param array $result
      * @return array
      */
-    public function getItem(array $result): array
+    public function getDiscountItem(array $result, int $locationId): array
     {
-        $item['market'] = Discount::FIVE_SHOP;
+        $item['market']             = Discount::FIVE_SHOP;
 
-        $item['productId'] = null;
+        $item['locationId']         = $locationId;
 
-        $item['productName'] = $result['name'];
+        $item['productId']          = $result['id'];
 
-        $item['url'] = null;
+        $item['productName']        = $result['name'];
 
-        $item['description'] = $result['description'];
+        $item['url']                = null;
 
-        $item['imageSmall'] = $result['image_small'];
+        $item['description']        = $result['description'];
 
-        $item['imageBig'] = $result['image_big'];
+        $item['regularPrice']       = $result['params']['regular_price'];
 
-        $item['regularPrice'] = $result['params']['regular_price'];
+        $item['specialPrice']       = $result['params']['special_price'];
 
-        $item['specialPrice'] = $result['params']['special_price'];
+        $item['discountPercent']    = $result['params']['discount_percent'];
 
-        $item['discountPercent'] = $result['params']['discount_percent'];
+        $item['dateStart']          = $result['params']['date_start'];
 
-        $item['dateStart'] = $result['params']['date_start'];
+        $item['dateEnd']            = $result['params']['date_end'];
 
-        $item['dateEnd'] = $result['params']['date_end'];
+        $item['status']             = Discount::STATUS_ACTIVE;
 
-        $item['status'] = Discount::STATUS_ACTIVE;
+        $item['createdAt']          = time();
 
-        //$item['jsonData'] = json_encode($result, JSON_UNESCAPED_UNICODE);
+        return $item;
+    }
 
-        $item['createdAt'] = time();
+    /**
+     * @param array $result
+     * @return array
+     */
+    public function getProductItem(array $result): array
+    {
+        $item['pId']            = $result['id'];
+
+        $item['productName']    = $result['name'];
+
+        $item['imageSmall']     = $result['image_small'];
+
+        $item['imageBig']       = $result['image_big'];
+
+        $item['createdAt']      = time();
 
         return $item;
     }
@@ -253,7 +377,7 @@ class FiveShop implements \app\interfaces\iMarket
     /**
      *
      */
-    public function archiveData()
+    public function archiveData(): void
     {
         $res = Discount::updateAll(
             [
@@ -269,40 +393,41 @@ class FiveShop implements \app\interfaces\iMarket
         echo "{$res} rows updated". PHP_EOL;
     }
 
-    public function downloadImages()
+    /**
+     *
+     */
+    public function downloadImages(): void
     {
-        $discounts = Discount::find()
-            ->market(Discount::FIVE_SHOP)
-            ->active()
+        $products = Product::find()
             ->noPreview()
             ->limit(self::DOWNLOAD_LIMIT)
             ->all();
 
-        foreach ($discounts as $discount) {
+        foreach ($products as $product) {
 
             $previewFile = uniqid(Discount::FIVE_SHOP, false) . '.jpg';
 
-            $smallUrl = $discount->imageSmall;
-            $bigUrl = $discount->imageBig;
+            $smallUrl = $product->imageSmall;
+            $bigUrl = $product->imageBig;
 
             $smallPath = self::PREVIEWS_PATH . 'small/' . $previewFile;
             $bigPath = self::PREVIEWS_PATH . 'big/' . $previewFile;
 
             if (copy($smallUrl, Yii::$app->basePath .'/web'. $smallPath)) {
 
-                $discount->previewSmall = $smallPath;
+                $product->previewSmall = $smallPath;
 
                 echo Discount::FIVE_SHOP .' small preview copied successfully' . PHP_EOL;
             }
 
             if (copy($bigUrl, Yii::$app->basePath .'/web'. $bigPath)) {
 
-                $discount->previewBig = $bigPath;
+                $product->previewBig = $bigPath;
 
                 echo Discount::FIVE_SHOP .' big preview copied successfully' . PHP_EOL;
             }
 
-            $discount->save(false);
+            $product->save(false);
         }
     }
 }

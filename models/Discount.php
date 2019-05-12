@@ -2,6 +2,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
 
 /**
@@ -10,15 +11,12 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property int $categoryId
  * @property string $market
+ * @property int $locationId
  * @property int $productId
  * @property string $productName
  * @property string $url
  * @property string $description
  * @property string $condition
- * @property string $imageSmall
- * @property string $imageBig
- * @property string $previewSmall
- * @property string $previewBig
  * @property string $regularPrice
  * @property string $specialPrice
  * @property string $discountPercent
@@ -30,6 +28,8 @@ use yii\behaviors\TimestampBehavior;
  * @property int $updatedAt
  *
  * @property Category $category
+ * @property Location $location
+ * @property Product $product
  * @property string $smallPreview
  * @property string $bigPreview
  */
@@ -80,7 +80,7 @@ class Discount extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public static function getStatuses()
+    public static function getStatuses(): array
     {
         return [
             self::STATUS_ACTIVE => 'Актуально',
@@ -89,18 +89,25 @@ class Discount extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return string
+     */
+    /*public function formName(): string
+    {
+        return '';
+    }*/
+
+    /**
      * @return array
      */
     public static function getDataColumns()
     {
         return [
             'market',
+            'locationId',
             'productId',
             'productName',
             'url',
             'description',
-            'imageSmall',
-            'imageBig',
             'regularPrice',
             'specialPrice',
             'discountPercent',
@@ -142,6 +149,7 @@ class Discount extends \yii\db\ActiveRecord
         return [
             [[
                 'categoryId',
+                'locationId',
                 'productId',
                 'dateStart',
                 'dateEnd',
@@ -179,13 +187,6 @@ class Discount extends \yii\db\ActiveRecord
                 'url',
             ], 'string', 'max' => 255],
 
-            [[
-                'imageSmall',
-                'imageBig',
-                'previewSmall',
-                'previewBig',
-            ], 'string', 'max' => 512],
-
             [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categoryId' => 'id']],
         ];
     }
@@ -199,15 +200,12 @@ class Discount extends \yii\db\ActiveRecord
             'id' => 'ID',
             'categoryId' => 'Категория',
             'market' => 'Поставщик',
-            'productId' => 'ID товара',
+            'locationId' => 'Локация',
+            'productId' => 'Товара',
             'productName' => 'Наименование',
             'url' => 'Url',
             'description' => 'Описание',
             'condition' => 'Условия скидки',
-            'imageSmall' => 'Превью c сайта малое',
-            'imageBig' => 'Превью с сайта крупное',
-            'previewSmall' => 'Превью загруженное малое',
-            'previewBig' => 'Превью загруженное крупное',
             'regularPrice' => 'Цена',
             'specialPrice' => 'Цена со скидкой',
             'discountPercent' => 'Процент скидки',
@@ -224,7 +222,7 @@ class Discount extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCategory()
+    public function getCategory(): ActiveQuery
     {
         return $this->hasOne(Category::class, ['id' => 'categoryId']);
     }
@@ -244,14 +242,19 @@ class Discount extends \yii\db\ActiveRecord
      */
     public function getSmallPreview(): string
     {
-        $siteUrl = self::getMarketUrls()[$this->market];
+        //$siteUrl = self::getMarketUrls()[$this->market];
 
-        if ($this->previewSmall !== null) {
+        if ($this->product) {
 
-            return Yii::getAlias('@web') . $this->previewSmall;
+            if ($this->product->previewSmall !== null) {
+
+                return Yii::getAlias('@web') . $this->product->previewSmall;
+            }
+
+            return $this->product->imageSmall;
         }
 
-        return $siteUrl . $this->imageSmall;
+        return '';
     }
 
     /**
@@ -262,11 +265,32 @@ class Discount extends \yii\db\ActiveRecord
     {
         //$siteUrl = self::getMarketUrls()[$this->market];
 
-        if ($this->previewBig !== null) {
+        if ($this->product) {
 
-            return Yii::getAlias('@web') . $this->previewBig;
+            if ($this->product->previewBig !== null) {
+
+                return Yii::getAlias('@web') . $this->product->previewBig;
+            }
+
+            return $this->product->imageBig;
         }
 
-        return $this->imageBig;
+        return '';
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getLocation(): ActiveQuery
+    {
+        return $this->hasOne(Location::class, ['id' => 'locationId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getProduct(): ActiveQuery
+    {
+        return $this->hasOne(Product::class, ['pId' => 'productId']);
     }
 }

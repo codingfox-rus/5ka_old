@@ -68,17 +68,6 @@ class DiscountQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     * Без превьюх
-     * @return DiscountQuery
-     */
-    public function noPreview(): DiscountQuery
-    {
-        return $this->andWhere([
-            'previewBig' => null,
-        ]);
-    }
-
-    /**
      * @return DiscountQuery
      */
     public function actual() : DiscountQuery

@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use Yii;
@@ -19,7 +18,7 @@ class Location extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'location';
     }
@@ -27,7 +26,7 @@ class Location extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'regionId', 'name'], 'required'],
@@ -41,12 +40,12 @@ class Location extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
-            'regionId' => 'Region ID',
-            'name' => 'Name',
+            'regionId' => 'Регион',
+            'name' => 'Наименование',
         ];
     }
 

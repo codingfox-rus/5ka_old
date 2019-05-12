@@ -6,6 +6,8 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'shop-tracker',
     'name' => '5magaz',
+    'language' => 'ru-RU',
+    'timeZone' => 'Europe/Moscow',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -67,7 +69,7 @@ $config = [
         ],
         'formatter' => [
             'class' => \yii\i18n\Formatter::class,
-            'locale' => 'ru-RU',
+            'locale' => 'ru.RU',
             'dateFormat' => 'dd MMMM',
             'defaultTimeZone' => 'Europe/Moscow',
         ],
