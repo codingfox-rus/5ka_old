@@ -25,24 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
 
             [
-                'attribute' => 'market',
-                'filter' => Discount::getMarkets(),
-                'value' => function (Discount $model) {
-
-                    return Discount::getMarkets()[$model->market];
-                }
-            ],
-
-            [
-                'attribute' => 'categoryId',
-                'filter' => ArrayHelper::map(Category::find()->all(), 'id', 'name'),
-                'value' => function (Discount $model) {
-
-                    return $model->category ? $model->category->name : '-';
-                }
-            ],
-
-            [
                 'attribute' => 'imageSmall',
                 'format' => 'html',
                 'value' => function (Discount $model) {
@@ -81,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
             [
-                'class' => 'yii\grid\ActionColumn',
+                'class' => \yii\grid\ActionColumn::class,
                 'header' => 'Действия',
                 'template' => '<div class="text-center">{view}</div>',
                 'buttons' => [

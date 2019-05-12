@@ -18,30 +18,6 @@ class DiscountController extends Controller
     }
 
     /**
-     * Сохраняем данные
-     */
-    public function actionSaveData()
-    {
-        $marketClasses = Discount::getMarketClasses();
-
-        foreach ($marketClasses as $market => $class) {
-
-            /** @var \app\interfaces\iMarket $handler */
-            $handler = new $class;
-
-            $data = $handler->getData();
-
-            $path = $handler->getFilePath();
-
-            if (file_put_contents($path, $data)) {
-                echo "Data for {$market} successfully saved". PHP_EOL;
-            } else {
-                echo "Error on saving data for {$market}". PHP_EOL;
-            }
-        }
-    }
-
-    /**
      * Обновляем данные
      */
     public function actionUpdateData()
@@ -50,18 +26,22 @@ class DiscountController extends Controller
     }
 
     /**
-     * Архивируем данные
-     */
-    public function actionArchiveData()
-    {
-        $this->fiveShop->archiveData();
-    }
-
-    /**
      * Скачиваем изображения товаров, чтобы не обращаться к родительскому сайту
      */
     public function actionDownloadImages()
     {
         $this->fiveShop->downloadImages();
+    }
+
+    /**
+     * Удаляем все скидки (в целях отладки)
+     */
+    public function actionDropAll()
+    {
+        $totalDeleted = Discount::deleteAll([
+            'market' => Discount::FIVE_SHOP,
+        ]);
+
+        echo $totalDeleted .' rows deleted'. PHP_EOL;
     }
 }

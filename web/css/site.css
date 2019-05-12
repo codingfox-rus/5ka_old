@@ -3,7 +3,7 @@ body {
     height: 100%;
 }
 
-.wrap {
+.wrap, .wrap-admin {
     min-height: 100%;
     height: auto;
     margin: 0 auto -60px;
@@ -12,6 +12,10 @@ body {
 
 .wrap > .container {
     padding: 20px 15px 20px;
+}
+
+.wrap-admin > .container {
+    padding: 70px 15px 20px;
 }
 
 .footer {
