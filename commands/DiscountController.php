@@ -26,14 +26,6 @@ class DiscountController extends Controller
     }
 
     /**
-     * Архивируем данные
-     */
-    public function actionArchiveData()
-    {
-        $this->fiveShop->archiveData();
-    }
-
-    /**
      * Скачиваем изображения товаров, чтобы не обращаться к родительскому сайту
      */
     public function actionDownloadImages()

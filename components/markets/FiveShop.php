@@ -131,6 +131,8 @@ class FiveShop implements \app\interfaces\iMarket
 
         $this->updateProductData($preparedData['productData']);
 
+        $this->archiveData();
+
         return true;
     }
 
@@ -390,7 +392,7 @@ class FiveShop implements \app\interfaces\iMarket
             ]
         );
 
-        echo "{$res} rows updated". PHP_EOL;
+        echo "{$res} discounts archived". PHP_EOL;
     }
 
     /**
