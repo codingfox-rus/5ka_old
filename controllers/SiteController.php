@@ -67,7 +67,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-       $this->addPageInfo(Page::INDEX);
+        $this->addPageInfo(Page::INDEX);
 
         $searchModel = new DiscountSearch();
 

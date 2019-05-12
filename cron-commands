@@ -19,8 +19,7 @@
 # 
 # For more information see the manual pages of crontab(5) and cron(8)
 # 
-# m h  dom mon dow   command 
-
+# m h  dom mon dow   command
 
 0 0 * * 0 php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii data/update-regions > /dev/null 2>&1
 
