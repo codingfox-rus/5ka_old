@@ -19,21 +19,11 @@
 # 
 # For more information see the manual pages of crontab(5) and cron(8)
 # 
-# m h  dom mon dow   command
-
-#*/5 * * * * php /home/hosting_bandicoot/projects/pg-telegram-bot/htdocs/yii console/get-fresh-news > /dev/null 2>&1 
-
-*/5 * * * * php /home/hosting_bandicoot/projects/agregator/htdocs/yii console/update-posts > /dev/null 2>&1
-
-#0 * * * * php /home/hosting_bandicoot/projects/linkcache/htdocsyii link/check-access > /dev/null 2>&1
-
-#0 * * * * php /home/hosting_bandicoot/projects/linkcache/htdocsyii link/remind > /dev/null 2>&1
-
-#*/15 * * * * php /home/hosting_bandicoot/projects/linkcache/htdocs/yii mail/send > /dev/null 2>&1
+# m h  dom mon dow   command 
 
 10 0 * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/save-data > /dev/null 2>&1
 
-20 0 * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/update-data five_shop > /dev/null 2>&1
+20 0 * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/update-data > /dev/null 2>&1
 
 */10 * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/download-images > /dev/null 2>&1
 
