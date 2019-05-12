@@ -5,7 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'shop-tracker',
-    'name' => 'FollowSale',
+    'name' => '5magaz',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [

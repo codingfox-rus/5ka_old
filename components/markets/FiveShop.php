@@ -2,13 +2,107 @@
 namespace app\components\markets;
 
 use Yii;
+use app\models\Region;
+use app\models\Location;
 use app\models\Discount;
 
 class FiveShop implements \app\interfaces\iMarket
 {
-    const SITE_URL = 'https://5ka.ru';
-    const API_URL = '/api/special_offers/?format=json&ordering=-discount_percent';
-    const PREVIEWS_PATH = '/previews/five_shop/';
+    public const SITE_URL           = 'https://5ka.ru';
+    public const REGIONS_API_URL    = '/api/regions/';
+    public const DISCOUNT_API_URL   = '/api/special_offers/?format=json&ordering=-discount_percent';
+    public const PREVIEWS_PATH      = '/previews/five_shop/';
+
+    /**
+     * @return bool
+     * @throws \yii\db\Exception
+     */
+    public function updateRegions(): bool
+    {
+        $regionsUrl = self::SITE_URL . self::REGIONS_API_URL;
+
+        $regionsData = json_decode(file_get_contents($regionsUrl), true);
+
+        $regions = $regionsData['regions'] ?? null;
+
+        if ($regions) {
+
+            // Очищаем старые данные
+            Region::deleteAll();
+
+            $columns = array_keys((new Region())->attributes);
+
+            $totalRegions = Yii::$app->db
+                ->createCommand()
+                ->batchInsert(
+                    Region::tableName(),
+                    $columns,
+                    $regions
+                )->execute();
+
+            echo "Сохранено $totalRegions регионов". PHP_EOL;
+
+            $this->updateLocations($regions);
+
+            return true;
+        }
+
+        echo 'Нет данных по регионам'. PHP_EOL;
+        return false;
+    }
+
+    /**
+     * @param array $regions
+     * @return bool
+     * @throws \yii\db\Exception
+     */
+    protected function updateLocations(array $regions): bool
+    {
+        $locations = [];
+
+        foreach ($regions as $region) {
+
+            if (empty($region['id'])) {
+                continue;
+            }
+
+            $regionUrl = self::SITE_URL . self::REGIONS_API_URL . $region['id'];
+
+            $locationData = json_decode(file_get_contents($regionUrl), true);
+
+            if (isset($locationData['items'])) {
+
+                foreach ($locationData['items'] as $item) {
+
+                    $locations[] = [
+                        'id' => $item['id'],
+                        'regionId' => $item['region'],
+                        'name' => $item['name'],
+                    ];
+                }
+            }
+        }
+
+        if ($locations) {
+
+            $columns = array_keys((new Location())->attributes);
+
+            $totalLocations = Yii::$app->db
+                ->createCommand()
+                ->batchInsert(
+                    Location::tableName(),
+                    $columns,
+                    $locations
+                )->execute();
+
+            echo "Сохранено $totalLocations локаций". PHP_EOL;
+
+            return true;
+        }
+
+        echo 'Нет данных по локациям'. PHP_EOL;
+        return false;
+    }
 
     /**
      * @return string
@@ -26,7 +120,7 @@ class FiveShop implements \app\interfaces\iMarket
     {
         $url = implode('', [
             self::SITE_URL,
-            self::API_URL,
+            self::DISCOUNT_API_URL,
             '&records_per_page='. $recordsPerPage,
         ]);
 

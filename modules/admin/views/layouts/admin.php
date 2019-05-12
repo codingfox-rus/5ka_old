@@ -40,34 +40,12 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             [
+                'label' => 'Локации',
+                'url' => ['/admin/location/index']
+            ],
+            [
                 'label' => 'Страницы',
                 'url' => ['/admin/page/index'],
-            ],
-            [
-                'label' => 'Скидки в магазинах',
-                'url' => '#',
-                'items' => [
-                    [
-                        'label' => 'Пятерочка',
-                        'url' => ['/admin/discount/index'],
-                    ],
-                    [
-                        'label' => 'Магнит',
-                        'url' => ['#'],
-                    ],
-                    [
-                        'label' => 'Красное и белое',
-                        'url' => ['#'],
-                    ],
-                ],
-            ],
-            [
-                'label' => 'Магазины',
-                'url' => ['/admin/market/index'],
-            ],
-            [
-                'label' => 'Категории',
-                'url' => ['/admin/category/index']
             ],
 
             Yii::$app->user->isGuest ? (
