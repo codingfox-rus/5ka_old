@@ -5,6 +5,8 @@
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\widgets\Breadcrumbs;
+use app\widgets\City;
+use app\widgets\CityChange;
 use app\assets\AppAsset;
 
 AppAsset::register($this);
@@ -27,7 +29,7 @@ AppAsset::register($this);
 <header>
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="logo-wrapper">
                     <div class="logo">
                         <?= Html::a('Скидки в Пятерочке', '/', [
@@ -40,7 +42,14 @@ AppAsset::register($this);
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
+                <?= City::widget([
+                    'userLocationId' => $_COOKIE['userLocationId'] ?? null,
+                    'ip' => Yii::$app->request->userIP,
+                ]) ?>
+            </div>
+
+            <div class="col-md-4">
                 <?php
                     $navItems = [];
                     $navItems[] = ['label' => 'Обратная связь', 'url' => ['/site/feedback']];
@@ -107,6 +116,8 @@ AppAsset::register($this);
     <noscript><div><img src="https://mc.yandex.ru/watch/53594794" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
 <?php } ?>
+
+<?= CityChange::widget() ?>
 
 <?php $this->endBody() ?>
 </body>
