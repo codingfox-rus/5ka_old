@@ -19,8 +19,9 @@ class FiveShop implements \app\interfaces\iMarket
     public const DISCOUNT_API_URL   = '/api/special_offers/?format=json&ordering=-discount_percent';
     public const PREVIEWS_PATH      = '/previews/five_shop/';
 
-    public const DEFAULT_LOCATION_ID = 2223;
-    public const REQUEST_TIMEOUT = 30;
+    public const DEFAULT_LOCATION_ID    = 2223;
+    public const REQUEST_TIMEOUT        = 30;
+    public const DAY_TIME               = 86400;
 
     /**
      * @return bool
@@ -113,34 +114,65 @@ class FiveShop implements \app\interfaces\iMarket
     }
 
     /**
+     * @param int|null $locationId
      * @return bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function updateData(): bool
+    public function updateData(int $locationId = null): bool
     {
-        $locationId = self::DEFAULT_LOCATION_ID;
+        if ($locationId) {
+            $location = Location::findOne($locationId);
+        } else {
+            $location = $this->getLocationForUpdate();
+        }
 
-        $preparedData = $this->getPreparedData($locationId);
+        if ($location) {
 
-        if ($preparedData === null) {
+            $preparedData = $this->getPreparedData($location->id);
+
+            if ($preparedData) {
+
+                $totalUpd = $this->updateDiscountData($preparedData['discountData'], $location->id);
+
+                $this->updateProductData($preparedData['productData']);
+
+                $this->deleteData();
+
+                $location->dataUpdatedAt = time();
+                $location->save(false);
+
+                return true;
+            }
+
             echo 'Не удалось получить данные'. PHP_EOL;
             return false;
         }
 
-        $this->updateDiscountData($preparedData['discountData'], $locationId);
+        echo 'Нет локации для обновления данных'. PHP_EOL;
+        return false;
+    }
 
-        $this->updateProductData($preparedData['productData']);
+    /**
+     * @return Location|null
+     */
+    public function getLocationForUpdate():? Location
+    {
+        $location = Location::find()
+            ->city()
+            ->andWhere([
+                '<', 'dataUpdatedAt', time() - self::DAY_TIME
+            ])
+            ->one();
 
-        $this->archiveData();
-
-        return true;
+        return $location;
     }
 
     /**
      * @param array $items
      * @param int $locationId
+     * @return int
      */
-    protected function updateDiscountData(array $items, int $locationId): void
+    protected function updateDiscountData(array $items, int $locationId): int
     {
         $lastRow = Discount::find()
             ->select(['dateStart'])
@@ -156,6 +188,7 @@ class FiveShop implements \app\interfaces\iMarket
             ->one();
 
         $actualData = [];
+        $totalRows = 0;
 
         foreach ($items as $item) {
 
@@ -163,6 +196,11 @@ class FiveShop implements \app\interfaces\iMarket
 
                 $actualData[] = $item;
             }
+        }
+
+        if (empty($actualData)) {
+            echo 'No data'. PHP_EOL;
+            return $totalRows;
         }
 
         // Сохраняем актуальные данные
@@ -190,6 +228,8 @@ class FiveShop implements \app\interfaces\iMarket
 
             $transaction->rollBack();
         }
+
+        return $totalRows;
     }
 
     /**
@@ -379,20 +419,16 @@ class FiveShop implements \app\interfaces\iMarket
     /**
      *
      */
-    public function archiveData(): void
+    public function deleteData(): void
     {
-        $res = Discount::updateAll(
-            [
-                'status' => 2
-            ],
-            'market = :market and status = 1 and dateEnd < :now',
-            [
-                ':market' => Discount::FIVE_SHOP,
-                ':now' => time(),
-            ]
-        );
+        $res = Discount::deleteAll([
+                'and',
+                ['market' => Discount::FIVE_SHOP],
+                ['status' => Discount::STATUS_ACTIVE],
+                ['<', 'dateEnd', time()]
+            ]);
 
-        echo "{$res} discounts archived". PHP_EOL;
+        echo "{$res} discounts deleted". PHP_EOL;
     }
 
     /**

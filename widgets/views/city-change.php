@@ -16,7 +16,7 @@ use yii\web\JsExpression;
                 <h4 class="modal-title" id="myModalLabel">Выберите город</h4>
             </div>
             <div class="modal-body">
-                <?= Html::beginForm('/site/select-city') ?>
+                <?= Html::beginForm('/site/select-city', 'get') ?>
 
                     <div class="form-group">
                         <?= Select2::widget([

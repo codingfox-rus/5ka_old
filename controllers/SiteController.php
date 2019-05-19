@@ -84,17 +84,16 @@ class SiteController extends Controller
     }
 
     /**
+     * @param null $locationId
      * @return Response
      */
-    public function actionSelectCity(): Response
+    public function actionSelectCity($locationId = null): Response
     {
-        $locationId = Yii::$app->request->post('locationId');
-
         if ($locationId) {
 
             $locationTime = 60 * 60 * 24 * 30; // todo: найти лучший способ
 
-            setcookie('userLocationId', $locationId, time() + $locationTime);
+            setcookie('userLocationId', $locationId, time() + $locationTime, '/');
         }
 
         return $this->redirect(['index']);

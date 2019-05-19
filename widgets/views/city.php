@@ -13,4 +13,15 @@ use yii\helpers\Html;
         'data-toggle' => 'modal',
         'data-target' => '#modalSelectCity',
     ]) ?>
+
+    <?php if ($locationId) { ?>
+
+        <?= Html::a('<i class="fa fa-check"></i>', [
+            '/site/select-city',
+            'locationId' => $locationId,
+        ], [
+            'class' => 'btn btn-success btn-xs'
+        ]) ?>
+
+    <?php } ?>
 </div>

@@ -18,11 +18,12 @@ class DiscountController extends Controller
     }
 
     /**
-     * Обновляем данные
+     * @param int|null $locationId
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function actionUpdateData()
+    public function actionUpdateData(int $locationId = null)
     {
-        $this->fiveShop->updateData();
+        $this->fiveShop->updateData($locationId);
     }
 
     /**

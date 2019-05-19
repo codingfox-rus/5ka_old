@@ -10,6 +10,8 @@ use yii\db\ActiveQuery;
  * @property int $id
  * @property int $regionId
  * @property string $name
+ * @property int $dataUpdatedAt
+ * @property int $dataHandledAt
  *
  * @property Region $region
  */
@@ -30,7 +32,14 @@ class Location extends \yii\db\ActiveRecord
     {
         return [
             [['id', 'regionId', 'name'], 'required'],
-            [['id', 'regionId'], 'integer'],
+
+            [[
+                'id',
+                'regionId',
+                'dataUpdatedAt',
+                'dataHandledAt',
+            ], 'integer'],
+
             [['name'], 'string', 'max' => 255],
             [['id', 'regionId'], 'unique', 'targetAttribute' => ['id', 'regionId']],
             [['regionId'], 'exist', 'skipOnError' => true, 'targetClass' => Region::className(), 'targetAttribute' => ['regionId' => 'id']],
@@ -46,6 +55,8 @@ class Location extends \yii\db\ActiveRecord
             'id' => 'ID',
             'regionId' => 'Регион',
             'name' => 'Наименование',
+            'dataUpdatedAt' => 'Данные обновлены',
+            'dataHandledAt' => 'Данные обработаны',
         ];
     }
 

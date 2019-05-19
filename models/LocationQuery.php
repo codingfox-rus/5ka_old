@@ -9,6 +9,16 @@ namespace app\models;
  */
 class LocationQuery extends \yii\db\ActiveQuery
 {
+    /**
+     * @return LocationQuery
+     */
+    public function city()
+    {
+        return $this->andWhere([
+            'like', 'name', 'г. '
+        ]);
+    }
+
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');
