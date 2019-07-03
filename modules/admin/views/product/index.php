@@ -2,7 +2,9 @@
 /* @var $searchModel app\models\ProductSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+use yii\helpers\Html;
 use yii\grid\GridView;
+use app\models\Product;
 
 $this->title = 'Товары';
 $this->params['breadcrumbs'][] = $this->title;
@@ -16,6 +18,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'dataProvider' => $dataProvider,
         'columns' => [
+            [
+                'label' => 'Превью',
+                'format' => 'html',
+                'content' => function (Product $model) {
+                    if ($model->preview) {
+                        return Html::img($model->preview, [
+                            'width' => '200',
+                        ]);
+                    }
+
+                    return '-';
+                }
+            ],
             'id',
             'name',
         ]

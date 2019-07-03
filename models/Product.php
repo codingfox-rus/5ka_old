@@ -19,6 +19,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $updatedAt
  *
  * @property Discount[] $discounts
+ * @property string|null $preview
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -39,7 +40,7 @@ class Product extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'product';
     }
@@ -47,7 +48,7 @@ class Product extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['pId', 'name'], 'required'],
@@ -60,7 +61,7 @@ class Product extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -90,5 +91,13 @@ class Product extends \yii\db\ActiveRecord
     public function getDiscounts(): ActiveQuery
     {
         return $this->hasMany(Discount::class, ['productId' => 'pId']);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPreview():? string
+    {
+        return $this->previewSmall ?? $this->imageSmall;
     }
 }
