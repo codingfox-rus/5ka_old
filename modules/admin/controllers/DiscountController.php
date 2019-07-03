@@ -2,13 +2,12 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use yii\web\Response;
 use yii\web\NotFoundHttpException;
 use app\models\Discount;
 use app\models\DiscountSearch;
-use app\models\Category;
+use app\models\Stat;
+use yii\web\Response;
 
 class DiscountController extends MainController
 {
@@ -63,53 +62,6 @@ class DiscountController extends MainController
         ]);
     }
 
-    public function actionLoadCreateCategoryForm()
-    {
-        $model = new Category();
-
-        return $this->renderPartial('/_partials/form-create-category', [
-            'model' => $model
-        ]);
-    }
-
-    /**
-     * @param int $id
-     * @return string
-     * @throws \Exception
-     */
-    public function actionLoadAttachToCategoryForm(int $id)
-    {
-        $model = $this->findModel($id);
-
-        $categories = Category::find()->all();
-
-        return $this->renderPartial('_partials/form-attach-to-category', [
-            'model' => $model,
-            'categories' => $categories,
-        ]);
-    }
-
-    /**
-     * @param int $id
-     * @return array
-     * @throws NotFoundHttpException
-     */
-    public function actionAttachToCategory(int $id)
-    {
-        $model = $this->findModel($id);
-
-        $model->categoryId = Yii::$app->request->post('categoryId');
-
-        if ($model->save()) {
-            $res = ['status' => 'success'];
-        } else {
-            $res = ['status' => 'error'];
-        }
-
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return $res;
-    }
-
     /**
      * @param int $id
      * @return Discount
@@ -118,10 +70,49 @@ class DiscountController extends MainController
     protected function findModel(int $id)
     {
         if (($model = Discount::findOne($id)) !== null) {
-
             return $model;
         }
 
         throw new NotFoundHttpException('Запись не найдена');
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionEnableStat(int $id): Response
+    {
+        $discount = $this->findModel($id);
+
+        $stat = new Stat();
+        $stat->locationId = $discount->locationId;
+        $stat->productId = $discount->productId;
+        $stat->save();
+
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function actionDisableStat(int $id): Response
+    {
+        $discount = $this->findModel($id);
+
+        $stat = Stat::findOne([
+            'locationId' => $discount->locationId,
+            'productId' => $discount->productId,
+        ]);
+
+        if ($stat) {
+            $stat->delete();
+        }
+
+        return $this->redirect(Yii::$app->request->referrer);
     }
 }

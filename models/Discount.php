@@ -23,9 +23,9 @@ use yii\behaviors\TimestampBehavior;
  * @property int $createdAt
  * @property int $updatedAt
  *
- * @property Category $category
  * @property Location $location
  * @property Product $product
+ * @property Stat $stat
  * @property string $smallPreview
  * @property string $bigPreview
  */
@@ -173,8 +173,6 @@ class Discount extends \yii\db\ActiveRecord
             [[
                 'productName',
             ], 'string', 'max' => 255],
-
-            [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categoryId' => 'id']],
         ];
     }
 
@@ -200,14 +198,6 @@ class Discount extends \yii\db\ActiveRecord
             'updatedAt' => 'Обновлена',
             'preview' => 'Превью',
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCategory(): ActiveQuery
-    {
-        return $this->hasOne(Category::class, ['id' => 'categoryId']);
     }
 
     /**
@@ -274,5 +264,16 @@ class Discount extends \yii\db\ActiveRecord
     public function getProduct(): ActiveQuery
     {
         return $this->hasOne(Product::class, ['pId' => 'productId']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getStat(): ActiveQuery
+    {
+        return $this->hasOne(Stat::class, [
+            'locationId' => 'locationId',
+            'productId' => 'productId',
+        ]);
     }
 }

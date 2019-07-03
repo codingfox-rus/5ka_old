@@ -23,8 +23,10 @@
 
 0 0 * * 0 php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii data/update-regions > /dev/null 2>&1
 
-1 * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/update-data > /dev/null 2>&1
+0 5 * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/update-data > /dev/null 2>&1
 
-*/10 * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/download-images > /dev/null 2>&1
+*/5 * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/download-images > /dev/null 2>&1
 
 * * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii project/send-feedback-messages > /dev/null 2>&1
+
+* * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii stat/process-location > /dev/null 2>&1

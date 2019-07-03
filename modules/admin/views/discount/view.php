@@ -31,6 +31,28 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= DiscountData::widget([
                 'model' => $model,
             ]) ?>
+
+            <div class="text-center">
+                <?php if ($model->stat) { ?>
+
+                    <?= Html::a('Отключить сбор статистики', [
+                        '/admin/discount/disable-stat',
+                        'id' => $model->id,
+                    ], [
+                        'class' => 'btn btn-danger'
+                    ]) ?>
+
+                <?php } else { ?>
+
+                    <?= Html::a('Включить сбор статистики', [
+                        '/admin/discount/enable-stat',
+                        'id' => $model->id,
+                    ], [
+                        'class' => 'btn btn-success',
+                    ]) ?>
+
+                <?php } ?>
+            </div>
         </div>
 
         <div class="col-md-1">

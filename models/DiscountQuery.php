@@ -1,8 +1,21 @@
 <?php
 namespace app\models;
 
-class DiscountQuery extends \yii\db\ActiveQuery
+use yii\db\ActiveQuery;
+
+class DiscountQuery extends ActiveQuery
 {
+    /**
+     * @param int $id
+     * @return DiscountQuery
+     */
+    public function location(int $id): DiscountQuery
+    {
+        return $this->andWhere([
+            'locationId' => $id
+        ]);
+    }
+
     /**
      * @param string $market
      * @return DiscountQuery

@@ -10,6 +10,7 @@ use yii\db\ActiveQuery;
  * @property int $id
  * @property int $regionId
  * @property string $name
+ * @property int $needToProcess
  * @property int $dataUpdatedAt
  * @property int $dataHandledAt
  *
@@ -36,13 +37,14 @@ class Location extends \yii\db\ActiveRecord
             [[
                 'id',
                 'regionId',
+                'needToProcess',
                 'dataUpdatedAt',
                 'dataHandledAt',
             ], 'integer'],
 
             [['name'], 'string', 'max' => 255],
             [['id', 'regionId'], 'unique', 'targetAttribute' => ['id', 'regionId']],
-            [['regionId'], 'exist', 'skipOnError' => true, 'targetClass' => Region::className(), 'targetAttribute' => ['regionId' => 'id']],
+            [['regionId'], 'exist', 'skipOnError' => true, 'targetClass' => Region::class, 'targetAttribute' => ['regionId' => 'id']],
         ];
     }
 
@@ -55,6 +57,7 @@ class Location extends \yii\db\ActiveRecord
             'id' => 'ID',
             'regionId' => 'Регион',
             'name' => 'Наименование',
+            'needToProcess' => 'Необходимость сбора статистики',
             'dataUpdatedAt' => 'Данные обновлены',
             'dataHandledAt' => 'Данные обработаны',
         ];
@@ -65,15 +68,15 @@ class Location extends \yii\db\ActiveRecord
      */
     public function getRegion(): ActiveQuery
     {
-        return $this->hasOne(Region::className(), ['id' => 'regionId']);
+        return $this->hasOne(Region::class, ['id' => 'regionId']);
     }
 
     /**
      * {@inheritdoc}
      * @return LocationQuery the active query used by this AR class.
      */
-    public static function find()
+    public static function find(): LocationQuery
     {
-        return new LocationQuery(get_called_class());
+        return new LocationQuery(static::class);
     }
 }

@@ -4,11 +4,9 @@
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Discount;
-use app\models\Category;
 
 $this->title = 'Скидки';
 $this->params['breadcrumbs'][] = $this->title;

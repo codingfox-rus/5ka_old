@@ -9,6 +9,7 @@ use app\models\Region;
 use app\models\Location;
 use app\models\Discount;
 use app\models\Product;
+use app\models\Stat;
 
 class FiveShop implements \app\interfaces\iMarket
 {
@@ -136,10 +137,16 @@ class FiveShop implements \app\interfaces\iMarket
 
                 $this->deleteData();
 
+                $statLocationIds = $this->getStatLocationIds();
+
+                if (\in_array($location->id, $statLocationIds, false)) {
+                    $location->needToProcess = 1;
+                }
+
                 $location->dataUpdatedAt = time();
                 $location->save(false);
 
-                echo $totalUpd .' discounts updated'. PHP_EOL;
+                echo $totalUpd .' discounts added'. PHP_EOL;
                 return true;
             }
 
@@ -149,6 +156,18 @@ class FiveShop implements \app\interfaces\iMarket
 
         echo 'Нет локации для обновления данных'. PHP_EOL;
         return false;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getStatLocationIds(): array
+    {
+        return Stat::find()
+            ->select('locationId')
+            ->distinct()
+            ->asArray()
+            ->column();
     }
 
     /**
@@ -216,8 +235,6 @@ class FiveShop implements \app\interfaces\iMarket
                 ->execute();
 
             $transaction->commit();
-
-            echo "{$totalRows} discounts added". PHP_EOL;
 
         } catch (\Exception $e) {
 
