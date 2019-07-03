@@ -16,7 +16,7 @@ class FiveShop implements \app\interfaces\iMarket
     public const DOMAIN             = '.5ka.ru';
 
     public const REGIONS_API_URL    = '/api/regions/';
-    public const DISCOUNT_API_URL   = '/api/special_offers/?format=json&ordering=-discount_percent';
+    public const DISCOUNT_API_URL   = '/api/v2/special_offers/';
     public const PREVIEWS_PATH      = '/previews/five_shop/';
 
     public const DEFAULT_LOCATION_ID    = 2223;
@@ -95,13 +95,11 @@ class FiveShop implements \app\interfaces\iMarket
 
         if ($locations) {
 
-            $columns = array_keys((new Location())->attributes);
-
             $totalLocations = Yii::$app->db
                 ->createCommand()
                 ->batchInsert(
                     Location::tableName(),
-                    $columns,
+                    array_keys($locations[0]),
                     $locations
                 )->execute();
 
@@ -141,6 +139,7 @@ class FiveShop implements \app\interfaces\iMarket
                 $location->dataUpdatedAt = time();
                 $location->save(false);
 
+                echo $totalUpd .' discounts updated'. PHP_EOL;
                 return true;
             }
 
@@ -192,7 +191,7 @@ class FiveShop implements \app\interfaces\iMarket
 
         foreach ($items as $item) {
 
-            if (!$lastRow || (int)$item['dateStart'] > (int)$lastRow['dateStart']) {
+            if ($lastRow === null || (int)$item['dateStart'] > (int)$lastRow['dateStart']) {
 
                 $actualData[] = $item;
             }
@@ -245,9 +244,9 @@ class FiveShop implements \app\interfaces\iMarket
 
         foreach ($items as $item) {
 
-            $conditon = !\in_array($item['pId'], $existsProductIds, false);
+            $condition = !\in_array($item['pId'], $existsProductIds, false);
 
-            if ($conditon) {
+            if ($condition) {
                 $actualItems[] = $item;
             }
         }
@@ -291,24 +290,39 @@ class FiveShop implements \app\interfaces\iMarket
      */
     public function getPreparedData(int $locationId = null):? array
     {
-        $data = json_decode($this->getData($locationId), true);
+        $apiData = json_decode($this->getData($locationId), true);
+        $results = [];
 
-        if ($data === null) {
+        if (!empty($apiData['next'])) {
+
+            $results[] = $apiData['results'];
+
+            while ($apiData['next'] !== null) {
+
+                [, $pageNum] = explode('=', $apiData['next']);
+
+                $apiData = json_decode($this->getData($locationId, $pageNum), true);
+
+                $results[] = $apiData['results'];
+            }
+        }
+
+        if (empty($results)) {
+            echo 'Не удалось получить данные по API'. PHP_EOL;
             return null;
         }
 
         $discountData = [];
-
         $productData = [];
 
-        if (!empty($data['results'])) {
+        foreach ($results as $resultGroup) {
 
-           foreach ($data['results'] as $result) {
+            foreach ($resultGroup as $result) {
 
-               $discountData[] = $this->getDiscountItem($result, $locationId);
+                $discountData[] = $this->getDiscountItem($result, $locationId);
 
-               $productData[] = $this->getProductItem($result);
-           }
+                $productData[] = $this->getProductItem($result);
+            }
         }
 
         return [
@@ -319,16 +333,16 @@ class FiveShop implements \app\interfaces\iMarket
 
     /**
      * @param int|null $locationId
-     * @param int $recordsPerPage
+     * @param int $page
      * @return null|string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getData(int $locationId = null, int $recordsPerPage = 1000):? string
+    public function getData(int $locationId = null, int $page = 1):? string
     {
         $url = implode('', [
             self::SITE_URL,
             self::DISCOUNT_API_URL,
-            '&records_per_page='. $recordsPerPage,
+            '?page='. $page,
         ]);
 
         $client = new Client([
@@ -338,6 +352,8 @@ class FiveShop implements \app\interfaces\iMarket
         $cookies = ['location_id' => $locationId];
 
         $cookieJar = \GuzzleHttp\Cookie\CookieJar::fromArray($cookies, self::DOMAIN);
+
+        $response = null;
 
         try {
             $response = $client->request('GET', $url, [
@@ -364,10 +380,17 @@ class FiveShop implements \app\interfaces\iMarket
 
     /**
      * @param array $result
+     * @param int $locationId
      * @return array
      */
     public function getDiscountItem(array $result, int $locationId): array
     {
+        $regularPrice = $result['current_prices']['price_reg__min'] ?? 0;
+
+        $specialPrice = $result['current_prices']['price_promo__min'] ?? 0;
+
+        $discountPercent = $this->getDiscountPercent($regularPrice, $specialPrice);
+
         $item['market']             = Discount::FIVE_SHOP;
 
         $item['locationId']         = $locationId;
@@ -376,25 +399,43 @@ class FiveShop implements \app\interfaces\iMarket
 
         $item['productName']        = $result['name'];
 
-        $item['url']                = null;
+        $item['regularPrice']       = $regularPrice;
 
-        $item['description']        = $result['description'];
+        $item['specialPrice']       = $specialPrice;
 
-        $item['regularPrice']       = $result['params']['regular_price'];
+        $item['discountPercent']    = $discountPercent;
 
-        $item['specialPrice']       = $result['params']['special_price'];
+        $item['dateStart']          = strtotime($result['promo']['date_begin']);
 
-        $item['discountPercent']    = $result['params']['discount_percent'];
+        $item['dateEnd']            = strtotime($result['promo']['date_end']);
 
-        $item['dateStart']          = $result['params']['date_start'];
-
-        $item['dateEnd']            = $result['params']['date_end'];
+        $item['jsonData']           = json_encode($result, JSON_UNESCAPED_UNICODE);
 
         $item['status']             = Discount::STATUS_ACTIVE;
 
         $item['createdAt']          = time();
 
         return $item;
+    }
+
+    /**
+     * @param $regularPrice
+     * @param $specialPrice
+     * @return float|int
+     */
+    protected function getDiscountPercent($regularPrice, $specialPrice)
+    {
+        if ($regularPrice > 0 && $specialPrice > 0) {
+
+            $diff = $regularPrice - $specialPrice;
+
+            if ($diff > 0) {
+
+                return round(($diff / $regularPrice) * 100, 2);
+            }
+        }
+
+        return 0;
     }
 
     /**
@@ -407,9 +448,9 @@ class FiveShop implements \app\interfaces\iMarket
 
         $item['productName']    = $result['name'];
 
-        $item['imageSmall']     = $result['image_small'];
+        $item['imageSmall']     = $result['img_link'];
 
-        $item['imageBig']       = $result['image_big'];
+        $item['imageBig']       = $result['img_link'];
 
         $item['createdAt']      = time();
 

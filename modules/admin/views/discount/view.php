@@ -4,9 +4,7 @@
 /* @var $next app\models\Discount */
 
 use yii\helpers\Html;
-use app\components\markets\FiveShop;
 use app\widgets\DiscountData;
-use app\widgets\DiscountCategory;
 
 $this->title = $model->productName .' - Обновить параметры';
 $this->params['breadcrumbs'][] = ['label' => 'Все скидки', 'url' => ['/admin/discount/index']];
@@ -29,14 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php endif; ?>
         </div>
 
-        <div class="col-md-7">
+        <div class="col-md-10">
             <?= DiscountData::widget([
-                'model' => $model,
-            ]) ?>
-        </div>
-
-        <div class="col-md-3">
-            <?= DiscountCategory::widget([
                 'model' => $model,
             ]) ?>
         </div>

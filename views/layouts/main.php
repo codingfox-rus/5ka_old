@@ -43,10 +43,12 @@ AppAsset::register($this);
             </div>
 
             <div class="col-md-4">
-                <?= City::widget([
-                    'userLocationId' => $_COOKIE['userLocationId'] ?? null,
-                    'ip' => Yii::$app->request->userIP,
-                ]) ?>
+                <?php
+                    /*echo City::widget([
+                        'userLocationId' => $_COOKIE['userLocationId'] ?? null,
+                        'ip' => Yii::$app->request->userIP,
+                    ]);*/
+                ?>
             </div>
 
             <div class="col-md-4">

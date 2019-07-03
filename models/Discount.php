@@ -9,14 +9,10 @@ use yii\behaviors\TimestampBehavior;
  * This is the model class for table "discount".
  *
  * @property int $id
- * @property int $categoryId
  * @property string $market
  * @property int $locationId
  * @property int $productId
  * @property string $productName
- * @property string $url
- * @property string $description
- * @property string $condition
  * @property string $regularPrice
  * @property string $specialPrice
  * @property string $discountPercent
@@ -106,14 +102,12 @@ class Discount extends \yii\db\ActiveRecord
             'locationId',
             'productId',
             'productName',
-            'url',
-            'description',
             'regularPrice',
             'specialPrice',
             'discountPercent',
             'dateStart',
             'dateEnd',
-            //'jsonData',
+            'jsonData',
             'status',
             'createdAt',
         ];
@@ -148,7 +142,6 @@ class Discount extends \yii\db\ActiveRecord
     {
         return [
             [[
-                'categoryId',
                 'locationId',
                 'productId',
                 'dateStart',
@@ -168,23 +161,17 @@ class Discount extends \yii\db\ActiveRecord
             ], 'required'],
 
             [[
-                'description',
-                'condition',
-            ], 'string'],
-
-            [[
                 'regularPrice',
                 'specialPrice',
                 'discountPercent',
             ], 'number'],
 
-            [['jsonData'], 'safe'],
+            [['jsonData'], 'string'],
 
             [['market'], 'string', 'max' => 32],
 
             [[
                 'productName',
-                'url',
             ], 'string', 'max' => 255],
 
             [['categoryId'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categoryId' => 'id']],
@@ -198,14 +185,10 @@ class Discount extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'categoryId' => 'Категория',
             'market' => 'Поставщик',
             'locationId' => 'Локация',
             'productId' => 'Товара',
             'productName' => 'Наименование',
-            'url' => 'Url',
-            'description' => 'Описание',
-            'condition' => 'Условия скидки',
             'regularPrice' => 'Цена',
             'specialPrice' => 'Цена со скидкой',
             'discountPercent' => 'Процент скидки',
@@ -242,13 +225,12 @@ class Discount extends \yii\db\ActiveRecord
      */
     public function getSmallPreview(): string
     {
-        //$siteUrl = self::getMarketUrls()[$this->market];
-
         if ($this->product) {
 
             if ($this->product->previewSmall !== null) {
 
                 return Yii::getAlias('@web') . $this->product->previewSmall;
+
             }
 
             return $this->product->imageSmall;

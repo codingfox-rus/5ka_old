@@ -23,6 +23,10 @@ class DiscountController extends Controller
      */
     public function actionUpdateData(int $locationId = null)
     {
+        if ($locationId === null) {
+            $locationId = FiveShop::DEFAULT_LOCATION_ID;
+        }
+
         $this->fiveShop->updateData($locationId);
     }
 

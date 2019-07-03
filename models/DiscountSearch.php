@@ -36,7 +36,6 @@ class DiscountSearch extends Discount
         return [
             [[
                 'market',
-                'categoryId',
                 'productName',
                 'sortingOrder',
             ], 'string'],
@@ -60,6 +59,8 @@ class DiscountSearch extends Discount
                 'discountPercent' => SORT_DESC,
             ]);
 
+        $query->joinWith('location');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
@@ -76,7 +77,6 @@ class DiscountSearch extends Discount
 
         $query->andFilterWhere([
             'market' => $this->market,
-            'categoryId' => $this->categoryId,
         ]);
 
         $query->andFilterWhere(['like', 'productName', $this->productName]);

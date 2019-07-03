@@ -25,18 +25,27 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
 
             [
-                'attribute' => 'imageSmall',
+                'attribute' => 'locationId',
+                'value' => function (Discount $model) {
+                    if ($model->location) {
+                        return $model->location->name;
+                    }
+
+                    return '-';
+                }
+            ],
+            [
+                'label' => 'Превью',
                 'format' => 'html',
                 'value' => function (Discount $model) {
 
                     return Html::img($model->smallPreview, [
                         'class' => 'img-responsive',
+                        'width' => '200'
                     ]);
                 }
             ],
-
             'productName',
-
             [
                 'label' => 'Цены',
                 'format' => 'html',
@@ -49,7 +58,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return implode('<br>', $out);
                 }
             ],
-
             [
                 'label' => 'Время',
                 'format' => 'html',
@@ -61,7 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     return implode('<br>', $out);
                 }
             ],
-
             [
                 'class' => \yii\grid\ActionColumn::class,
                 'header' => 'Действия',
