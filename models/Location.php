@@ -10,6 +10,7 @@ use yii\db\ActiveQuery;
  * @property int $id
  * @property int $regionId
  * @property string $name
+ * @property int $isEnabled
  * @property int $needToProcess
  * @property int $dataUpdatedAt
  * @property int $dataHandledAt
@@ -37,6 +38,7 @@ class Location extends \yii\db\ActiveRecord
             [[
                 'id',
                 'regionId',
+                'isEnabled',
                 'needToProcess',
                 'dataUpdatedAt',
                 'dataHandledAt',
@@ -57,6 +59,7 @@ class Location extends \yii\db\ActiveRecord
             'id' => 'ID',
             'regionId' => 'Регион',
             'name' => 'Наименование',
+            'isEnabled' => 'Включен сбор статистики',
             'needToProcess' => 'Необходимость сбора статистики',
             'dataUpdatedAt' => 'Данные обновлены',
             'dataHandledAt' => 'Данные обработаны',

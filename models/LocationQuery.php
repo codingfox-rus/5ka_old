@@ -12,17 +12,19 @@ class LocationQuery extends \yii\db\ActiveQuery
     /**
      * @return LocationQuery
      */
-    public function city()
+    public function city(): LocationQuery
     {
         return $this->andWhere([
-            'like', 'name', 'г. '
+            'like', 'location.name', 'г. '
         ]);
     }
 
-    /*public function active()
+    public function enabled(): LocationQuery
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere([
+            'location.isEnabled' => 1
+        ]);
+    }
 
     /**
      * {@inheritdoc}

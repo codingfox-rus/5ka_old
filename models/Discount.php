@@ -31,6 +31,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class Discount extends \yii\db\ActiveRecord
 {
+    public const STAT_PRICE_LIMIT = 49.99;
+
     const FIVE_SHOP = 'five_shop';
     const MAGNIT = 'magnit';
     const BRISTOL = 'bristol';

@@ -40,12 +40,12 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             [
-                'label' => 'Товары',
-                'url' => ['/admin/product/index']
+                'label' => 'Статистика',
+                'url' => ['/admin/region/index']
             ],
             [
-                'label' => 'Локации',
-                'url' => ['/admin/location/index']
+                'label' => 'Товары',
+                'url' => ['/admin/product/index']
             ],
             [
                 'label' => 'Страницы',

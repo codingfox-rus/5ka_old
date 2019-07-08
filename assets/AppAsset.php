@@ -28,9 +28,9 @@ class AppAsset extends AssetBundle
     ];
 
     public $js = [
-        'js/category.js',
         'js/discount.js',
         'js/discount-front.js',
+        'js/admin.js', // todo: вынести админскую статику в отдельный ресурс
     ];
 
     public $depends = [
