@@ -83,7 +83,17 @@ class Stat extends \yii\db\ActiveRecord
      */
     public function getLocation(): ActiveQuery
     {
-        return $this->hasOne(Location::class, ['id' => 'locationId']);
+        return $this->hasOne(Location::class, ['id' => 'locationId'])->from(Location::tableName() .' sl');
+    }
+
+    /**
+     * @return ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getRegion(): ActiveQuery
+    {
+        return $this->hasOne(Region::class, ['id' => 'regionId'])
+            ->viaTable('location', ['id' => 'locationId']);
     }
 
     /**

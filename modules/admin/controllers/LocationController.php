@@ -3,7 +3,9 @@ namespace app\modules\admin\controllers;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
 use app\models\Region;
+use app\models\Location;
 use app\models\LocationSearch;
 
 class LocationController extends MainController
@@ -22,5 +24,28 @@ class LocationController extends MainController
             'dataProvider' => $dataProvider,
             'regions' => $regions,
         ]);
+    }
+
+    public function actionViewStat(int $id)
+    {
+        $model = $this->findModel($id);
+
+        return $this->render('view-stat', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @return Location
+     * @throws NotFoundHttpException
+     */
+    protected function findModel(int $id): Location
+    {
+        if (($model = Location::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('Локация не найдена');
     }
 }

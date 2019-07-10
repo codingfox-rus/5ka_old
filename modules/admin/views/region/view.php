@@ -1,6 +1,7 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $model app\models\Region */
+/* @var $stat array */
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -33,6 +34,24 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="text-center">
                 <h4>Локации</h4>
             </div>
+            <div class="clearfix">
+                <div class="pull-left">
+                    <?= Html::a('Включить все', [
+                        '/admin/region/enable-all-locations',
+                        'id' => $model->id,
+                    ], [
+                        'class' => 'btn btn-success btn-xs',
+                    ]) ?>
+                </div>
+                <div class="pull-right">
+                    <?= Html::a('Отключить все', [
+                        '/admin/region/disable-all-locations',
+                        'id' => $model->id,
+                    ], [
+                        'class' => 'btn btn-danger btn-xs',
+                    ]) ?>
+                </div>
+            </div>
             <br>
 
             <?= Html::beginForm([
@@ -50,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= Html::checkbox('locations[]', $location->isEnabled, [
                                 'value' => $location->id,
                             ]) ?>
-                            <?= $location->name ?>
+                            <?= $location->name ?> (ID <?= $location->id ?>)
                         </label>
                     </div>
 
@@ -68,7 +87,30 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <br>
 
+            <table class="table table-bordered table-striped table-condensed">
+                <tr>
+                    <th>Локация</th>
+                    <th class="text-right">Кол-во товаров</th>
+                </tr>
+                <?php foreach ($stat as $id => $item) { ?>
 
+                    <tr>
+                        <td>
+                            <?= Html::a($item['name'], [
+                                '/admin/location/view-stat',
+                                'id' => $id,
+                            ], [
+                                'target' => '_blank',
+                                'title' => 'Статистика по товарам',
+                            ]) ?>
+                        </td>
+                        <td>
+                            <?= $item['total'] ?>
+                        </td>
+                    </tr>
+
+                <?php } ?>
+            </table>
         </div>
     </div>
 </div>
