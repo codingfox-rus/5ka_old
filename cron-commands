@@ -30,3 +30,7 @@
 * * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii project/send-feedback-messages > /dev/null 2>&1
 
 * * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii stat/process-location > /dev/null 2>&1
+
+
+
+#EOF
