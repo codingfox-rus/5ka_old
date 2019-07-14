@@ -101,6 +101,6 @@ class Stat extends \yii\db\ActiveRecord
      */
     public function getProduct(): ActiveQuery
     {
-        return $this->hasOne(Product::class, ['id' => 'productId']);
+        return $this->hasOne(Product::class, ['pId' => 'productId']);
     }
 }
