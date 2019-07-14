@@ -6,6 +6,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use yii\grid\ActionColumn;
+use app\models\Region;
 
 $this->title = 'Регионы';
 $this->params['breadcrumbs'][] = $this->title;
@@ -25,7 +27,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
 
             [
-                'class' => \yii\grid\ActionColumn::class,
+                'attribute' => 'updatedAt',
+                'value' => function (Region $model) {
+                    if ($model->updatedAt) {
+                        return date('H:i:s d.m.Y', $model->updatedAt);
+                    }
+
+                    return '-';
+                }
+            ],
+
+            [
+                'class' => ActionColumn::class,
                 'template' => '<div class="text-center">{view}</div>',
                 'buttons' => [
                     'view' => function ($url) {

@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\components\markets\FiveShop;
 use app\models\Discount;
 use Yii;
 use yii\web\Controller;
@@ -21,7 +22,7 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -38,6 +39,7 @@ class SiteController extends Controller
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
+                    'set-location' => ['post'],
                     'logout' => ['post'],
                 ],
             ],
@@ -51,10 +53,10 @@ class SiteController extends Controller
     {
         return [
             'error' => [
-                'class' => 'yii\web\ErrorAction',
+                'class' => \yii\web\ErrorAction::class,
             ],
             'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
+                'class' => \yii\captcha\CaptchaAction::class,
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
@@ -65,13 +67,16 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $this->addPageInfo(Page::INDEX);
 
         $searchModel = new DiscountSearch();
 
-        $dataProvider = $searchModel->search(['DiscountSearch' => Yii::$app->request->queryParams]);
+        $params = Yii::$app->request->queryParams;
+        $params['locationId'] = $_COOKIE['locationId'] ?? FiveShop::DEFAULT_LOCATION_ID;
+
+        $dataProvider = $searchModel->search($params);
         $dataProvider->query->andFilterWhere(['market' => Discount::FIVE_SHOP]);
 
         $pages = new Pagination(['totalCount' => $dataProvider->query->count()]);
@@ -81,6 +86,18 @@ class SiteController extends Controller
             'dataProvider' => $dataProvider,
             'pages' => $pages,
         ]);
+    }
+
+    /**
+     * @return Response
+     */
+    public function actionSetLocation(): Response
+    {
+        $locationId = Yii::$app->request->post('locationId');
+
+        setcookie('locationId', $locationId, time() + 60 * 60 * 24 * 7, '/');
+
+        return $this->redirect(['index']);
     }
 
     /**

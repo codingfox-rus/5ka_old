@@ -6,6 +6,7 @@ use yii\console\Controller;
 use app\models\Stat;
 use app\models\Location;
 use app\models\Discount;
+use app\models\Feedback;
 
 class StatController extends Controller
 {
@@ -102,6 +103,18 @@ class StatController extends Controller
                 )->execute();
 
             echo $ins .' stat rows inserted'. PHP_EOL;
+
+            $alert = new Feedback();
+            $alert->name = 'Статистика';
+            $alert->email = Yii::$app->params['adminEmail'];
+            $alert->subject = 'Обновление статистики';
+            $alert->message = "Обновлена статистика для {$location->name}. Количество записей: {$ins}";
+
+            if (!$alert->save(false)) {
+                $errors = json_encode($alert->errors);
+                Yii::error($errors);
+                echo $errors . PHP_EOL;
+            }
 
         } else {
             echo 'Нет данных для статистики'. PHP_EOL;

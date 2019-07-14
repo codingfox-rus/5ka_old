@@ -2,6 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $model app\models\Region */
 /* @var $stat array */
+/* @var $totalDiscounts array */
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -30,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-7">
             <div class="text-center">
                 <h4>Локации</h4>
             </div>
@@ -62,26 +63,56 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?php if ($model->locations) { ?>
 
-                <?php foreach ($model->locations as $location) { ?>
+                <table class="table table-bordered table-striped">
+                    <tr>
+                        <th>Локация</th>
+                        <th>Обновлено</th>
+                        <th>Всего скидок</th>
+                    </tr>
 
-                    <div class="checkbox">
-                        <label>
-                            <?= Html::checkbox('locations[]', $location->isEnabled, [
-                                'value' => $location->id,
-                            ]) ?>
-                            <?= $location->name ?> (ID <?= $location->id ?>)
-                        </label>
-                    </div>
+                    <?php foreach ($model->locations as $location) { ?>
 
-                <?php } ?>
+                        <tr>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <?= Html::checkbox('locations[]', $location->isEnabled, [
+                                            'value' => $location->id,
+                                        ]) ?>
+                                        <?= $location->name ?> (ID <?= $location->id ?>)
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <?= $location->dataUpdatedAt ? date('d.m.Y H:i:s', $location->dataUpdatedAt) : '-' ?>
+                            </td>
+                            <td>
+                                <?php $totalLocationDiscounts = $totalDiscounts[$location->id] ?? null ?>
+
+                                <?php if ($totalLocationDiscounts) { ?>
+                                    <?= Html::a($totalLocationDiscounts, [
+                                        '/admin/discount/index',
+                                        'locationId' => $location->id
+                                    ], [
+                                        'title' => 'Скидки в локации',
+                                    ]) ?>
+                                <?php } ?>
+                            </td>
+                        </tr>
+
+                    <?php } ?>
+                </table>
 
             <?php } else { ?>
 
                 <p>Нет ни одной локации</p>
 
             <?php } ?>
+
+            <?= Html::endForm() ?>
         </div>
-        <div class="col-md-6">
+
+        <div class="col-md-5">
             <div class="text-center">
                 <h4>Статистика</h4>
             </div>

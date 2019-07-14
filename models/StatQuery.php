@@ -21,6 +21,16 @@ class StatQuery extends ActiveQuery
     }
 
     /**
+     * @return StatQuery
+     */
+    public function withData(): StatQuery
+    {
+        return $this->andWhere([
+            'not', ['data' => null]
+        ]);
+    }
+
+    /**
      * {@inheritdoc}
      * @return Stat[]|array
      */

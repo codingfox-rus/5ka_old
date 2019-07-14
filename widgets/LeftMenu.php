@@ -3,25 +3,31 @@ namespace app\widgets;
 
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
-use app\models\Market;
+use app\models\Location;
 
 class LeftMenu extends Widget
 {
+    public const DEFAULT_REGION_ID = 35; //Чувашляндия
+
     /** @var array */
-    public $markets;
+    public $locations;
 
     public function init()
     {
-        $this->markets = ArrayHelper::map(Market::find()->asArray()->all(), 'code', 'name');
+        $this->locations = ArrayHelper::map(
+            Location::find()->region(self::DEFAULT_REGION_ID)->asArray()->all(),
+            'id',
+            'name'
+        );
     }
 
     /**
      * @return string
      */
-    public function run()
+    public function run(): string
     {
         return $this->render('left-menu', [
-            'markets' => $this->markets,
+            'locations' => $this->locations,
         ]);
     }
 }

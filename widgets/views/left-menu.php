@@ -1,6 +1,5 @@
 <?php
-/** @var $markets array */
-
+/* @var $locations array */
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use app\models\DiscountSearch;
@@ -9,21 +8,31 @@ $sortingOrder = ArrayHelper::getValue($_GET, 'sortingOrder');
 ?>
 
 <div class="left-menu-widget">
+    <?= Html::beginForm('site/set-location') ?>
+
+    <div class="form-group">
+        <label>Выберите локацию</label>
+        <?= Html::dropDownList(
+            'locationId',
+            $_COOKIE['locationId'] ?? null,
+            $locations,
+            [
+                'prompt' => '',
+                'class' => 'form-control',
+            ]
+        ) ?>
+    </div>
+
+    <div class="form-group">
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary btn-block']) ?>
+    </div>
+
+    <?= Html::endForm() ?>
+    <br><br><br>
+
     <?= Html::beginForm('', 'get', [
         'class' => 'left-menu-search'
     ]) ?>
-    <!--
-    <div class="form-group">
-        <?php foreach ($markets as $code => $name) { ?>
-
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="markets[]" value="<?= $code ?>"> <?= $name ?>
-                </label>
-            </div>
-
-        <?php } ?>
-    </div>-->
 
     <div class="form-group">
         <?= Html::textInput('productName', ArrayHelper::getValue($_GET, 'productName'), [

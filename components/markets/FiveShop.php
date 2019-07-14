@@ -113,17 +113,12 @@ class FiveShop implements \app\interfaces\iMarket
     }
 
     /**
-     * @param int|null $locationId
      * @return bool
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function updateData(int $locationId = null): bool
+    public function updateData(): bool
     {
-        if ($locationId) {
-            $location = Location::findOne($locationId);
-        } else {
-            $location = $this->getLocationForUpdate();
-        }
+        $location = $this->getLocationForUpdate();
 
         if ($location) {
 
@@ -145,6 +140,11 @@ class FiveShop implements \app\interfaces\iMarket
 
                 $location->dataUpdatedAt = time();
                 $location->save(false);
+
+                if ($location->region) {
+                    $location->region->updatedAt = time();
+                    $location->region->save(false);
+                }
 
                 echo $totalUpd .' discounts added'. PHP_EOL;
                 return true;
@@ -176,7 +176,7 @@ class FiveShop implements \app\interfaces\iMarket
     public function getLocationForUpdate():? Location
     {
         $location = Location::find()
-            ->city()
+            ->enabled()
             ->andWhere([
                 '<', 'dataUpdatedAt', time() - self::DAY_TIME
             ])

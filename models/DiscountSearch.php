@@ -41,6 +41,10 @@ class DiscountSearch extends Discount
             ], 'string'],
 
             [[
+                'locationId',
+            ], 'integer'],
+
+            [[
                 'markets',
             ], 'safe'],
         ];
@@ -77,6 +81,7 @@ class DiscountSearch extends Discount
 
         $query->andFilterWhere([
             'market' => $this->market,
+            'locationId' => $this->locationId,
         ]);
 
         $query->andFilterWhere(['like', 'productName', $this->productName]);

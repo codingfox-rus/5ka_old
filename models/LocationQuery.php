@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 /**
@@ -19,10 +18,24 @@ class LocationQuery extends \yii\db\ActiveQuery
         ]);
     }
 
+    /**
+     * @return LocationQuery
+     */
     public function enabled(): LocationQuery
     {
         return $this->andWhere([
             'location.isEnabled' => 1
+        ]);
+    }
+
+    /**
+     * @param int|null $id
+     * @return LocationQuery
+     */
+    public function region(int $id = null): LocationQuery
+    {
+        return $this->andWhere([
+            'regionId' => $id
         ]);
     }
 

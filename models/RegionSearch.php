@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use yii\base\Model;
@@ -14,7 +13,7 @@ class RegionSearch extends Region
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id'], 'integer'],
@@ -25,7 +24,7 @@ class RegionSearch extends Region
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -38,9 +37,11 @@ class RegionSearch extends Region
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params): ActiveDataProvider
     {
-        $query = Region::find();
+        $query = Region::find()->orderBy([
+            'updatedAt' => SORT_DESC,
+        ]);
 
         // add conditions that should always apply here
 

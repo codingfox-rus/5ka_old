@@ -15,7 +15,7 @@ class ProjectController extends Controller
     /**
      * Отправляем сообщения с обратной связи админу
      */
-    public function actionSendFeedbackMessages()
+    public function actionSendFeedbackMessages(): void
     {
         $feedbacks = Feedback::find()
             ->where([

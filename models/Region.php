@@ -10,6 +10,7 @@ use yii\db\ActiveQuery;
  *
  * @property int $id
  * @property string $name
+ * @property int $updatedAt
  *
  * @property Location[] $locations
  */
@@ -18,7 +19,7 @@ class Region extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'region';
     }
@@ -26,12 +27,15 @@ class Region extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'name'], 'required'],
-            [['id'], 'integer'],
+
+            [['id', 'updatedAt'], 'integer'],
+
             [['name'], 'string', 'max' => 255],
+
             [['id'], 'unique'],
         ];
     }
@@ -39,11 +43,12 @@ class Region extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
             'name' => 'Наименование',
+            'updatedAt' => 'Данные обновлены',
         ];
     }
 
@@ -51,9 +56,9 @@ class Region extends \yii\db\ActiveRecord
      * {@inheritdoc}
      * @return RegionQuery the active query used by this AR class.
      */
-    public static function find()
+    public static function find(): RegionQuery
     {
-        return new RegionQuery(get_called_class());
+        return new RegionQuery(static::class);
     }
 
     /**
@@ -61,6 +66,7 @@ class Region extends \yii\db\ActiveRecord
      */
     public function getLocations(): ActiveQuery
     {
-        return $this->hasMany(Location::class, ['regionId' => 'id']);
+        return $this->hasMany(Location::class, ['regionId' => 'id'])
+            ->orderBy(['dataUpdatedAt' => SORT_DESC]);
     }
 }

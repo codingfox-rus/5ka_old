@@ -33,14 +33,14 @@ class Discount extends \yii\db\ActiveRecord
 {
     public const STAT_PRICE_LIMIT = 49.99;
 
-    const FIVE_SHOP = 'five_shop';
-    const MAGNIT = 'magnit';
-    const BRISTOL = 'bristol';
+    public const FIVE_SHOP = 'five_shop';
+    public const MAGNIT = 'magnit';
+    public const BRISTOL = 'bristol';
 
     /**
      * @return array
      */
-    public static function getMarkets()
+    public static function getMarkets(): array
     {
         return [
             self::FIVE_SHOP => 'Пятерочка',
@@ -52,7 +52,7 @@ class Discount extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public static function getMarketUrls()
+    public static function getMarketUrls(): array
     {
         return [
             self::FIVE_SHOP => 'https://5ka.ru',
@@ -89,10 +89,10 @@ class Discount extends \yii\db\ActiveRecord
     /**
      * @return string
      */
-    /*public function formName(): string
+    public function formName(): string
     {
         return '';
-    }*/
+    }
 
     /**
      * @return array

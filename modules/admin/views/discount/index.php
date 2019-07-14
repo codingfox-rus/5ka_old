@@ -7,8 +7,19 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\models\Discount;
+use app\models\Location;
 
 $this->title = 'Скидки';
+
+$locationId = Yii::$app->request->get('locationId');
+
+if ($locationId) {
+
+    $location = Location::findOne($locationId);
+
+    $this->params['breadcrumbs'][] = ['label' => $location->region->name, 'url' => ['/admin/region/view', 'id' => $location->regionId]];
+}
+
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 

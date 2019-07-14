@@ -19,13 +19,8 @@ class TestController extends Controller
 
     public function actionTest()
     {
-        $data = Discount::find()
-            ->select(['id', 'productName'])
-            ->indexBy('id')
-            ->asArray()
-            ->all();
-
-        var_dump($data);
-        die;
+        echo Yii::$app->params['adminEmail'];
     }
+
+
 }

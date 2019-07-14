@@ -64,7 +64,7 @@ class Stat extends \yii\db\ActiveRecord
             'productId' => 'Продукт',
             'data' => 'Данные',
             'nextTurnAt' => 'Следующая проверка',
-            'createdAt' => 'Добавлено',
+            'createdAt' => 'Инициировано',
             'updatedAt' => 'Обновлено',
         ];
     }

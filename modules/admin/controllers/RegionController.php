@@ -11,6 +11,7 @@ use app\models\Region;
 use app\models\RegionSearch;
 use app\models\Location;
 use app\models\Stat;
+use app\models\Discount;
 
 /**
  * RegionController implements the CRUD actions for Region model.
@@ -55,13 +56,23 @@ class RegionController extends MainController
      */
     public function actionView($id)
     {
-        $locationRows = Location::find()
-            ->select(['id', 'name'])
-            ->andWhere(['regionId' => $id])
-            ->asArray()
-            ->all();
+        $stat = $this->getStat($id);
+        $totalDiscounts = $this->getTotalDiscounts($id);
 
-        $locations = ArrayHelper::map($locationRows, 'id', 'name');
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+            'stat' => $stat,
+            'totalDiscounts' => $totalDiscounts,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    protected function getStat(int $id): array
+    {
+        $locations = $this->getLocationsList($id);
 
         $statRows = Stat::find()
             ->select(['locationId', 'count(*) as total'])
@@ -85,10 +96,42 @@ class RegionController extends MainController
             ];
         }
 
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-            'stat' => $stat,
-        ]);
+        return $stat;
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    protected function getTotalDiscounts(int $id): array
+    {
+        $locations = $this->getLocationsList($id);
+
+        $discountRows = Discount::find()
+            ->select(['locationId', 'count(*) as total'])
+            ->where([
+                'in', 'locationId', array_keys($locations)
+            ])
+            ->groupBy('locationId')
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($discountRows, 'locationId', 'total');
+    }
+
+    /**
+     * @param int $id
+     * @return array
+     */
+    protected function getLocationsList(int $id): array
+    {
+        $locationRows = Location::find()
+            ->select(['id', 'name'])
+            ->andWhere(['regionId' => $id])
+            ->asArray()
+            ->all();
+
+        return ArrayHelper::map($locationRows, 'id', 'name');
     }
 
     /**
