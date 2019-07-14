@@ -132,12 +132,7 @@ class FiveShop implements \app\interfaces\iMarket
 
                 $this->deleteData();
 
-                $statLocationIds = $this->getStatLocationIds();
-
-                if (\in_array($location->id, $statLocationIds, false)) {
-                    $location->needToProcess = 1;
-                }
-
+                $location->needToProcess = 1;
                 $location->dataUpdatedAt = time();
                 $location->save(false);
 
@@ -156,18 +151,6 @@ class FiveShop implements \app\interfaces\iMarket
 
         echo 'Нет локации для обновления данных'. PHP_EOL;
         return false;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getStatLocationIds(): array
-    {
-        return Stat::find()
-            ->select('locationId')
-            ->distinct()
-            ->asArray()
-            ->column();
     }
 
     /**
