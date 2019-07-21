@@ -9,7 +9,6 @@ use yii\behaviors\TimestampBehavior;
  * This is the model class for table "discount".
  *
  * @property int $id
- * @property string $market
  * @property int $locationId
  * @property int $productId
  * @property string $productName
@@ -32,45 +31,6 @@ use yii\behaviors\TimestampBehavior;
 class Discount extends \yii\db\ActiveRecord
 {
     public const STAT_PRICE_LIMIT = 49.99;
-
-    public const FIVE_SHOP = 'five_shop';
-    public const MAGNIT = 'magnit';
-    public const BRISTOL = 'bristol';
-
-    /**
-     * @return array
-     */
-    public static function getMarkets(): array
-    {
-        return [
-            self::FIVE_SHOP => 'Пятерочка',
-            self::MAGNIT => 'Магнит',
-            self::BRISTOL => 'Бристоль',
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public static function getMarketUrls(): array
-    {
-        return [
-            self::FIVE_SHOP => 'https://5ka.ru',
-            self::MAGNIT => 'http://magnit-info.ru',
-            self::BRISTOL => 'https://bristol.ru',
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public static function getMarketClasses(): array
-    {
-        return [
-            self::FIVE_SHOP => \app\components\markets\FiveShop::class,
-            //self::BRISTOL => \app\components\markets\Bristol::class,
-        ];
-    }
 
     const STATUS_ACTIVE = 1;
     const STATUS_ARCHIVE = 2;
@@ -100,7 +60,6 @@ class Discount extends \yii\db\ActiveRecord
     public static function getDataColumns()
     {
         return [
-            'market',
             'locationId',
             'productId',
             'productName',
@@ -156,7 +115,6 @@ class Discount extends \yii\db\ActiveRecord
             ['status', 'default', 'value' => 1],
 
             [[
-                'market',
                 'productName',
                 'regularPrice',
                 'specialPrice',
@@ -169,8 +127,6 @@ class Discount extends \yii\db\ActiveRecord
             ], 'number'],
 
             [['jsonData'], 'string'],
-
-            [['market'], 'string', 'max' => 32],
 
             [[
                 'productName',
@@ -185,7 +141,6 @@ class Discount extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'market' => 'Поставщик',
             'locationId' => 'Локация',
             'productId' => 'Товара',
             'productName' => 'Наименование',

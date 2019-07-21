@@ -38,9 +38,7 @@ class DiscountController extends Controller
      */
     public function actionDropAll()
     {
-        $totalDeleted = Discount::deleteAll([
-            'market' => Discount::FIVE_SHOP,
-        ]);
+        $totalDeleted = Discount::deleteAll();
 
         echo $totalDeleted .' rows deleted'. PHP_EOL;
     }

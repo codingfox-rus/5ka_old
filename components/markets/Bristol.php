@@ -99,7 +99,7 @@ class Bristol implements \app\interfaces\iMarket
         // Добавляем актуальные скидки
         $actualRows = Discount::find()
             ->select('productId')
-            ->market(Discount::BRISTOL)
+            ->market('bristol')
             ->active()
             ->asArray()
             ->all();
@@ -165,8 +165,6 @@ class Bristol implements \app\interfaces\iMarket
      */
     public function getItem(array $result)
     {
-        $item['market'] = Discount::BRISTOL;
-
         $item['productId'] = $result['id'];
 
         $item['productName'] = $result['name'];
@@ -204,15 +202,14 @@ class Bristol implements \app\interfaces\iMarket
     public function downloadImages()
     {
         $discounts = Discount::find()
-            ->market(Discount::BRISTOL)
+            ->market('bristol')
             ->active()
-            ->noPreview()
             ->limit(self::DOWNLOAD_LIMIT)
             ->all();
 
         foreach ($discounts as $discount) {
 
-            $previewFile = uniqid(Discount::BRISTOL, false) . '.jpg';
+            $previewFile = uniqid('bristol', false) . '.jpg';
 
             $imageUrl = self::SITE_URL . $discount['imageBig'];
 
@@ -223,7 +220,7 @@ class Bristol implements \app\interfaces\iMarket
                 $discount->previewBig = $imagePath;
                 $discount->save(false);
 
-                echo Discount::BRISTOL .' preview copied successfully'. PHP_EOL;
+                echo 'Preview copied successfully'. PHP_EOL;
             }
         }
     }

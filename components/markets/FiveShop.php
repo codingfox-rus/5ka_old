@@ -178,7 +178,6 @@ class FiveShop implements \app\interfaces\iMarket
         $lastRow = Discount::find()
             ->select(['dateStart'])
             ->where([
-                'market' => Discount::FIVE_SHOP,
                 'locationId' => $locationId,
             ])
             ->orderBy([
@@ -391,8 +390,6 @@ class FiveShop implements \app\interfaces\iMarket
 
         $discountPercent = $this->getDiscountPercent($regularPrice, $specialPrice);
 
-        $item['market']             = Discount::FIVE_SHOP;
-
         $item['locationId']         = $locationId;
 
         $item['productId']          = $result['id'];
@@ -464,7 +461,6 @@ class FiveShop implements \app\interfaces\iMarket
     {
         $res = Discount::deleteAll([
                 'and',
-                ['market' => Discount::FIVE_SHOP],
                 ['status' => Discount::STATUS_ACTIVE],
                 ['<', 'dateEnd', time()]
             ]);
@@ -484,7 +480,7 @@ class FiveShop implements \app\interfaces\iMarket
 
         foreach ($products as $product) {
 
-            $previewFile = uniqid(Discount::FIVE_SHOP, false) . '.jpg';
+            $previewFile = uniqid('five_shop', false) . '.jpg';
 
             $smallUrl = $product->imageSmall;
             $bigUrl = $product->imageBig;
@@ -496,14 +492,14 @@ class FiveShop implements \app\interfaces\iMarket
 
                 $product->previewSmall = $smallPath;
 
-                echo Discount::FIVE_SHOP .' small preview copied successfully' . PHP_EOL;
+                echo 'Small preview copied successfully' . PHP_EOL;
             }
 
             if (copy($bigUrl, Yii::$app->basePath .'/web'. $bigPath)) {
 
                 $product->previewBig = $bigPath;
 
-                echo Discount::FIVE_SHOP .' big preview copied successfully' . PHP_EOL;
+                echo 'Big preview copied successfully' . PHP_EOL;
             }
 
             $product->save(false);

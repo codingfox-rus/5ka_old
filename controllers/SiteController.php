@@ -77,7 +77,6 @@ class SiteController extends Controller
         $params['locationId'] = $_COOKIE['locationId'] ?? FiveShop::DEFAULT_LOCATION_ID;
 
         $dataProvider = $searchModel->search($params);
-        $dataProvider->query->andFilterWhere(['market' => Discount::FIVE_SHOP]);
 
         $pages = new Pagination(['totalCount' => $dataProvider->query->count()]);
 
