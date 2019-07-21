@@ -20,7 +20,6 @@ use yii\behaviors\TimestampBehavior;
  * @property array $jsonData
  * @property int status
  * @property int $createdAt
- * @property int $updatedAt
  *
  * @property Location $location
  * @property Product $product
@@ -56,33 +55,13 @@ class Discount extends \yii\db\ActiveRecord
     /**
      * @return array
      */
-    public static function getDataColumns()
-    {
-        return [
-            'locationId',
-            'productId',
-            'productName',
-            'regularPrice',
-            'specialPrice',
-            'discountPercent',
-            'dateStart',
-            'dateEnd',
-            'jsonData',
-            'status',
-            'createdAt',
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
                 'class' => TimestampBehavior::class,
                 'createdAtAttribute' => 'createdAt',
-                'updatedAtAttribute' => 'updatedAt',
+                'updatedAtAttribute' => 'createdAt',
             ],
         ];
     }
@@ -90,7 +69,7 @@ class Discount extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'discount';
     }
@@ -98,7 +77,7 @@ class Discount extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [[
@@ -108,7 +87,6 @@ class Discount extends \yii\db\ActiveRecord
                 'dateEnd',
                 'status',
                 'createdAt',
-                'updatedAt',
             ], 'integer'],
 
             ['status', 'default', 'value' => 1],
@@ -136,7 +114,7 @@ class Discount extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -151,7 +129,6 @@ class Discount extends \yii\db\ActiveRecord
             'jsonData' => 'Данные в JSON',
             'status' => 'Статус',
             'createdAt' => 'Добавлена',
-            'updatedAt' => 'Обновлена',
             'preview' => 'Превью',
         ];
     }

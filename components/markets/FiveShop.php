@@ -1,6 +1,9 @@
 <?php
 namespace app\components\markets;
 
+use app\components\DiscountHelper;
+use app\models\DiscountHistory;
+use app\models\DiscountSearch;
 use Yii;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -10,6 +13,7 @@ use app\models\Location;
 use app\models\Discount;
 use app\models\Product;
 use app\models\Settings;
+use yii\helpers\ArrayHelper;
 
 class FiveShop
 {
@@ -209,20 +213,39 @@ class FiveShop
             return $totalRows;
         }
 
+        $locationsList = $this->getLocationsList();
+
         // Сохраняем актуальные данные
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
+            $fields = array_keys((new Discount())->attributes);
+            $fields = array_diff($fields, ['id']);
 
             $totalRows = Yii::$app->db->createCommand()
                 ->batchInsert(
                     Discount::tableName(),
-                    Discount::getDataColumns(),
+                    $fields,
+                    $actualData
+                )
+                ->execute();
+
+            // Сохраняем скидки для истории
+            Yii::$app->db->createCommand()
+                ->batchInsert(
+                    DiscountHistory::tableName(),
+                    $fields,
                     $actualData
                 )
                 ->execute();
 
             $transaction->commit();
+
+            $locationName = $locationsList[$locationId] ?? null;
+
+            if ($locationName) {
+                echo 'Обновлены скидки по '. $locationName . PHP_EOL;
+            }
 
         } catch (\Exception $e) {
 
@@ -234,6 +257,14 @@ class FiveShop
         }
 
         return $totalRows;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getLocationsList(): array
+    {
+        return ArrayHelper::map(Location::find()->asArray()->all(), 'id', 'name');
     }
 
     /**
@@ -369,7 +400,7 @@ class FiveShop
     {
         $item['pId']            = $result['params']['id'];
         $item['productName']    = $result['name'];
-        $item['imageSmall']     = $result['img_small'];
+        $item['imageSmall']     = $result['image_small'];
         $item['createdAt']      = time();
 
         return $item;

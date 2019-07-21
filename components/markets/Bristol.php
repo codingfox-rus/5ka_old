@@ -42,11 +42,13 @@ class Bristol implements \app\interfaces\iMarket
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
+            $fields = array_keys((new Discount())->attributes);
+            unset($fields['id']);
 
             Yii::$app->db->createCommand()
                 ->batchInsert(
                     Discount::tableName(),
-                    Discount::getDataColumns(),
+                    $fields,
                     $preparedData
                 )
                 ->execute();

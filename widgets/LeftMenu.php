@@ -7,15 +7,13 @@ use app\models\Location;
 
 class LeftMenu extends Widget
 {
-    public const DEFAULT_REGION_ID = 35; //Чувашляндия
-
     /** @var array */
     public $locations;
 
     public function init()
     {
         $this->locations = ArrayHelper::map(
-            Location::find()->region(self::DEFAULT_REGION_ID)->asArray()->all(),
+            Location::find()->enabled()->asArray()->all(),
             'id',
             'name'
         );
