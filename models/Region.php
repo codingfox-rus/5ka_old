@@ -1,8 +1,6 @@
 <?php
-
 namespace app\models;
 
-use Yii;
 use yii\db\ActiveQuery;
 
 /**
@@ -10,9 +8,11 @@ use yii\db\ActiveQuery;
  *
  * @property int $id
  * @property string $name
+ * @property int $capitalLocationId
  * @property int $updatedAt
  *
  * @property Location[] $locations
+ * @property Location $capitalLocation
  */
 class Region extends \yii\db\ActiveRecord
 {
@@ -32,7 +32,11 @@ class Region extends \yii\db\ActiveRecord
         return [
             [['id', 'name'], 'required'],
 
-            [['id', 'updatedAt'], 'integer'],
+            [[
+                'id',
+                'capitalLocationId',
+                'updatedAt',
+            ], 'integer'],
 
             [['name'], 'string', 'max' => 255],
 
@@ -48,6 +52,7 @@ class Region extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Наименование',
+            'capitalLocationId' => 'Столица региона',
             'updatedAt' => 'Данные обновлены',
         ];
     }
@@ -68,5 +73,13 @@ class Region extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Location::class, ['regionId' => 'id'])
             ->orderBy(['dataUpdatedAt' => SORT_DESC]);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getCapitalLocation(): ActiveQuery
+    {
+        return $this->hasOne(Location::class, ['id' => 'capitalLocationId']);
     }
 }

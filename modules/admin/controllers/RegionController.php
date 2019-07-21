@@ -6,7 +6,6 @@ use yii\helpers\ArrayHelper;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
-use yii\helpers\VarDumper;
 use app\models\Region;
 use app\models\RegionSearch;
 use app\models\Location;
@@ -21,13 +20,14 @@ class RegionController extends MainController
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-
+                    'set-capital' => ['post'],
+                    'disable-total-locations' => ['post'],
                 ],
             ],
         ];
@@ -40,11 +40,15 @@ class RegionController extends MainController
     public function actionIndex()
     {
         $searchModel = new RegionSearch();
+
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $totalEnabledLocations = Location::find()->enabled()->count();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'totalEnabledLocations' => $totalEnabledLocations,
         ]);
     }
 
@@ -202,6 +206,73 @@ class RegionController extends MainController
             'isEnabled' => 0,
         ], [
             'regionId' => $id
+        ]);
+
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * @param int $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionViewSetCapitalForm(int $id): string
+    {
+        $model = $this->findModel($id);
+
+        return $this->renderPartial('_partials/form-set-capital', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionSetCapital(int $id): Response
+    {
+        $model = $this->findModel($id);
+        $model->load(Yii::$app->request->post());
+        $model->save();
+
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * @return Response
+     */
+    public function actionEnableOnlyCapitals(): Response
+    {
+        $capitalIds = Region::find()
+            ->select('capitalLocationId')
+            ->where([
+                'not', ['capitalLocationId' => null]
+            ])
+            ->column();
+
+        Location::updateAll([
+            'isEnabled' => 1,
+        ], [
+            'in', 'id', $capitalIds
+        ]);
+
+        Location::updateAll([
+            'isEnabled' => 0,
+        ], [
+            'not in', 'id', $capitalIds
+        ]);
+
+        return $this->redirect(Yii::$app->request->referrer);
+    }
+
+    /**
+     * @return Response
+     */
+    public function actionDisableTotalLocations(): Response
+    {
+        Location::updateAll([
+            'isEnabled' => 0,
         ]);
 
         return $this->redirect(Yii::$app->request->referrer);
