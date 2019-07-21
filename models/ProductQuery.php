@@ -16,7 +16,7 @@ class ProductQuery extends \yii\db\ActiveQuery
     public function noPreview(): ProductQuery
     {
         return $this->andWhere([
-            'previewBig' => null,
+            'previewSmall' => null,
         ]);
     }
 

@@ -9,20 +9,23 @@ use app\models\Region;
 use app\models\Location;
 use app\models\Discount;
 use app\models\Product;
-use app\models\Stat;
+use app\models\Settings;
 
-class FiveShop implements \app\interfaces\iMarket
+class FiveShop
 {
     public const SITE_URL           = 'https://5ka.ru';
     public const DOMAIN             = '.5ka.ru';
 
     public const REGIONS_API_URL    = '/api/regions/';
-    public const DISCOUNT_API_URL   = '/api/v2/special_offers/';
     public const PREVIEWS_PATH      = '/previews/five_shop/';
+
+    public const DISCOUNT_API_V1_URL   = '/api/special_offers/';
+    public const DISCOUNT_API_V2_URL   = '/api/v2/special_offers/';
 
     public const DEFAULT_LOCATION_ID    = 2223;
     public const REQUEST_TIMEOUT        = 30;
     public const DAY_TIME               = 86400;
+    public const DOWNLOAD_LIMIT         = 50;
 
     /**
      * @return bool
@@ -120,9 +123,12 @@ class FiveShop implements \app\interfaces\iMarket
     {
         $location = $this->getLocationForUpdate();
 
-        if ($location) {
+        /** @var Settings $settings */
+        $settings = Settings::find()->one();
 
-            $preparedData = $this->getPreparedData($location->id);
+        if ($location && $settings) {
+
+            $preparedData = $this->getPreparedData($location->id, $settings->apiVersion);
 
             if ($preparedData) {
 
@@ -149,7 +155,7 @@ class FiveShop implements \app\interfaces\iMarket
             return false;
         }
 
-        echo 'Нет локации для обновления данных'. PHP_EOL;
+        echo 'Нет локации для обновления данных или не инициализированы настройки'. PHP_EOL;
         return false;
     }
 
@@ -261,7 +267,6 @@ class FiveShop implements \app\interfaces\iMarket
                     [
                         'pId',
                         'name',
-                        'imageBig',
                         'imageSmall',
                         'createdAt'
                     ],
@@ -283,44 +288,48 @@ class FiveShop implements \app\interfaces\iMarket
     }
 
     /**
-     * @param int|null $locationId
+     * @param int $locationId
+     * @param int $apiVersion
      * @return array|null
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getPreparedData(int $locationId = null):? array
+    public function getPreparedData(int $locationId, int $apiVersion):? array
     {
-        $apiData = json_decode($this->getData($locationId), true);
-        $results = [];
+        $res = [
+            'discountData' => [],
+            'productData' => []
+        ];
 
-        if (!empty($apiData['next'])) {
+        if ($apiVersion === Settings::API_V1) {
 
-            $results[] = $apiData['results'];
+            $res = $this->getPreparedDataV1($locationId);
 
-            while ($apiData['next'] !== null) {
+        } else if ($apiVersion === Settings::API_V2) {
 
-                [, $pageNum] = explode('=', $apiData['next']);
-
-                $apiData = json_decode($this->getData($locationId, $pageNum), true);
-
-                $results[] = $apiData['results'];
-            }
+            $res = $this->getPreparedDataV2($locationId);
         }
 
-        if (empty($results)) {
-            echo 'Не удалось получить данные по API'. PHP_EOL;
-            return null;
-        }
+        return $res;
+    }
 
+    /**
+     * @param $locationId
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPreparedDataV1($locationId): array
+    {
+        $parsedData = $this->getParsedData($locationId, Settings::API_V1);
         $discountData = [];
         $productData = [];
 
-        foreach ($results as $resultGroup) {
+        foreach ($parsedData as $dataItem) {
 
-            foreach ($resultGroup as $result) {
+            foreach ($dataItem as $result) {
 
-                $discountData[] = $this->getDiscountItem($result, $locationId);
+                $discountData[] = $this->getDiscountItemV1($result, $locationId);
 
-                $productData[] = $this->getProductItem($result);
+                $productData[] = $this->getProductItemV1($result);
             }
         }
 
@@ -331,16 +340,182 @@ class FiveShop implements \app\interfaces\iMarket
     }
 
     /**
-     * @param int|null $locationId
+     * @param array $result
+     * @param int $locationId
+     * @return array
+     */
+    public function getDiscountItemV1(array $result, int $locationId): array
+    {
+        $item['locationId']         = $locationId;
+        $item['productId']          = $result['params']['id'];
+        $item['productName']        = $result['name'];
+        $item['regularPrice']       = $result['params']['regular_price'];
+        $item['specialPrice']       = $result['params']['special_price'];
+        $item['discountPercent']    = $result['params']['discount_percent'];
+        $item['dateStart']          = $result['params']['date_start'];
+        $item['dateEnd']            = $result['params']['date_end'];
+        $item['jsonData']           = json_encode($result, JSON_UNESCAPED_UNICODE);
+        $item['status']             = Discount::STATUS_ACTIVE;
+        $item['createdAt']          = time();
+
+        return $item;
+    }
+
+    /**
+     * @param array $result
+     * @return array
+     */
+    public function getProductItemV1(array $result): array
+    {
+        $item['pId']            = $result['params']['id'];
+        $item['productName']    = $result['name'];
+        $item['imageSmall']     = $result['img_small'];
+        $item['createdAt']      = time();
+
+        return $item;
+    }
+
+    /**
+     * @param $locationId
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getPreparedDataV2($locationId): array
+    {
+        $parsedData = $this->getParsedData($locationId, Settings::API_V2);
+        $discountData = [];
+        $productData = [];
+
+        foreach ($parsedData as $dataItem) {
+
+            foreach ($dataItem as $result) {
+
+                $discountData[] = $this->getDiscountItemV2($result, $locationId);
+
+                $productData[] = $this->getProductItemV2($result);
+            }
+        }
+
+        return [
+            'discountData' => $discountData,
+            'productData' => $productData,
+        ];
+    }
+
+    /**
+     * @param array $result
+     * @param int $locationId
+     * @return array
+     */
+    public function getDiscountItemV2(array $result, int $locationId): array
+    {
+        $regularPrice = $result['current_prices']['price_reg__min'] ?? 0;
+
+        $specialPrice = $result['current_prices']['price_promo__min'] ?? 0;
+
+        $discountPercent = $this->getDiscountPercent($regularPrice, $specialPrice);
+
+        $item['locationId']         = $locationId;
+        $item['productId']          = $result['id'];
+        $item['productName']        = $result['name'];
+        $item['regularPrice']       = $regularPrice;
+        $item['specialPrice']       = $specialPrice;
+        $item['discountPercent']    = $discountPercent;
+        $item['dateStart']          = strtotime($result['promo']['date_begin']);
+        $item['dateEnd']            = strtotime($result['promo']['date_end']);
+        $item['jsonData']           = json_encode($result, JSON_UNESCAPED_UNICODE);
+        $item['status']             = Discount::STATUS_ACTIVE;
+        $item['createdAt']          = time();
+
+        return $item;
+    }
+
+    /**
+     * @param $regularPrice
+     * @param $specialPrice
+     * @return float|int
+     */
+    protected function getDiscountPercent($regularPrice, $specialPrice): float
+    {
+        if ($regularPrice > 0 && $specialPrice > 0) {
+
+            $diff = $regularPrice - $specialPrice;
+
+            if ($diff > 0) {
+
+                return round(($diff / $regularPrice) * 100, 2);
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param array $result
+     * @return array
+     */
+    public function getProductItemV2(array $result): array
+    {
+        $item['pId']            = $result['id'];
+        $item['productName']    = $result['name'];
+        $item['imageSmall']     = $result['img_link'];
+        $item['createdAt']      = time();
+
+        return $item;
+    }
+
+    /**
+     * @param $locationId
+     * @param $apiVersion
+     * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function getParsedData($locationId, $apiVersion): array
+    {
+        $apiData = json_decode($this->getData($locationId, $apiVersion), true);
+        $results = [];
+
+        if (!empty($apiData['next'])) {
+
+            $results[] = $apiData['results'];
+
+            while ($apiData['next'] !== null) {
+
+                [, $pageNum] = explode('=', $apiData['next']);
+
+                $apiData = json_decode($this->getData($locationId, $apiVersion, $pageNum), true);
+
+                $results[] = $apiData['results'];
+            }
+        }
+
+        if (empty($results)) {
+            echo 'Не удалось получить данные по API'. PHP_EOL;
+        }
+
+        return $results;
+    }
+
+    /**
+     * @param $locationId
+     * @param int $apiVersion
      * @param int $page
      * @return null|string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getData(int $locationId = null, int $page = 1):? string
+    public function getData($locationId, int $apiVersion, int $page = 1):? string
     {
+        $apiUrl = null;
+
+        if ($apiVersion === Settings::API_V1) {
+            $apiUrl = self::DISCOUNT_API_V1_URL;
+        } else if ($apiVersion === Settings::API_V2) {
+            $apiUrl = self::DISCOUNT_API_V2_URL;
+        }
+
         $url = implode('', [
             self::SITE_URL,
-            self::DISCOUNT_API_URL,
+            $apiUrl,
             '?page='. $page,
         ]);
 
@@ -378,83 +553,6 @@ class FiveShop implements \app\interfaces\iMarket
     }
 
     /**
-     * @param array $result
-     * @param int $locationId
-     * @return array
-     */
-    public function getDiscountItem(array $result, int $locationId): array
-    {
-        $regularPrice = $result['current_prices']['price_reg__min'] ?? 0;
-
-        $specialPrice = $result['current_prices']['price_promo__min'] ?? 0;
-
-        $discountPercent = $this->getDiscountPercent($regularPrice, $specialPrice);
-
-        $item['locationId']         = $locationId;
-
-        $item['productId']          = $result['id'];
-
-        $item['productName']        = $result['name'];
-
-        $item['regularPrice']       = $regularPrice;
-
-        $item['specialPrice']       = $specialPrice;
-
-        $item['discountPercent']    = $discountPercent;
-
-        $item['dateStart']          = strtotime($result['promo']['date_begin']);
-
-        $item['dateEnd']            = strtotime($result['promo']['date_end']);
-
-        $item['jsonData']           = json_encode($result, JSON_UNESCAPED_UNICODE);
-
-        $item['status']             = Discount::STATUS_ACTIVE;
-
-        $item['createdAt']          = time();
-
-        return $item;
-    }
-
-    /**
-     * @param $regularPrice
-     * @param $specialPrice
-     * @return float|int
-     */
-    protected function getDiscountPercent($regularPrice, $specialPrice)
-    {
-        if ($regularPrice > 0 && $specialPrice > 0) {
-
-            $diff = $regularPrice - $specialPrice;
-
-            if ($diff > 0) {
-
-                return round(($diff / $regularPrice) * 100, 2);
-            }
-        }
-
-        return 0;
-    }
-
-    /**
-     * @param array $result
-     * @return array
-     */
-    public function getProductItem(array $result): array
-    {
-        $item['pId']            = $result['id'];
-
-        $item['productName']    = $result['name'];
-
-        $item['imageSmall']     = $result['img_link'];
-
-        $item['imageBig']       = $result['img_link'];
-
-        $item['createdAt']      = time();
-
-        return $item;
-    }
-
-    /**
      *
      */
     public function deleteData(): void
@@ -483,23 +581,14 @@ class FiveShop implements \app\interfaces\iMarket
             $previewFile = uniqid('five_shop', false) . '.jpg';
 
             $smallUrl = $product->imageSmall;
-            $bigUrl = $product->imageBig;
 
             $smallPath = self::PREVIEWS_PATH . 'small/' . $previewFile;
-            $bigPath = self::PREVIEWS_PATH . 'big/' . $previewFile;
 
             if (copy($smallUrl, Yii::$app->basePath .'/web'. $smallPath)) {
 
                 $product->previewSmall = $smallPath;
 
                 echo 'Small preview copied successfully' . PHP_EOL;
-            }
-
-            if (copy($bigUrl, Yii::$app->basePath .'/web'. $bigPath)) {
-
-                $product->previewBig = $bigPath;
-
-                echo 'Big preview copied successfully' . PHP_EOL;
             }
 
             $product->save(false);

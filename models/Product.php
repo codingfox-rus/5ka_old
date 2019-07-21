@@ -12,9 +12,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $pId
  * @property string $name
  * @property string $imageSmall
- * @property string $imageBig
  * @property string $previewSmall
- * @property string $previewBig
  * @property int $createdAt
  * @property int $updatedAt
  *
@@ -54,7 +52,8 @@ class Product extends \yii\db\ActiveRecord
             [['pId', 'name'], 'required'],
             [['pId', 'createdAt', 'updatedAt'], 'integer'],
             [['name'], 'string', 'max' => 255],
-            [['imageSmall', 'imageBig', 'previewSmall', 'previewBig'], 'string', 'max' => 1024],
+
+            [['imageSmall', 'previewSmall'], 'string', 'max' => 1024],
         ];
     }
 
@@ -68,9 +67,7 @@ class Product extends \yii\db\ActiveRecord
             'pId' => 'ID продукта',
             'name' => 'Наименование',
             'imageSmall' => 'Картинка малая',
-            'imageBig' => 'Картинка большая',
             'previewSmall' => 'Превью малое',
-            'previewBig' => 'Превью большое',
             'createdAt' => 'Добавлен',
             'updatedAt' => 'Обновлен',
         ];

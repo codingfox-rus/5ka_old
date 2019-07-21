@@ -9,12 +9,12 @@ use yii\helpers\Html;
     <div class="row">
         <div class="col-sm-6">
             <a
-                href="<?= $discount->bigPreview ?? '' ?>"
+                href="<?= $discount->smallPreview ?? '' ?>"
                 target="_blank"
                 title="<?= $discount->productName ?>"
             >
                 <img
-                    src="<?= $discount->bigPreview ?? '' ?>"
+                    src="<?= $discount->smallPreview ?? '' ?>"
                     alt="<?= $discount->productName ?>"
                     class="img-responsive"
                 >

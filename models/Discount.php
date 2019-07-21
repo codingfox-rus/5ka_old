@@ -26,7 +26,6 @@ use yii\behaviors\TimestampBehavior;
  * @property Product $product
  * @property Stat $stat
  * @property string $smallPreview
- * @property string $bigPreview
  */
 class Discount extends \yii\db\ActiveRecord
 {
@@ -181,27 +180,6 @@ class Discount extends \yii\db\ActiveRecord
             }
 
             return $this->product->imageSmall;
-        }
-
-        return '';
-    }
-
-    /**
-     * Крупное превью
-     * @return string
-     */
-    public function getBigPreview(): string
-    {
-        //$siteUrl = self::getMarketUrls()[$this->market];
-
-        if ($this->product) {
-
-            if ($this->product->previewBig !== null) {
-
-                return Yii::getAlias('@web') . $this->product->previewBig;
-            }
-
-            return $this->product->imageBig;
         }
 
         return '';

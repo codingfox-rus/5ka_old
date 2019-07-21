@@ -172,9 +172,7 @@ class Bristol implements \app\interfaces\iMarket
 
         $item['description'] = null;
 
-        $item['imageSmall'] = null;
-
-        $item['imageBig'] = $result['picture'];
+        $item['imageSmall'] = $result['picture'];
 
         $item['regularPrice'] = $result['price_old'];
 
@@ -209,7 +207,7 @@ class Bristol implements \app\interfaces\iMarket
 
             $previewFile = uniqid('bristol', false) . '.jpg';
 
-            $imageUrl = self::SITE_URL . $discount['imageBig'];
+            $imageUrl = self::SITE_URL . $discount['imageSmall'];
 
             $imagePath = self::PREVIEWS_PATH . $previewFile;
 
