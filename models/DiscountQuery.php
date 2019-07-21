@@ -17,28 +17,6 @@ class DiscountQuery extends ActiveQuery
     }
 
     /**
-     * @param string $market
-     * @return DiscountQuery
-     */
-    public function market(string $market): DiscountQuery
-    {
-        return $this->andWhere([
-            'market' => $market,
-        ]);
-    }
-
-    /**
-     * @param array $markets
-     * @return DiscountQuery
-     */
-    public function markets(array $markets): DiscountQuery
-    {
-        return $this->andWhere([
-            'in', 'market', $markets
-        ]);
-    }
-
-    /**
      * @return DiscountQuery
      */
     public function categorized(): DiscountQuery

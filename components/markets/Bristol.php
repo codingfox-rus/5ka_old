@@ -99,7 +99,6 @@ class Bristol implements \app\interfaces\iMarket
         // Добавляем актуальные скидки
         $actualRows = Discount::find()
             ->select('productId')
-            ->market('bristol')
             ->active()
             ->asArray()
             ->all();
@@ -202,7 +201,6 @@ class Bristol implements \app\interfaces\iMarket
     public function downloadImages()
     {
         $discounts = Discount::find()
-            ->market('bristol')
             ->active()
             ->limit(self::DOWNLOAD_LIMIT)
             ->all();

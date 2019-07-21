@@ -3,13 +3,17 @@ namespace app\models;
 
 use yii\data\ActiveDataProvider;
 
+/**
+ * Class DiscountSearch
+ * @package app\models
+ */
 class DiscountSearch extends Discount
 {
-    const DISCOUNT_PER_PAGE = 20;
+    public const DISCOUNT_PER_PAGE = 20;
 
-    const SORTING_PRICE_ASC = 'price-asc';
-    const SORTING_PRICE_DESC = 'price-desc';
-    const SORTING_PERCENT_DESC = 'percent-desc';
+    public const SORTING_PRICE_ASC = 'price-asc';
+    public const SORTING_PRICE_DESC = 'price-desc';
+    public const SORTING_PERCENT_DESC = 'percent-desc';
 
     /** @var array */
     public $markets;
@@ -35,7 +39,6 @@ class DiscountSearch extends Discount
     {
         return [
             [[
-                'market',
                 'productName',
                 'sortingOrder',
             ], 'string'],
@@ -80,7 +83,6 @@ class DiscountSearch extends Discount
         }
 
         $query->andFilterWhere([
-            'market' => $this->market,
             'locationId' => $this->locationId,
         ]);
 
@@ -88,10 +90,6 @@ class DiscountSearch extends Discount
 
         if ($this->sortingOrder) {
             $query = $this->applySortingOrder($query);
-        }
-
-        if ($this->markets) {
-            $query->markets($this->markets);
         }
 
         return $dataProvider;

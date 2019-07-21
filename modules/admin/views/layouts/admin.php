@@ -52,6 +52,11 @@ AppAsset::register($this);
                 'url' => ['/admin/page/index'],
             ],
 
+            [
+                'label' => 'Настройки',
+                'url' => ['/admin/settings/update'],
+            ],
+
             Yii::$app->user->isGuest ? (
             ['label' => 'Войти', 'url' => ['/site/login']]
             ) : (
