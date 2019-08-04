@@ -125,17 +125,7 @@ class StatController extends Controller
             $location->needToProcess = 0;
             $location->save(false);
 
-            $alert = new Feedback();
-            $alert->name = 'Статистика';
-            $alert->email = Yii::$app->params['adminEmail'];
-            $alert->subject = 'Обновление статистики';
-            $alert->message = "Обновлена статистика для {$location->name}. Количество записей: {$ins}";
-
-            if (!$alert->save(false)) {
-                $errors = json_encode($alert->errors);
-                Yii::error($errors);
-                echo $errors . PHP_EOL;
-            }
+            // todo: ввести логирования для статистики
 
             return true;
         }

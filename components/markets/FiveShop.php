@@ -142,16 +142,20 @@ class FiveShop
 
                 $this->deleteData();
 
-                $location->needToProcess = 1;
-                $location->dataUpdatedAt = time();
-                $location->save(false);
+                if ($totalUpd > 0) {
 
-                if ($location->region) {
-                    $location->region->updatedAt = time();
-                    $location->region->save(false);
+                    $location->needToProcess = 1;
+                    $location->dataUpdatedAt = time();
+                    $location->save(false);
+
+                    if ($location->region) {
+                        $location->region->updatedAt = time();
+                        $location->region->save(false);
+                    }
+
+                    echo $totalUpd .' discounts added'. PHP_EOL;
                 }
 
-                echo $totalUpd .' discounts added'. PHP_EOL;
                 return true;
             }
 
