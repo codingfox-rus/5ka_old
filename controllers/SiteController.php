@@ -214,10 +214,13 @@ class SiteController extends Controller
     }
 
     /**
+     * todo spam
      * @return string|Response
      */
     public function actionFeedback()
     {
+        return $this->redirect('index');
+
         $this->addPageInfo(Page::FEEDBACK);
 
         $model = new Feedback();
