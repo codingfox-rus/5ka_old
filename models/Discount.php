@@ -30,8 +30,8 @@ class Discount extends \yii\db\ActiveRecord
 {
     public const STAT_PRICE_LIMIT = 49.99;
 
-    const STATUS_ACTIVE = 1;
-    const STATUS_ARCHIVE = 2;
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_ARCHIVE = 2;
 
     /**
      * @return array
@@ -119,7 +119,7 @@ class Discount extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'locationId' => 'Локация',
-            'productId' => 'Товара',
+            'productId' => 'Товар',
             'productName' => 'Наименование',
             'regularPrice' => 'Цена',
             'specialPrice' => 'Цена со скидкой',

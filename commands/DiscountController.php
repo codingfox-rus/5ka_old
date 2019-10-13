@@ -7,6 +7,10 @@ use app\models\Discount;
 use app\components\markets\FiveShop;
 use app\components\markets\Bristol;
 
+/**
+ * Class DiscountController
+ * @package app\commands
+ */
 class DiscountController extends Controller
 {
     /** @var FiveShop */
@@ -15,6 +19,14 @@ class DiscountController extends Controller
     public function init()
     {
         $this->fiveShop = Yii::$app->get('fiveShop');
+    }
+
+    /**
+     * @throws \yii\db\Exception
+     */
+    public function actionUpdateRegions(): void
+    {
+        $this->fiveShop->updateRegions();
     }
 
     /**
@@ -28,7 +40,7 @@ class DiscountController extends Controller
     /**
      * Скачиваем изображения товаров, чтобы не обращаться к родительскому сайту
      */
-    public function actionDownloadImages()
+    public function actionDownloadImages(): void
     {
         $this->fiveShop->downloadImages();
     }
@@ -36,10 +48,18 @@ class DiscountController extends Controller
     /**
      * Удаляем все скидки (в целях отладки)
      */
-    public function actionDropAll()
+    public function actionDropAll(): void
     {
         $totalDeleted = Discount::deleteAll();
 
         echo $totalDeleted .' rows deleted'. PHP_EOL;
+    }
+
+    /**
+     * Устанавливаем теги для скидок
+     */
+    public function actionSetTags(): void
+    {
+        
     }
 }

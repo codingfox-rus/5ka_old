@@ -21,7 +21,7 @@
 # 
 # m h  dom mon dow   command
 
-#0 0 * * 0 php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii data/update-regions > /dev/null 2>&1
+#0 0 * * 0 php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/update-regions > /dev/null 2>&1
 
 */20 * * * * php /home/hosting_bandicoot/projects/shoptracker/htdocs/yii discount/update-data > /dev/null 2>&1
 

@@ -11,6 +11,7 @@ use app\models\Feedback;
 class StatController extends Controller
 {
     /**
+     * todo: сбор статистики слишком сырой, примитивный и в целом нерабочий. Пока отключен
      * @return bool
      * @throws \yii\db\Exception
      */

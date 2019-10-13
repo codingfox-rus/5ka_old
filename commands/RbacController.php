@@ -7,8 +7,8 @@ use app\models\User;
 
 class RbacController extends Controller
 {
-    const ROLE_ADMIN = 'admin';
-    const ROLE_CLIENT = 'client';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_CLIENT = 'client';
 
     /** @var \yii\rbac\DbManager */
     public $auth;
