@@ -1,9 +1,6 @@
 <?php
 namespace app\components\markets;
 
-use app\components\DiscountHelper;
-use app\models\DiscountHistory;
-use app\models\DiscountSearch;
 use Yii;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -232,15 +229,6 @@ class FiveShop
             $totalRows = Yii::$app->db->createCommand()
                 ->batchInsert(
                     Discount::tableName(),
-                    $fields,
-                    $actualData
-                )
-                ->execute();
-
-            // Сохраняем скидки для истории
-            Yii::$app->db->createCommand()
-                ->batchInsert(
-                    DiscountHistory::tableName(),
                     $fields,
                     $actualData
                 )

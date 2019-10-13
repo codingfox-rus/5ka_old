@@ -60,6 +60,6 @@ class DiscountController extends Controller
      */
     public function actionSetTags(): void
     {
-        
+
     }
 }
