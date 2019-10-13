@@ -48,7 +48,7 @@ class FiveShop
             // Очищаем старые данные
             Region::deleteAll();
 
-            $columns = array_keys((new Region())->attributes);
+            $columns = ['id', 'name'];
 
             $totalRegions = Yii::$app->db
                 ->createCommand()
@@ -99,6 +99,9 @@ class FiveShop
                     ];
                 }
             }
+
+            echo "Сохранены данные по региону: {$region['name']}\n";
+            sleep(1);
         }
 
         if ($locations) {
@@ -521,6 +524,8 @@ class FiveShop
                 $apiData = json_decode($this->getData($locationId, $apiVersion, $pageNum), true);
 
                 $results[] = $apiData['results'];
+
+                sleep(1);
             }
         }
 

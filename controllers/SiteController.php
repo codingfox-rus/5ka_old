@@ -3,6 +3,7 @@ namespace app\controllers;
 
 use app\components\markets\FiveShop;
 use app\models\Discount;
+use app\models\Location;
 use Yii;
 use yii\web\Controller;
 use yii\web\Response;
@@ -74,7 +75,7 @@ class SiteController extends Controller
         $searchModel = new DiscountSearch();
 
         $params = Yii::$app->request->queryParams;
-        $params['locationId'] = $_COOKIE['locationId'] ?? FiveShop::DEFAULT_LOCATION_ID;
+        $params['locationId'] = $_COOKIE['locationId'] ?? $this->getFirstEnabledLocationId() ?? FiveShop::DEFAULT_LOCATION_ID;
 
         $dataProvider = $searchModel->search($params);
 
@@ -85,6 +86,16 @@ class SiteController extends Controller
             'dataProvider' => $dataProvider,
             'pages' => $pages,
         ]);
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFirstEnabledLocationId():? int
+    {
+        $location = Location::find()->enabled()->one();
+
+        return $location->id ?? null;
     }
 
     /**
