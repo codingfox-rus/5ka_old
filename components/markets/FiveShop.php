@@ -173,7 +173,7 @@ class FiveShop
     {
         return Location::find()
             ->enabled()
-            ->andWhere(['<', 'dataUpdatedAt', time() - self::DAY_TIME])
+            ->andWhere(['<=', 'dataUpdatedAt', time() - 86400]) // todo: вынести в константы
             ->one();
     }
 

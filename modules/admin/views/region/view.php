@@ -65,7 +65,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 <table class="table table-bordered table-striped">
                     <tr>
                         <th>Локация</th>
-                        <th>Обновлено</th>
                         <th>Всего скидок</th>
                     </tr>
 
@@ -81,9 +80,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <?= $location->name ?> (ID <?= $location->id ?>)
                                     </label>
                                 </div>
-                            </td>
-                            <td>
-                                <?= $location->dataUpdatedAt ? date('d.m.Y H:i:s', $location->dataUpdatedAt) : '-' ?>
                             </td>
                             <td>
                                 <?php $totalLocationDiscounts = $totalDiscounts[$location->id] ?? null ?>

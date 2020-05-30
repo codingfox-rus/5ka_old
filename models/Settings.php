@@ -8,7 +8,6 @@ use yii\db\ActiveRecord;
  * This is the model class for table "settings".
  *
  * @property int $id
- * @property int $apiVersion
  * @property int $updatedAt
  */
 class Settings extends ActiveRecord
@@ -41,7 +40,7 @@ class Settings extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['apiVersion', 'updatedAt'], 'integer'],
+            [['updatedAt'], 'integer'],
         ];
     }
 
@@ -52,7 +51,6 @@ class Settings extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'apiVersion' => 'Версия API',
             'updatedAt' => 'Обновлено',
         ];
     }

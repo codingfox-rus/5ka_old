@@ -51,10 +51,10 @@ class Region extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id' => 'ID',
-            'name' => 'Наименование',
+            'id'                => 'ID',
+            'name'              => 'Наименование',
             'capitalLocationId' => 'Столица региона',
-            'updatedAt' => 'Данные обновлены',
+            'updatedAt'         => 'Данные обновлены',
         ];
     }
 
@@ -72,8 +72,7 @@ class Region extends ActiveRecord
      */
     public function getLocations(): ActiveQuery
     {
-        return $this->hasMany(Location::class, ['regionId' => 'id'])
-            ->orderBy(['dataUpdatedAt' => SORT_DESC]);
+        return $this->hasMany(Location::class, ['regionId' => 'id']);
     }
 
     /**

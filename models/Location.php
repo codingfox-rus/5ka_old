@@ -13,7 +13,6 @@ use yii\db\ActiveRecord;
  * @property int $isEnabled
  * @property int $needToProcess
  * @property int $dataUpdatedAt
- * @property int $dataHandledAt
  *
  * @property Region $region
  */
@@ -41,7 +40,6 @@ class Location extends ActiveRecord
                 'isEnabled',
                 'needToProcess',
                 'dataUpdatedAt',
-                'dataHandledAt',
             ], 'integer'],
 
             [['name'], 'string', 'max' => 255],
@@ -61,8 +59,7 @@ class Location extends ActiveRecord
             'name' => 'Наименование',
             'isEnabled' => 'Включен сбор статистики',
             'needToProcess' => 'Необходимость сбора статистики',
-            'dataUpdatedAt' => 'Данные обновлены',
-            'dataHandledAt' => 'Данные обработаны',
+            'dataUpdatedAt' => 'Время обновления данных',
         ];
     }
 
