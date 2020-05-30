@@ -3,11 +3,16 @@ namespace app\modules\admin\controllers;
 
 use Yii;
 use app\models\Settings;
+use yii\web\Response;
 
+/**
+ * Class SettingsController
+ * @package app\modules\admin\controllers
+ */
 class SettingsController extends MainController
 {
     /**
-     * @return string|\yii\web\Response
+     * @return string|Response
      */
     public function actionUpdate()
     {

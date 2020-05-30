@@ -34,7 +34,7 @@ class DiscountController extends MainController
     /**
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new DiscountSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

@@ -1,27 +1,27 @@
 <?php
-
 namespace app\modules\admin\controllers;
 
 use Yii;
 use app\models\TagKey;
 use app\models\TagKeySearch;
-use yii\web\Controller;
+use yii\db\StaleObjectException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * TagKeyController implements the CRUD actions for TagKey model.
  */
-class TagKeyController extends Controller
+class TagKeyController extends MainController
 {
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -33,7 +33,7 @@ class TagKeyController extends Controller
      * Lists all TagKey models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new TagKeySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -96,13 +96,13 @@ class TagKeyController extends Controller
     }
 
     /**
-     * Deletes an existing TagKey model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws StaleObjectException
      */
-    public function actionDelete($id)
+    public function actionDelete($id): Response
     {
         $this->findModel($id)->delete();
 
@@ -116,7 +116,7 @@ class TagKeyController extends Controller
      * @return TagKey the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($id): TagKey
     {
         if (($model = TagKey::findOne($id)) !== null) {
             return $model;

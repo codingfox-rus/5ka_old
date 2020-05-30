@@ -49,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'capitalLocationId',
-                'value' => function (Region $model) {
+                'value' => static function (Region $model) {
                     if ($model->capitalLocation) {
                         return $model->capitalLocation->name;
                     }
@@ -60,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'updatedAt',
-                'value' => function (Region $model) {
+                'value' => static function (Region $model) {
                     if ($model->updatedAt) {
                         return date('H:i:s d.m.Y', $model->updatedAt);
                     }
@@ -73,13 +73,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => ActionColumn::class,
                 'template' => '<div class="text-center">{view} {view-set-capital-form}</div>',
                 'buttons' => [
-                    'view' => function ($url) {
+                    'view' => static function ($url) {
                         return Html::a('<i class="fa fa-list"></i>', $url, [
                             'class' => 'btn btn-primary btn-sm',
                             'title' => 'Статистика по локациям',
                         ]);
                     },
-                    'view-set-capital-form' => function ($url) {
+                    'view-set-capital-form' => static function ($url) {
                         return Html::a('<i class="fa fa-building-o"></i>', $url, [
                             'class' => 'btn btn-success btn-sm view-set-capital-form',
                             'title' => 'Установить столицу региона',
@@ -88,8 +88,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
         ],
-    ]); ?>
-    <?php Pjax::end(); ?>
+    ]) ?>
+    <?php Pjax::end() ?>
 </div>
 
 <!-- Управление параметрами региона -->

@@ -3,6 +3,7 @@
 /* @var $searchModel app\models\MarketSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+use yii\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -32,12 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'summary' => '',
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             [
                 'attribute' => 'logo',
                 'format' => 'html',
-                'value' => function (Market $model) {
+                'value' => static function (Market $model) {
 
                     return Html::img(Yii::getAlias('@web') .'/'. $model->logo, [
                         'class' => 'img-responsive',
@@ -51,17 +50,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'code',
 
             [
-                'class' => \yii\grid\ActionColumn::class,
+                'class' => ActionColumn::class,
                 'header' => 'Действия',
                 'template' => '<div class="text-center">{view} {update}</div>',
                 'buttons' => [
-                    'view' => function ($url) {
+                    'view' => static function ($url) {
 
                         return Html::a('<i class="fa fa-list"></i>', $url, [
                             'class' => 'btn btn-primary btn-xs',
                         ]);
                     },
-                    'update' => function ($url) {
+                    'update' => static function ($url) {
 
                         return Html::a('<i class="fa fa-pencil-square-o"></i>', $url, [
                             'class' => 'btn btn-success btn-xs',
@@ -70,6 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ],
         ],
-    ]); ?>
+    ]) ?>
     <?php Pjax::end(); ?>
 </div>

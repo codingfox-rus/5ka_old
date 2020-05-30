@@ -4,8 +4,10 @@ namespace app\modules\admin\controllers;
 use Yii;
 use app\models\Page;
 use app\models\PageSearch;
+use yii\db\StaleObjectException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * PageController implements the CRUD actions for Page model.
@@ -15,11 +17,11 @@ class PageController extends MainController
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -33,7 +35,7 @@ class PageController extends MainController
      * Lists all Page models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new PageSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -96,13 +98,13 @@ class PageController extends MainController
     }
 
     /**
-     * Deletes an existing Page model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws StaleObjectException
+     * @throws \Throwable
      */
-    public function actionDelete($id)
+    public function actionDelete($id): Response
     {
         $this->findModel($id)->delete();
 
@@ -116,7 +118,7 @@ class PageController extends MainController
      * @return Page the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($id): Page
     {
         if (($model = Page::findOne($id)) !== null) {
             return $model;

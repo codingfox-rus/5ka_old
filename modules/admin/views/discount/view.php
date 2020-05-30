@@ -12,7 +12,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="discount-view">
-
     <div class="row">
         <div class="col-md-1">
             <?php if ($prev): ?>

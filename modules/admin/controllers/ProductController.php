@@ -4,6 +4,10 @@ namespace app\modules\admin\controllers;
 use Yii;
 use app\models\ProductSearch;
 
+/**
+ * Class ProductController
+ * @package app\modules\admin\controllers
+ */
 class ProductController extends MainController
 {
     /**

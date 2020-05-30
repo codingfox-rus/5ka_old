@@ -1,11 +1,11 @@
 <?php
-/* @var $this \yii\web\View */
+/* @var $this View */
 /* @var $content string */
 
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
+use yii\web\View;
 use yii\widgets\Breadcrumbs;
-use app\widgets\City;
 use app\widgets\CityChange;
 use app\assets\AppAsset;
 
@@ -96,9 +96,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
+        <p class="pull-left">&copy; Delivery Tracker <?= date('Y') ?></p>
     </div>
 </footer>
 

@@ -3,6 +3,7 @@
 /* @var $searchModel app\models\DiscountSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+use yii\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -35,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'locationId',
-                'value' => function (Discount $model) {
+                'value' => static function (Discount $model) {
                     if ($model->location) {
                         return $model->location->name;
                     }
@@ -46,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Превью',
                 'format' => 'html',
-                'value' => function (Discount $model) {
+                'value' => static function (Discount $model) {
 
                     return Html::img($model->smallPreview, [
                         'class' => 'img-responsive',
@@ -58,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Цены',
                 'format' => 'html',
-                'content' => function (Discount $model) {
+                'content' => static function (Discount $model) {
 
                     $out[] = '<i class="fa fa-rub"></i>&nbsp;&nbsp;'. $model->regularPrice;
                     $out[] = '<i class="fa fa-rub"></i>&nbsp;&nbsp;'. $model->specialPrice;
@@ -70,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Время',
                 'format' => 'html',
-                'content' => function (Discount $model) {
+                'content' => static function (Discount $model) {
 
                     $out[] = '<i class="fa fa-play"></i>&nbsp;&nbsp;'. date('H:i d.m.Y', $model->dateStart);
                     $out[] = '<i class="fa fa-stop"></i>&nbsp;&nbsp;'. date('H:i d.m.Y', $model->dateEnd);
@@ -79,11 +80,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'class' => \yii\grid\ActionColumn::class,
+                'class' => ActionColumn::class,
                 'header' => 'Действия',
                 'template' => '<div class="text-center">{view}</div>',
                 'buttons' => [
-                    'view' => function ($url) {
+                    'view' => static function ($url) {
 
                         return Html::a('<i class="fa fa-eye"></i>', $url, [
                             'class' => 'btn btn-primary'

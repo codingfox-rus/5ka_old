@@ -1,7 +1,6 @@
 <?php
 namespace app\modules\admin\controllers;
 
-use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 
@@ -15,7 +14,7 @@ class MainController extends Controller
     /**
      * @return array
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -34,7 +33,7 @@ class MainController extends Controller
      * Renders the index view for the module
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         return $this->render('index');
     }

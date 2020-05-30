@@ -2,6 +2,8 @@
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\TagSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
+use yii\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
@@ -23,14 +25,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'name',
             'updatedAt',
 
-            ['class' => \yii\grid\ActionColumn::class],
+            ['class' => ActionColumn::class],
         ],
-    ]); ?>
+    ]) ?>
     <?php Pjax::end(); ?>
 </div>

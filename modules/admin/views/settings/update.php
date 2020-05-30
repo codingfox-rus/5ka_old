@@ -1,9 +1,7 @@
 <?php
 /* @var $model app\models\Settings */
-
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use app\models\Settings;
 
 $this->title = 'Настройки проекта';
 $this->params['breadcrumbs'][] = $this->title;

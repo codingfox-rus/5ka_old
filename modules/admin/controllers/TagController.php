@@ -1,27 +1,27 @@
 <?php
-
 namespace app\modules\admin\controllers;
 
 use Yii;
 use app\models\Tag;
 use app\models\TagSearch;
-use yii\web\Controller;
+use yii\db\StaleObjectException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * TagController implements the CRUD actions for Tag model.
  */
-class TagController extends Controller
+class TagController extends MainController
 {
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -33,7 +33,7 @@ class TagController extends Controller
      * Lists all Tag models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new TagSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -96,11 +96,11 @@ class TagController extends Controller
     }
 
     /**
-     * Deletes an existing Tag model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -116,7 +116,7 @@ class TagController extends Controller
      * @return Tag the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($id): Tag
     {
         if (($model = Tag::findOne($id)) !== null) {
             return $model;

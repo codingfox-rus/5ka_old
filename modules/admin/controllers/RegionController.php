@@ -36,7 +36,7 @@ class RegionController extends MainController
      * Lists all Region models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new RegionSearch();
 

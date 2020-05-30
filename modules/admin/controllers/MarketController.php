@@ -4,8 +4,10 @@ namespace app\modules\admin\controllers;
 use Yii;
 use app\models\Market;
 use app\models\MarketSearch;
+use yii\db\StaleObjectException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 /**
@@ -16,11 +18,11 @@ class MarketController extends MainController
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -34,7 +36,7 @@ class MarketController extends MainController
      * Lists all Market models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $searchModel = new MarketSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
@@ -109,13 +111,13 @@ class MarketController extends MainController
     }
 
     /**
-     * Deletes an existing Market model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws StaleObjectException
      */
-    public function actionDelete($id)
+    public function actionDelete($id): Response
     {
         $this->findModel($id)->delete();
 
@@ -129,7 +131,7 @@ class MarketController extends MainController
      * @return Market the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($id): Market
     {
         if (($model = Market::findOne($id)) !== null) {
             return $model;

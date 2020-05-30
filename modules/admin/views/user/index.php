@@ -6,6 +6,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use yii\grid\ActionColumn;
 
 $this->title = 'Пользователи';
 $this->params['breadcrumbs'][] = $this->title;
@@ -24,8 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'name',
             'email:email',
@@ -38,8 +37,8 @@ $this->params['breadcrumbs'][] = $this->title;
             //'createdAt',
             //'updatedAt',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => ActionColumn::class],
         ],
-    ]); ?>
+    ]) ?>
     <?php Pjax::end(); ?>
 </div>

@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => 'Превью',
                 'format' => 'html',
-                'content' => function (Product $model) {
+                'content' => static function (Product $model) {
                     if ($model->preview) {
                         return Html::img($model->preview, [
                             'width' => '200',

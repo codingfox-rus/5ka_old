@@ -1,12 +1,12 @@
 <?php
-
-/* @var $this \yii\web\View */
+/* @var $this View */
 /* @var $content string */
 
 use app\widgets\Alert;
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use yii\web\View;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
 
@@ -77,7 +77,7 @@ AppAsset::register($this);
 
     <div class="container">
         <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+            'links' => $this->params['breadcrumbs'] ?? [],
             'homeLink' => ['label' => 'Админка', 'url' => ['/admin']],
         ]) ?>
         <?= Alert::widget() ?>
@@ -87,9 +87,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; FollowSale <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
+        <p class="pull-left">&copy; Delivery Tracker <?= date('Y') ?></p>
     </div>
 </footer>
 

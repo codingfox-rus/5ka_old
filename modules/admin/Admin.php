@@ -1,11 +1,12 @@
 <?php
-
 namespace app\modules\admin;
+
+use yii\base\Module;
 
 /**
  * admin module definition class
  */
-class Admin extends \yii\base\Module
+class Admin extends Module
 {
     /**
      * {@inheritdoc}
@@ -15,7 +16,7 @@ class Admin extends \yii\base\Module
     /**
      * {@inheritdoc}
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 

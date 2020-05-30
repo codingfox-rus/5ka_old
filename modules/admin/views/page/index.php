@@ -1,4 +1,5 @@
-<?php
+<?php use yii\grid\ActionColumn;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\PageSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -24,7 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'name',
@@ -35,8 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
             //'createdAt',
             //'updatedAt',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => ActionColumn::class],
         ],
-    ]); ?>
+    ]) ?>
     <?php Pjax::end(); ?>
 </div>
