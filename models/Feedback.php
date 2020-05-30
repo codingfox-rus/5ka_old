@@ -1,8 +1,8 @@
 <?php
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "feedback".
@@ -16,7 +16,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $updatedAt
  * @property int $sentAt
  */
-class Feedback extends \yii\db\ActiveRecord
+class Feedback extends ActiveRecord
 {
     public $verifyCode;
 

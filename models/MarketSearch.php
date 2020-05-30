@@ -1,10 +1,8 @@
 <?php
-
 namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Market;
 
 /**
  * MarketSearch represents the model behind the search form of `app\models\Market`.
@@ -14,7 +12,7 @@ class MarketSearch extends Market
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id'], 'integer'],
@@ -28,7 +26,7 @@ class MarketSearch extends Market
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -41,7 +39,7 @@ class MarketSearch extends Market
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params): ActiveDataProvider
     {
         $query = Market::find();
 

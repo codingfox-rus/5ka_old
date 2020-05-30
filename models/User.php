@@ -26,9 +26,9 @@ use yii\behaviors\TimestampBehavior;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_ACTIVE = 10;
-    const STATUS_UNCONFIRMED = 1;
-    const STATUS_DELETED = 0;
+    public const STATUS_ACTIVE = 10;
+    public const STATUS_UNCONFIRMED = 1;
+    public const STATUS_DELETED = 0;
 
     /**
      * @return array
@@ -118,7 +118,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): ?IdentityInterface
     {
         return null;
     }
@@ -127,7 +127,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param $email
      * @return User|null
      */
-    public static function findByEmail($email)
+    public static function findByEmail($email): ?User
     {
         return static::findOne(['email' => $email]);
     }
@@ -143,7 +143,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function getAuthKey()
+    public function getAuthKey(): string
     {
         return $this->authKey;
     }
@@ -162,7 +162,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param string $password password to validate
      * @return bool if password provided is valid for current user
      */
-    public function validatePassword($password)
+    public function validatePassword($password): bool
     {
         return Yii::$app->security->validatePassword($password, $this->password);
     }

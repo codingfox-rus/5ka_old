@@ -3,6 +3,10 @@ namespace app\models;
 
 use yii\data\ActiveDataProvider;
 
+/**
+ * Class ProductSearch
+ * @package app\models
+ */
 class ProductSearch extends Product
 {
     /**

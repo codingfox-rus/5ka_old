@@ -2,12 +2,14 @@
 
 namespace app\models;
 
+use yii\db\ActiveQuery;
+
 /**
  * This is the ActiveQuery class for [[Page]].
  *
  * @see Page
  */
-class PageQuery extends \yii\db\ActiveQuery
+class PageQuery extends ActiveQuery
 {
     /*public function active()
     {

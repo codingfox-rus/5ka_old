@@ -1,13 +1,14 @@
 <?php
-
 namespace app\models;
+
+use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[TagKey]].
  *
  * @see TagKey
  */
-class TagKeyQuery extends \yii\db\ActiveQuery
+class TagKeyQuery extends ActiveQuery
 {
     /*public function active()
     {

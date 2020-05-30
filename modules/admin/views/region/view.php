@@ -1,7 +1,6 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $model app\models\Region */
-/* @var $stat array */
 /* @var $totalDiscounts array */
 
 use yii\helpers\Html;
@@ -31,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-12">
             <div class="text-center">
                 <h4>Локации</h4>
             </div>
@@ -110,38 +109,6 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php } ?>
 
             <?= Html::endForm() ?>
-        </div>
-
-        <div class="col-md-5">
-            <div class="text-center">
-                <h4>Статистика</h4>
-            </div>
-            <br>
-
-            <table class="table table-bordered table-striped table-condensed">
-                <tr>
-                    <th>Локация</th>
-                    <th class="text-right">Кол-во товаров</th>
-                </tr>
-                <?php foreach ($stat as $id => $item) { ?>
-
-                    <tr>
-                        <td>
-                            <?= Html::a($item['name'], [
-                                '/admin/location/view-stat',
-                                'id' => $id,
-                            ], [
-                                'target' => '_blank',
-                                'title' => 'Статистика по товарам',
-                            ]) ?>
-                        </td>
-                        <td>
-                            <?= $item['total'] ?>
-                        </td>
-                    </tr>
-
-                <?php } ?>
-            </table>
         </div>
     </div>
 </div>

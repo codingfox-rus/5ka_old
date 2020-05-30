@@ -2,22 +2,27 @@
 namespace app\controllers;
 
 use app\components\markets\FiveShop;
-use app\models\Discount;
 use app\models\Location;
+use Exception;
+use RuntimeException;
 use Yii;
+use yii\captcha\CaptchaAction;
 use yii\web\Controller;
+use yii\web\ErrorAction;
 use yii\web\Response;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\data\Pagination;
-use yii\web\NotFoundHttpException;
 use app\models\SignupForm;
 use app\models\LoginForm;
-use app\models\Feedback;
 use app\models\DiscountSearch;
 use app\models\User;
 use app\models\Page;
 
+/**
+ * Class SiteController
+ * @package app\controllers
+ */
 class SiteController extends Controller
 {
     /**
@@ -50,22 +55,20 @@ class SiteController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => [
-                'class' => \yii\web\ErrorAction::class,
+                'class' => ErrorAction::class,
             ],
             'captcha' => [
-                'class' => \yii\captcha\CaptchaAction::class,
+                'class' => CaptchaAction::class,
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
     }
 
     /**
-     * Displays homepage.
-     *
      * @return string
      */
     public function actionIndex(): string
@@ -194,9 +197,9 @@ class SiteController extends Controller
     /**
      * @param string $code
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
-    public function actionActivation(string $code)
+    public function actionActivation(string $code): Response
     {
         $user = User::findOne(['activationCode' => $code]);
 
@@ -216,7 +219,7 @@ class SiteController extends Controller
                 return $this->redirect('login');
             }
 
-            throw new \Exception('Ошибка активации');
+            throw new RuntimeException('Ошибка активации');
         }
 
         return $this->redirect('error', [
@@ -231,27 +234,12 @@ class SiteController extends Controller
     public function actionFeedback()
     {
         return $this->redirect('index');
-
-        $this->addPageInfo(Page::FEEDBACK);
-
-        $model = new Feedback();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-
-            Yii::$app->session->setFlash('feedbackSubmitted');
-
-            return $this->refresh();
-        }
-
-        return $this->render('feedback', [
-            'model' => $model,
-        ]);
     }
 
     /**
      * @return string
      */
-    public function actionAbout()
+    public function actionAbout(): string
     {
         $this->addPageInfo(Page::ABOUT);
         $page = $this->getPage(Page::ABOUT);
@@ -270,7 +258,7 @@ class SiteController extends Controller
     /**
      * @param string $pageName
      */
-    protected function addPageInfo(string $pageName)
+    protected function addPageInfo(string $pageName): void
     {
         $page = $this->getPage($pageName);
 
@@ -294,7 +282,7 @@ class SiteController extends Controller
      * @param string $name
      * @return Page|null
      */
-    protected function getPage(string $name)
+    protected function getPage(string $name): ?Page
     {
         return Page::findOne(['name' => $name]);
     }

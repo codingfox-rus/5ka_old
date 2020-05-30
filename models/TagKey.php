@@ -1,8 +1,8 @@
 <?php
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tag_key".
@@ -12,7 +12,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $key
  * @property int $updatedAt
  */
-class TagKey extends \yii\db\ActiveRecord
+class TagKey extends ActiveRecord
 {
     /**
      * @return array
@@ -64,8 +64,8 @@ class TagKey extends \yii\db\ActiveRecord
      * {@inheritdoc}
      * @return TagKeyQuery the active query used by this AR class.
      */
-    public static function find()
+    public static function find(): TagKeyQuery
     {
-        return new TagKeyQuery(get_called_class());
+        return new TagKeyQuery(static::class);
     }
 }

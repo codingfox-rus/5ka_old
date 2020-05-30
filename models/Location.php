@@ -1,8 +1,8 @@
 <?php
 namespace app\models;
 
-use Yii;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "location".
@@ -17,7 +17,7 @@ use yii\db\ActiveQuery;
  *
  * @property Region $region
  */
-class Location extends \yii\db\ActiveRecord
+class Location extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -67,7 +67,7 @@ class Location extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getRegion(): ActiveQuery
     {

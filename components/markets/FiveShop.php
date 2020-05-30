@@ -1,6 +1,9 @@
 <?php
 namespace app\components\markets;
 
+use Exception;
+use GuzzleHttp\Cookie\CookieJar;
+use GuzzleHttp\Exception\GuzzleException;
 use Yii;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
@@ -9,8 +12,8 @@ use app\models\Region;
 use app\models\Location;
 use app\models\Discount;
 use app\models\Product;
-use app\models\Settings;
 use yii\helpers\ArrayHelper;
+use function in_array;
 
 class FiveShop
 {
@@ -20,8 +23,7 @@ class FiveShop
     public const REGIONS_API_URL    = '/api/regions/';
     public const PREVIEWS_PATH      = '/previews/five_shop/';
 
-    public const DISCOUNT_API_V1_URL   = '/api/special_offers/';
-    public const DISCOUNT_API_V2_URL   = '/api/v2/special_offers/';
+    public const DISCOUNT_API_V2_URL = '/api/v2/special_offers/';
 
     public const DEFAULT_LOCATION_ID    = 2223;
     public const REQUEST_TIMEOUT        = 30;
@@ -121,18 +123,15 @@ class FiveShop
 
     /**
      * @return bool
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function updateData(): bool
     {
         $location = $this->getLocationForUpdate();
 
-        /** @var Settings $settings */
-        $settings = Settings::find()->one();
+        if ($location) {
 
-        if ($location && $settings) {
-
-            $preparedData = $this->getPreparedData($location->id, $settings->apiVersion);
+            $preparedData = $this->getPreparedData($location->id);
 
             if ($preparedData) {
 
@@ -172,17 +171,14 @@ class FiveShop
      */
     public function getLocationForUpdate():? Location
     {
-        $location = Location::find()
+        return Location::find()
             ->enabled()
-            ->andWhere([
-                '<', 'dataUpdatedAt', time() - self::DAY_TIME
-            ])
+            ->andWhere(['<', 'dataUpdatedAt', time() - self::DAY_TIME])
             ->one();
-
-        return $location;
     }
 
     /**
+     * todo: нужен рефакторинг
      * @param array $items
      * @param int $locationId
      * @return int
@@ -221,6 +217,9 @@ class FiveShop
 
         // Сохраняем актуальные данные
         $transaction = Yii::$app->db->beginTransaction();
+        if ($transaction === null) {
+            return 0;
+        }
 
         try {
             $fields = array_keys((new Discount())->attributes);
@@ -242,7 +241,7 @@ class FiveShop
                 echo 'Обновлены скидки по '. $locationName . PHP_EOL;
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
             $errMes = $e->getMessage();
             echo $errMes. PHP_EOL;
@@ -267,7 +266,7 @@ class FiveShop
      */
     protected function updateProductData(array $items): void
     {
-        $existsProductIds = array_map(function($row){
+        $existsProductIds = array_map(static function($row){
             return $row['pId'];
         }, Product::find()->select('pId')->asArray()->all());
 
@@ -275,7 +274,7 @@ class FiveShop
 
         foreach ($items as $item) {
 
-            $condition = !\in_array($item['pId'], $existsProductIds, false);
+            $condition = !in_array($item['pId'], $existsProductIds, false);
 
             if ($condition) {
                 $actualItems[] = $item;
@@ -283,142 +282,53 @@ class FiveShop
         }
 
         $transaction = Yii::$app->db->beginTransaction();
+        if ($transaction) {
+            try {
 
-        try {
+                $totalRows = Yii::$app->db
+                    ->createCommand()
+                    ->batchInsert(
+                        Product::tableName(),
+                        [
+                            'pId',
+                            'name',
+                            'imageSmall',
+                            'createdAt'
+                        ],
+                        $actualItems
+                    )->execute();
 
-            $totalRows = Yii::$app->db
-                ->createCommand()
-                ->batchInsert(
-                    Product::tableName(),
-                    [
-                        'pId',
-                        'name',
-                        'imageSmall',
-                        'createdAt'
-                    ],
-                    $actualItems
-                )->execute();
+                $transaction->commit();
 
-            $transaction->commit();
+                echo $totalRows .' products added'. PHP_EOL;
 
-            echo $totalRows .' products added'. PHP_EOL;
+            } catch (Exception $e) {
 
-        } catch (\Exception $e) {
+                $errMes = $e->getMessage();
+                echo $errMes. PHP_EOL;
+                Yii::error($errMes);
 
-            $errMes = $e->getMessage();
-            echo $errMes. PHP_EOL;
-            Yii::error($errMes);
-
-            $transaction->rollBack();
-        }
-    }
-
-    /**
-     * @param int $locationId
-     * @param int $apiVersion
-     * @return array|null
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function getPreparedData(int $locationId, int $apiVersion):? array
-    {
-        $res = [
-            'discountData' => [],
-            'productData' => []
-        ];
-
-        if ($apiVersion === Settings::API_V1) {
-
-            $res = $this->getPreparedDataV1($locationId);
-
-        } else if ($apiVersion === Settings::API_V2) {
-
-            $res = $this->getPreparedDataV2($locationId);
-        }
-
-        return $res;
-    }
-
-    /**
-     * @param $locationId
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function getPreparedDataV1($locationId): array
-    {
-        $parsedData = $this->getParsedData($locationId, Settings::API_V1);
-        $discountData = [];
-        $productData = [];
-
-        foreach ($parsedData as $dataItem) {
-
-            foreach ($dataItem as $result) {
-
-                $discountData[] = $this->getDiscountItemV1($result, $locationId);
-
-                $productData[] = $this->getProductItemV1($result);
+                $transaction->rollBack();
             }
         }
-
-        return [
-            'discountData' => $discountData,
-            'productData' => $productData,
-        ];
-    }
-
-    /**
-     * @param array $result
-     * @param int $locationId
-     * @return array
-     */
-    public function getDiscountItemV1(array $result, int $locationId): array
-    {
-        $item['locationId']         = $locationId;
-        $item['productId']          = $result['params']['id'];
-        $item['productName']        = $result['name'];
-        $item['regularPrice']       = $result['params']['regular_price'];
-        $item['specialPrice']       = $result['params']['special_price'];
-        $item['discountPercent']    = $result['params']['discount_percent'];
-        $item['dateStart']          = $result['params']['date_start'];
-        $item['dateEnd']            = $result['params']['date_end'];
-        $item['jsonData']           = json_encode($result, JSON_UNESCAPED_UNICODE);
-        $item['status']             = Discount::STATUS_ACTIVE;
-        $item['createdAt']          = time();
-
-        return $item;
-    }
-
-    /**
-     * @param array $result
-     * @return array
-     */
-    public function getProductItemV1(array $result): array
-    {
-        $item['pId']            = $result['params']['id'];
-        $item['productName']    = $result['name'];
-        $item['imageSmall']     = $result['image_small'];
-        $item['createdAt']      = time();
-
-        return $item;
     }
 
     /**
      * @param $locationId
      * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
-    public function getPreparedDataV2($locationId): array
+    public function getPreparedData($locationId): array
     {
-        $parsedData = $this->getParsedData($locationId, Settings::API_V2);
+        $parsedData = $this->getParsedData($locationId);
         $discountData = [];
         $productData = [];
 
         foreach ($parsedData as $dataItem) {
-
             foreach ($dataItem as $result) {
 
                 $discountData[] = $this->getDiscountItemV2($result, $locationId);
-
-                $productData[] = $this->getProductItemV2($result);
+                $productData[]  = $this->getProductItemV2($result);
             }
         }
 
@@ -492,13 +402,12 @@ class FiveShop
 
     /**
      * @param $locationId
-     * @param $apiVersion
      * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
-    public function getParsedData($locationId, $apiVersion): array
+    public function getParsedData($locationId): array
     {
-        $apiData = json_decode($this->getData($locationId, $apiVersion), true);
+        $apiData = json_decode($this->getData($locationId), true);
         $results = [];
 
         if (!empty($apiData['next'])) {
@@ -509,7 +418,7 @@ class FiveShop
 
                 [, $pageNum] = explode('=', $apiData['next']);
 
-                $apiData = json_decode($this->getData($locationId, $apiVersion, $pageNum), true);
+                $apiData = json_decode($this->getData($locationId, $pageNum), true);
 
                 $results[] = $apiData['results'];
 
@@ -526,24 +435,15 @@ class FiveShop
 
     /**
      * @param $locationId
-     * @param int $apiVersion
      * @param int $page
-     * @return null|string
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return string|null
+     * @throws GuzzleException
      */
-    public function getData($locationId, int $apiVersion, int $page = 1):? string
+    public function getData($locationId, int $page = 1):? string
     {
-        $apiUrl = null;
-
-        if ($apiVersion === Settings::API_V1) {
-            $apiUrl = self::DISCOUNT_API_V1_URL;
-        } else if ($apiVersion === Settings::API_V2) {
-            $apiUrl = self::DISCOUNT_API_V2_URL;
-        }
-
         $url = implode('', [
             self::SITE_URL,
-            $apiUrl,
+            self::DISCOUNT_API_V2_URL,
             '?page='. $page,
         ]);
 
@@ -553,7 +453,7 @@ class FiveShop
 
         $cookies = ['location_id' => $locationId];
 
-        $cookieJar = \GuzzleHttp\Cookie\CookieJar::fromArray($cookies, self::DOMAIN);
+        $cookieJar = CookieJar::fromArray($cookies, self::DOMAIN);
 
         $response = null;
 
@@ -566,7 +466,7 @@ class FiveShop
 
             echo 'Request timeout '. $e->getMessage();
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
             echo $e->getMessage() . PHP_EOL;
             Yii::error($e->getMessage());

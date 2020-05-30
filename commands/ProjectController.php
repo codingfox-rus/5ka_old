@@ -27,7 +27,6 @@ class ProjectController extends Controller
         $to = Yii::$app->params['adminEmail'];
 
         foreach ($feedbacks as $feedback) {
-
             /** @var Feedback $feedback */
 
             $mail = Yii::$app->mailer

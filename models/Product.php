@@ -1,9 +1,9 @@
 <?php
 namespace app\models;
 
-use Yii;
 use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "product".
@@ -19,7 +19,7 @@ use yii\behaviors\TimestampBehavior;
  * @property Discount[] $discounts
  * @property string|null $preview
  */
-class Product extends \yii\db\ActiveRecord
+class Product extends ActiveRecord
 {
     /**
      * @return array

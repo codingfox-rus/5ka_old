@@ -1,13 +1,14 @@
 <?php
-
 namespace app\models;
+
+use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[Product]].
  *
  * @see Product
  */
-class ProductQuery extends \yii\db\ActiveQuery
+class ProductQuery extends ActiveQuery
 {
     /**
      * Без превьюх

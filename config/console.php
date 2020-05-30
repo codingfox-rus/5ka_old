@@ -44,10 +44,6 @@ $config = [
         ],
         'db' => $db,
 
-        'discountHelper' => [
-            'class' => 'app\components\DiscountHelper',
-        ],
-
         // Компоненты для работы с сайтами
         'fiveShop' => [
             'class' => \app\components\markets\FiveShop::class,

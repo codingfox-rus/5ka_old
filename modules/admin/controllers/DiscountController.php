@@ -2,13 +2,16 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
+use Exception;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use app\models\Discount;
 use app\models\DiscountSearch;
-use app\models\Stat;
-use yii\web\Response;
 
+/**
+ * Class DiscountController
+ * @package app\modules\admin\controllers
+ */
 class DiscountController extends MainController
 {
     /**
@@ -45,9 +48,9 @@ class DiscountController extends MainController
     /**
      * @param int $id
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    public function actionView(int $id)
+    public function actionView(int $id): string
     {
         $prev = Discount::findOne($id + 1);
 
@@ -67,52 +70,12 @@ class DiscountController extends MainController
      * @return Discount
      * @throws NotFoundHttpException
      */
-    protected function findModel(int $id)
+    protected function findModel(int $id): Discount
     {
         if (($model = Discount::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException('Запись не найдена');
-    }
-
-    /**
-     * @param int $id
-     * @return Response
-     * @throws NotFoundHttpException
-     */
-    public function actionEnableStat(int $id): Response
-    {
-        $discount = $this->findModel($id);
-
-        $stat = new Stat();
-        $stat->locationId = $discount->locationId;
-        $stat->productId = $discount->productId;
-        $stat->save();
-
-        return $this->redirect(Yii::$app->request->referrer);
-    }
-
-    /**
-     * @param int $id
-     * @return Response
-     * @throws NotFoundHttpException
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function actionDisableStat(int $id): Response
-    {
-        $discount = $this->findModel($id);
-
-        $stat = Stat::findOne([
-            'locationId' => $discount->locationId,
-            'productId' => $discount->productId,
-        ]);
-
-        if ($stat) {
-            $stat->delete();
-        }
-
-        return $this->redirect(Yii::$app->request->referrer);
     }
 }

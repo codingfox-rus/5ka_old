@@ -1,10 +1,8 @@
 <?php
-
 namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\TagKey;
 
 /**
  * TagKeySearch represents the model behind the search form of `app\models\TagKey`.
@@ -14,7 +12,7 @@ class TagKeySearch extends TagKey
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['id', 'tagId', 'updatedAt'], 'integer'],
@@ -25,7 +23,7 @@ class TagKeySearch extends TagKey
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -38,7 +36,7 @@ class TagKeySearch extends TagKey
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params): ActiveDataProvider
     {
         $query = TagKey::find();
 

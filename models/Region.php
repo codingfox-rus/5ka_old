@@ -2,6 +2,7 @@
 namespace app\models;
 
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "region".
@@ -14,7 +15,7 @@ use yii\db\ActiveQuery;
  * @property Location[] $locations
  * @property Location $capitalLocation
  */
-class Region extends \yii\db\ActiveRecord
+class Region extends ActiveRecord
 {
     /**
      * {@inheritdoc}

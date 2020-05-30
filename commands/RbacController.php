@@ -2,23 +2,35 @@
 namespace app\commands;
 
 use Yii;
+use yii\base\Exception;
 use yii\console\Controller;
 use app\models\User;
+use yii\rbac\DbManager;
 
+/**
+ * Class RbacController
+ * @package app\commands
+ * @property DbManager $auth
+ */
 class RbacController extends Controller
 {
     public const ROLE_ADMIN = 'admin';
     public const ROLE_CLIENT = 'client';
 
-    /** @var \yii\rbac\DbManager */
     public $auth;
 
-    public function init()
+    /**
+     *
+     */
+    public function init(): void
     {
         $this->auth = Yii::$app->authManager;
     }
 
-    public function actionInit()
+    /**
+     * @throws Exception
+     */
+    public function actionInit(): void
     {
         $admin = $this->auth->createRole(self::ROLE_ADMIN);
         $admin->description = 'Администратор';
@@ -31,7 +43,12 @@ class RbacController extends Controller
         $this->auth->addChild($admin, $client);
     }
 
-    public function actionCreateUser($email, $password)
+    /**
+     * @param $email
+     * @param $password
+     * @throws Exception
+     */
+    public function actionCreateUser($email, $password): void
     {
         $user = new User();
 
@@ -46,7 +63,12 @@ class RbacController extends Controller
         }
     }
 
-    public function actionAssignUser($roleName, $userId)
+    /**
+     * @param $roleName
+     * @param $userId
+     * @throws \Exception
+     */
+    public function actionAssignUser($roleName, $userId): void
     {
         $role = $this->auth->getRole($roleName);
 

@@ -1,8 +1,8 @@
 <?php
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "settings".
@@ -11,22 +11,8 @@ use yii\behaviors\TimestampBehavior;
  * @property int $apiVersion
  * @property int $updatedAt
  */
-class Settings extends \yii\db\ActiveRecord
+class Settings extends ActiveRecord
 {
-    public const API_V1 = 1;
-    public const API_V2 = 2;
-
-    /**
-     * @return array
-     */
-    public static function getApiVersions(): array
-    {
-        return [
-            self::API_V1 => 'V1',
-            self::API_V2 => 'V2',
-        ];
-    }
-
     /**
      * @return array
      */
@@ -70,6 +56,4 @@ class Settings extends \yii\db\ActiveRecord
             'updatedAt' => 'Обновлено',
         ];
     }
-
-
 }

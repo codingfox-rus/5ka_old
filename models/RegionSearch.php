@@ -3,7 +3,6 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Region;
 
 /**
  * RegionSearch represents the model behind the search form of `app\models\Region`.

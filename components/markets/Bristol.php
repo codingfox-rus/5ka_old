@@ -1,14 +1,16 @@
 <?php
 namespace app\components\markets;
 
+use app\interfaces\iMarket;
+use Exception;
 use Yii;
 use app\models\Discount;
 
-class Bristol implements \app\interfaces\iMarket
+class Bristol implements iMarket
 {
-    const SITE_URL = 'https://bristol.ru';
-    const API_URL = '/api/v1/menu';
-    const PREVIEWS_PATH = '/previews/bristol/';
+    public const SITE_URL = 'https://bristol.ru';
+    public const API_URL = '/api/v1/menu';
+    public const PREVIEWS_PATH = '/previews/bristol/';
 
     /**
      * @return string
@@ -40,6 +42,9 @@ class Bristol implements \app\interfaces\iMarket
 
         // Сохраняем актуальные данные
         $transaction = Yii::$app->db->beginTransaction();
+        if ($transaction === null) {
+            return false;
+        }
 
         try {
             $fields = array_keys((new Discount())->attributes);
@@ -55,11 +60,11 @@ class Bristol implements \app\interfaces\iMarket
 
             $transaction->commit();
 
-            $totalRows = \count($preparedData);
+            $totalRows = count($preparedData);
 
             echo "{$totalRows} added". PHP_EOL;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
             $errMes = $e->getMessage();
 
@@ -105,7 +110,7 @@ class Bristol implements \app\interfaces\iMarket
             ->asArray()
             ->all();
 
-        $actualProductIds = array_map(function($row){
+        $actualProductIds = array_map(static function($row){
             return $row['productId'];
         }, $actualRows);
 
@@ -115,7 +120,7 @@ class Bristol implements \app\interfaces\iMarket
 
         foreach ($productArray as $product) {
 
-            if (\in_array($product['id'], $newProductIds, true)) {
+            if (in_array($product['id'], $newProductIds, true)) {
 
                 $preparedData[] = $this->getItem($product);
             }
@@ -141,7 +146,7 @@ class Bristol implements \app\interfaces\iMarket
 
                 foreach ($dataItem as $item) {
 
-                    if (\is_array($item)) {
+                    if (is_array($item)) {
 
                         foreach ($item as $value) {
 
@@ -166,39 +171,28 @@ class Bristol implements \app\interfaces\iMarket
      */
     public function getItem(array $result)
     {
-        $item['productId'] = $result['id'];
-
-        $item['productName'] = $result['name'];
-
-        $item['url'] = $result['url'];
-
-        $item['description'] = null;
-
-        $item['imageSmall'] = $result['picture'];
-
-        $item['regularPrice'] = $result['price_old'];
-
-        $item['specialPrice'] = $result['price'];
-
-        $item['discountPercent'] = $result['discount_percent'];
-
-        $item['dateStart'] = null;
-
-        $item['dateEnd'] = null;
-
-        $item['status'] = Discount::STATUS_ACTIVE;
-
-        $item['createdAt'] = time();
+        $item['productId']          = $result['id'];
+        $item['productName']        = $result['name'];
+        $item['url']                = $result['url'];
+        $item['description']        = null;
+        $item['imageSmall']         = $result['picture'];
+        $item['regularPrice']       = $result['price_old'];
+        $item['specialPrice']       = $result['price'];
+        $item['discountPercent']    = $result['discount_percent'];
+        $item['dateStart']          = null;
+        $item['dateEnd']            = null;
+        $item['status']             = Discount::STATUS_ACTIVE;
+        $item['createdAt']          = time();
 
         return $item;
     }
 
-    public function archiveData()
+    public function archiveData(): void
     {
         // TODO: Implement archiveData() method.
     }
 
-    public function downloadImages()
+    public function downloadImages(): void
     {
         $discounts = Discount::find()
             ->active()

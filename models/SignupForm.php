@@ -4,9 +4,13 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 
+/**
+ * Class SignupForm
+ * @package app\models
+ */
 class SignupForm extends Model
 {
-    const TIME_FOR_ACTIVATION = 3600;
+    public const TIME_FOR_ACTIVATION = 3600;
 
     public $email;
 

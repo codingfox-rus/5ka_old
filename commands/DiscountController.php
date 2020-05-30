@@ -1,28 +1,29 @@
 <?php
 namespace app\commands;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Yii;
 use yii\console\Controller;
 use app\models\Discount;
 use app\components\markets\FiveShop;
-use app\components\markets\Bristol;
+use yii\db\Exception;
 
 /**
  * Class DiscountController
  * @package app\commands
+ * @property FiveShop $fiveShop
  */
 class DiscountController extends Controller
 {
-    /** @var FiveShop */
     public $fiveShop;
 
-    public function init()
+    public function init(): void
     {
         $this->fiveShop = Yii::$app->get('fiveShop');
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function actionUpdateRegions(): void
     {
@@ -30,7 +31,7 @@ class DiscountController extends Controller
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function actionUpdateData(): void
     {

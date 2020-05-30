@@ -3,6 +3,7 @@ namespace app\commands;
 
 use Yii;
 use app\models\User;
+use yii\base\Exception;
 use yii\console\Controller;
 
 class UserController extends Controller
@@ -11,7 +12,7 @@ class UserController extends Controller
      * @param string $email
      * @param string $password
      * @return bool
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function actionSetPassword(string $email, string $password): bool
     {

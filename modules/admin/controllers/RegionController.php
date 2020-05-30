@@ -9,7 +9,6 @@ use yii\web\NotFoundHttpException;
 use app\models\Region;
 use app\models\RegionSearch;
 use app\models\Location;
-use app\models\Stat;
 use app\models\Discount;
 
 /**
@@ -60,47 +59,12 @@ class RegionController extends MainController
      */
     public function actionView($id)
     {
-        $stat = $this->getStat($id);
         $totalDiscounts = $this->getTotalDiscounts($id);
 
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'stat' => $stat,
             'totalDiscounts' => $totalDiscounts,
         ]);
-    }
-
-    /**
-     * @param int $id
-     * @return array
-     */
-    protected function getStat(int $id): array
-    {
-        $locations = $this->getLocationsList($id);
-
-        $statRows = Stat::find()
-            ->select(['locationId', 'count(*) as total'])
-            ->where([
-                'in', 'locationId', array_keys($locations)
-            ])
-            ->andWhere([
-                'not', ['data' => null]
-            ])
-            ->groupBy('locationId')
-            ->asArray()
-            ->all();
-
-        $stat = [];
-
-        foreach ($statRows as $item) {
-
-            $stat[$item['locationId']] = [
-                'name' => $locations[$item['locationId']],
-                'total' => $item['total'],
-            ];
-        }
-
-        return $stat;
     }
 
     /**

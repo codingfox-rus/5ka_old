@@ -1,12 +1,14 @@
 <?php
 namespace app\models;
 
+use yii\db\ActiveQuery;
+
 /**
  * This is the ActiveQuery class for [[Location]].
  *
  * @see Location
  */
-class LocationQuery extends \yii\db\ActiveQuery
+class LocationQuery extends ActiveQuery
 {
     /**
      * @return LocationQuery

@@ -19,10 +19,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?php $form = ActiveForm::begin() ?>
 
-            <?= $form->field($model, 'apiVersion')->dropDownList(
-                Settings::getApiVersions()
-            ) ?>
-
             <div class="form-group">
                 <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary btn-block']) ?>
             </div>

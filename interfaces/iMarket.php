@@ -3,7 +3,7 @@ namespace app\interfaces;
 
 interface iMarket
 {
-    const DOWNLOAD_LIMIT = 50;
+    public const DOWNLOAD_LIMIT = 50;
 
     public function getData();
 

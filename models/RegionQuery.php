@@ -1,13 +1,14 @@
 <?php
-
 namespace app\models;
+
+use yii\db\ActiveQuery;
 
 /**
  * This is the ActiveQuery class for [[Region]].
  *
  * @see Region
  */
-class RegionQuery extends \yii\db\ActiveQuery
+class RegionQuery extends ActiveQuery
 {
     /*public function active()
     {

@@ -2,6 +2,7 @@
 namespace app\models;
 
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tag_discount".
@@ -12,7 +13,7 @@ use yii\db\ActiveQuery;
  * @property Discount $discount
  * @property Tag $tag
  */
-class TagDiscount extends \yii\db\ActiveRecord
+class TagDiscount extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -25,7 +26,7 @@ class TagDiscount extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules(): string
+    public function rules(): array
     {
         return [
             [['tagId', 'discountId'], 'required'],
@@ -48,18 +49,18 @@ class TagDiscount extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getDiscount(): ActiveQuery
     {
-        return $this->hasOne(Discount::className(), ['id' => 'discountId']);
+        return $this->hasOne(Discount::class, ['id' => 'discountId']);
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getTag(): ActiveQuery
     {
-        return $this->hasOne(Tag::className(), ['id' => 'tagId']);
+        return $this->hasOne(Tag::class, ['id' => 'tagId']);
     }
 }

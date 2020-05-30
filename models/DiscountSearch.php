@@ -89,7 +89,7 @@ class DiscountSearch extends Discount
         $query->andFilterWhere(['like', 'productName', $this->productName]);
 
         if ($this->sortingOrder) {
-            $query = $this->applySortingOrder($query);
+            $this->applySortingOrder($query);
         }
 
         return $dataProvider;

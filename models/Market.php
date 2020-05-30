@@ -1,7 +1,8 @@
 <?php
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "market".
@@ -11,17 +12,17 @@ use Yii;
  * @property string $name
  * @property string $logo
  */
-class Market extends \yii\db\ActiveRecord
+class Market extends ActiveRecord
 {
-    const LOGO_PATH = 'img/markets-logos/';
+    public const LOGO_PATH = 'img/markets-logos/';
 
-    /** @var \yii\web\UploadedFile */
+    /** @var UploadedFile */
     public $logoImage;
 
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'market';
     }
@@ -29,7 +30,7 @@ class Market extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['code', 'name'], 'required', 'message' => 'Поле обязательно для заполнения'],
@@ -43,7 +44,7 @@ class Market extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'id' => 'ID',
@@ -57,15 +58,15 @@ class Market extends \yii\db\ActiveRecord
      * {@inheritdoc}
      * @return MarketQuery the active query used by this AR class.
      */
-    public static function find()
+    public static function find(): MarketQuery
     {
-        return new MarketQuery(get_called_class());
+        return new MarketQuery(static::class);
     }
 
     /**
      * @return bool
      */
-    public function upload()
+    public function upload(): bool
     {
         if ($this->validate()) {
 

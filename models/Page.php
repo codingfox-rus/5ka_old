@@ -1,8 +1,8 @@
 <?php
 namespace app\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "page".
@@ -16,18 +16,18 @@ use yii\behaviors\TimestampBehavior;
  * @property int $createdAt
  * @property int $updatedAt
  */
-class Page extends \yii\db\ActiveRecord
+class Page extends ActiveRecord
 {
-    const INDEX = 'index';
-    const LOGIN = 'login';
-    const SIGNUP = 'signup';
-    const FEEDBACK = 'feedback';
-    const ABOUT = 'about';
+    public const INDEX      = 'index';
+    public const LOGIN      = 'login';
+    public const SIGNUP     = 'signup';
+    public const FEEDBACK   = 'feedback';
+    public const ABOUT      = 'about';
 
     /**
      * @return array
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             [
@@ -41,7 +41,7 @@ class Page extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
+    public static function tableName(): string
     {
         return 'page';
     }
@@ -49,7 +49,7 @@ class Page extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['name', 'title', 'description'], 'required'],
@@ -62,17 +62,17 @@ class Page extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
-            'id' => 'ID',
-            'name' => 'Имя (url)',
-            'title' => 'Заголовок',
-            'description' => 'Описание',
-            'keywords' => 'Ключевые слова',
-            'content' => 'Контент',
-            'createdAt' => 'Создана',
-            'updatedAt' => 'Обновлена',
+            'id'            => 'ID',
+            'name'          => 'Имя (url)',
+            'title'         => 'Заголовок',
+            'description'   => 'Описание',
+            'keywords'      => 'Ключевые слова',
+            'content'       => 'Контент',
+            'createdAt'     => 'Создана',
+            'updatedAt'     => 'Обновлена',
         ];
     }
 
@@ -80,8 +80,8 @@ class Page extends \yii\db\ActiveRecord
      * {@inheritdoc}
      * @return PageQuery the active query used by this AR class.
      */
-    public static function find()
+    public static function find(): PageQuery
     {
-        return new PageQuery(get_called_class());
+        return new PageQuery(static::class);
     }
 }

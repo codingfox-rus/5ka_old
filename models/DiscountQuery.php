@@ -3,6 +3,10 @@ namespace app\models;
 
 use yii\db\ActiveQuery;
 
+/**
+ * Class DiscountQuery
+ * @package app\models
+ */
 class DiscountQuery extends ActiveQuery
 {
     /**

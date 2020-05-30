@@ -4,6 +4,7 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveQuery;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "discount".
@@ -23,10 +24,9 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property Location $location
  * @property Product $product
- * @property Stat $stat
  * @property string $smallPreview
  */
-class Discount extends \yii\db\ActiveRecord
+class Discount extends ActiveRecord
 {
     public const STAT_PRICE_LIMIT = 49.99;
 
@@ -137,9 +137,9 @@ class Discount extends \yii\db\ActiveRecord
      * {@inheritdoc}
      * @return DiscountQuery the active query used by this AR class.
      */
-    public static function find()
+    public static function find(): DiscountQuery
     {
-        return new DiscountQuery(get_called_class());
+        return new DiscountQuery(static::class);
     }
 
     /**
@@ -176,16 +176,5 @@ class Discount extends \yii\db\ActiveRecord
     public function getProduct(): ActiveQuery
     {
         return $this->hasOne(Product::class, ['pId' => 'productId']);
-    }
-
-    /**
-     * @return ActiveQuery
-     */
-    public function getStat(): ActiveQuery
-    {
-        return $this->hasOne(Stat::class, [
-            'locationId' => 'locationId',
-            'productId' => 'productId',
-        ]);
     }
 }
